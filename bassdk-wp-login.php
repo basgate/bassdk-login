@@ -2,7 +2,7 @@
 /*
 Plugin Name: Bassdk WP Login
 Description: A popup login dialog that appears when the user opens the website.
-Version: 1.2
+Version: 1.3
 Author: Bas Gate SDK
 */
 
@@ -26,7 +26,7 @@ function bassdk_login_form()
             <h2>BAS Login</h2>
             <script type="text/javascript">
                 console.log("isJSBridgeReady :", isJSBridgeReady)
-                await getBasAuthCode("653ed1ff-59cb-41aa-8e7f-0dc5b885a024").then((res) => {
+                getBasAuthCode("653ed1ff-59cb-41aa-8e7f-0dc5b885a024").then((res) => {
                     console.log("Logined Successfully :", res)
                     alert("Logined Successfully ")
                 })
