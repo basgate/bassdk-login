@@ -1,6 +1,6 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 /**
- * Authorizer
+ * Basgate Login SDK
  *
  * @license  GPL-2.0+
  * @link     https://github.com/basgate
