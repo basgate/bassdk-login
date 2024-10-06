@@ -8,9 +8,7 @@
  * @package  Basgate Login SDK
  */
 
-namespace BasgateSDK\Options;
-
-use BasgateSDK\Singleton;
+namespace BasgateSDK;
 
 /**
  * Contains functions for rendering the Access Lists tab in Basgate Login SDK Settings.
@@ -1146,16 +1144,16 @@ class Options extends Singleton
 		?>
 			<h2 class="nav-tab-wrapper">
 				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
-				<a class="nav-tab nav-tab-external" href="javascript:chooseTab('external' );"><?php esc_html_e('External Service', 'authorizer'); ?></a>
-				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a>
+				<!-- <a class="nav-tab nav-tab-external" href="javascript:chooseTab('external' );"><?php esc_html_e('External Service', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a> -->
 			</h2>
 		<?php else : ?>
 			<h2 class="nav-tab-wrapper">
 				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
-				<a class="nav-tab nav-tab-access_login" href="javascript:chooseTab('access_login' );"><?php esc_html_e('Login Access', 'authorizer'); ?></a>
+				<!-- <a class="nav-tab nav-tab-access_login" href="javascript:chooseTab('access_login' );"><?php esc_html_e('Login Access', 'authorizer'); ?></a>
 				<a class="nav-tab nav-tab-access_public" href="javascript:chooseTab('access_public' );"><?php esc_html_e('Public Access', 'authorizer'); ?></a>
 				<a class="nav-tab nav-tab-external" href="javascript:chooseTab('external' );"><?php esc_html_e('External Service', 'authorizer'); ?></a>
-				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a> -->
 			</h2>
 <?php
 		endif;

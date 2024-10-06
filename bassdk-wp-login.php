@@ -2,9 +2,21 @@
 /*
 Plugin Name: Bassdk WP Login
 Description: A popup login dialog that appears when the user opens the website.
-Version: 1.11
+Version: 1.12
 Author: Bas Gate SDK
 */
+
+namespace BasgateSDK;
+
+// use 
+require_once __DIR__ . '/options/abstract-class-singleton.php';
+require_once __DIR__ . '/options/class-helper.php';
+require_once __DIR__ . '/options/class-admin-page.php';
+require_once __DIR__ . '/options/class-login-access.php';
+require_once __DIR__ . '/options/class-options.php';
+require_once __DIR__ . '/options/class-wp-plugin-authorizer.php';
+
+// use BasgateSDK\Options\WP_Plugin_Authorizer;
 
 function bassdk_enqueue_scripts()
 {
@@ -60,11 +72,17 @@ function bassdk_login_form()
             </form>
         </div>
     </div>
-    <button id="bassdk-login-btn">Login By BAS </button>
+    <!-- <button id="bassdk-login-btn">Login By BAS </button> -->
     <script type="application/javascript" crossorigin="anonymous" src="https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/merchant/v1/public.js" onload="invokeBasLogin();"></script>
 <?php
     return ob_get_clean();
 }
+
+function plugin_root()
+{
+    return __FILE__;
+}
+
 add_shortcode('bassdk_login', 'bassdk_login_form');
 
 function bassdk_add_modal()
@@ -72,3 +90,7 @@ function bassdk_add_modal()
     echo do_shortcode('[bassdk_login]');
 }
 add_action('wp_footer', 'bassdk_add_modal');
+
+
+// Instantiate the plugin class.
+WP_Plugin_Authorizer::get_instance();
