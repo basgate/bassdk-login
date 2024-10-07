@@ -933,131 +933,131 @@ class Options extends Singleton
 		// Sanitize Send welcome email (checkbox: value can only be '1' or empty string).
 		$auth_settings['access_should_email_approved_users'] = array_key_exists('access_should_email_approved_users', $auth_settings) && strlen($auth_settings['access_should_email_approved_users']) > 0 ? '1' : '';
 
-		// // Sanitize Enable OAuth2 Logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['oauth2'] = array_key_exists('oauth2', $auth_settings) && strlen($auth_settings['oauth2']) > 0 ? '1' : '';
+		// Sanitize Enable OAuth2 Logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['oauth2'] = array_key_exists('oauth2', $auth_settings) && strlen($auth_settings['oauth2']) > 0 ? '1' : '';
 
-		// // Sanitize OAuth2 auto-login (checkbox: value can only be '1' or empty string).
-		// $auth_settings['oauth2_auto_login'] = array_key_exists('oauth2_auto_login', $auth_settings) && strlen($auth_settings['oauth2_auto_login']) > 0 ? '1' : '';
+		// Sanitize OAuth2 auto-login (checkbox: value can only be '1' or empty string).
+		$auth_settings['oauth2_auto_login'] = array_key_exists('oauth2_auto_login', $auth_settings) && strlen($auth_settings['oauth2_auto_login']) > 0 ? '1' : '';
 
-		// // Sanitize Oauth2 attribute update (select: value can only be 'update-if-empty', '1', or empty string).
-		// if (! isset($auth_settings['oauth2_attr_update_on_login']) || ! in_array($auth_settings['oauth2_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
-		// 	$auth_settings['oauth2_attr_update_on_login'] = '';
-		// }
+		// Sanitize Oauth2 attribute update (select: value can only be 'update-if-empty', '1', or empty string).
+		if (! isset($auth_settings['oauth2_attr_update_on_login']) || ! in_array($auth_settings['oauth2_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
+			$auth_settings['oauth2_attr_update_on_login'] = '';
+		}
 
-		// // Sanitize Enable Google Logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['google'] = array_key_exists('google', $auth_settings) && strlen($auth_settings['google']) > 0 ? '1' : '';
+		// Sanitize Enable Google Logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['google'] = array_key_exists('google', $auth_settings) && strlen($auth_settings['google']) > 0 ? '1' : '';
 
-		// // Sanitize Enable CAS Logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['cas'] = array_key_exists('cas', $auth_settings) && strlen($auth_settings['cas']) > 0 ? '1' : '';
+		// Sanitize Enable CAS Logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['cas'] = array_key_exists('cas', $auth_settings) && strlen($auth_settings['cas']) > 0 ? '1' : '';
 
-		// // Sanitize CAS auto-login (select: value can be between '1' and '10' or empty string).
-		// if (! isset($auth_settings['cas_auto_login']) || ! in_array($auth_settings['cas_auto_login'], array('', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'), true)) {
-		// 	$auth_settings['cas_auto_login'] = '';
-		// }
+		// Sanitize CAS auto-login (select: value can be between '1' and '10' or empty string).
+		if (! isset($auth_settings['cas_auto_login']) || ! in_array($auth_settings['cas_auto_login'], array('', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'), true)) {
+			$auth_settings['cas_auto_login'] = '';
+		}
 
-		// // Sanitize CAS number of servers (range: value can only be '1' to '10').
-		// $auth_settings['cas_num_servers'] = filter_var($auth_settings['cas_num_servers'], FILTER_SANITIZE_NUMBER_INT);
-		// $auth_settings['cas_num_servers'] = intval($auth_settings['cas_num_servers']) < 1 || intval($auth_settings['cas_num_servers']) > 10 ? '1' : $auth_settings['cas_num_servers'];
+		// Sanitize CAS number of servers (range: value can only be '1' to '10').
+		$auth_settings['cas_num_servers'] = filter_var($auth_settings['cas_num_servers'], FILTER_SANITIZE_NUMBER_INT);
+		$auth_settings['cas_num_servers'] = intval($auth_settings['cas_num_servers']) < 1 || intval($auth_settings['cas_num_servers']) > 10 ? '1' : $auth_settings['cas_num_servers'];
 
-		// // Sanitize CAS Host setting.
-		// $auth_settings['cas_host'] = filter_var($auth_settings['cas_host'], FILTER_SANITIZE_URL);
+		// Sanitize CAS Host setting.
+		$auth_settings['cas_host'] = filter_var($auth_settings['cas_host'], FILTER_SANITIZE_URL);
 
-		// // Sanitize CAS Port (int).
-		// $auth_settings['cas_port'] = filter_var($auth_settings['cas_port'], FILTER_SANITIZE_NUMBER_INT);
+		// Sanitize CAS Port (int).
+		$auth_settings['cas_port'] = filter_var($auth_settings['cas_port'], FILTER_SANITIZE_NUMBER_INT);
 
-		// // Sanitize CAS attribute update (select: value can only be 'update-if-empty', '1', or empty string).
-		// if (! isset($auth_settings['cas_attr_update_on_login']) || ! in_array($auth_settings['cas_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
-		// 	$auth_settings['cas_attr_update_on_login'] = '';
-		// }
+		// Sanitize CAS attribute update (select: value can only be 'update-if-empty', '1', or empty string).
+		if (! isset($auth_settings['cas_attr_update_on_login']) || ! in_array($auth_settings['cas_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
+			$auth_settings['cas_attr_update_on_login'] = '';
+		}
 
-		// // Sanitize CAS link on username (checkbox: value can only be '1' or empty string).
-		// $auth_settings['cas_link_on_username'] = array_key_exists('cas_link_on_username', $auth_settings) && strlen($auth_settings['cas_link_on_username']) > 0 ? '1' : '';
+		// Sanitize CAS link on username (checkbox: value can only be '1' or empty string).
+		$auth_settings['cas_link_on_username'] = array_key_exists('cas_link_on_username', $auth_settings) && strlen($auth_settings['cas_link_on_username']) > 0 ? '1' : '';
 
-		// // Sanitize settings for any additional CAS servers.
-		// if (intval($auth_settings['cas_num_servers']) > 1) {
-		// 	foreach (range(2, min(intval($auth_settings['cas_num_servers']), 10)) as $cas_num_server) {
-		// 		// Sanitize CAS Host setting.
-		// 		$auth_settings['cas_host_' . $cas_num_server] = filter_var($auth_settings['cas_host_' . $cas_num_server] ?? '', FILTER_SANITIZE_URL);
+		// Sanitize settings for any additional CAS servers.
+		if (intval($auth_settings['cas_num_servers']) > 1) {
+			foreach (range(2, min(intval($auth_settings['cas_num_servers']), 10)) as $cas_num_server) {
+				// Sanitize CAS Host setting.
+				$auth_settings['cas_host_' . $cas_num_server] = filter_var($auth_settings['cas_host_' . $cas_num_server] ?? '', FILTER_SANITIZE_URL);
 
-		// 		// Sanitize CAS Port (int).
-		// 		$auth_settings['cas_port_' . $cas_num_server] = filter_var($auth_settings['cas_port_' . $cas_num_server] ?? '', FILTER_SANITIZE_NUMBER_INT);
+				// Sanitize CAS Port (int).
+				$auth_settings['cas_port_' . $cas_num_server] = filter_var($auth_settings['cas_port_' . $cas_num_server] ?? '', FILTER_SANITIZE_NUMBER_INT);
 
-		// 		// Sanitize CAS attribute update (select: value can only be 'update-if-empty', '1', or empty string).
-		// 		if (! isset($auth_settings['cas_attr_update_on_login_' . $cas_num_server]) || ! in_array($auth_settings['cas_attr_update_on_login_' . $cas_num_server], array('', '1', 'update-if-empty'), true)) {
-		// 			$auth_settings['cas_attr_update_on_login_' . $cas_num_server] = '';
-		// 		}
+				// Sanitize CAS attribute update (select: value can only be 'update-if-empty', '1', or empty string).
+				if (! isset($auth_settings['cas_attr_update_on_login_' . $cas_num_server]) || ! in_array($auth_settings['cas_attr_update_on_login_' . $cas_num_server], array('', '1', 'update-if-empty'), true)) {
+					$auth_settings['cas_attr_update_on_login_' . $cas_num_server] = '';
+				}
 
-		// 		// Sanitize CAS link on username (checkbox: value can only be '1' or empty string).
-		// 		$auth_settings['cas_link_on_username_' . $cas_num_server] = array_key_exists('cas_link_on_username_' . $cas_num_server, $auth_settings) && strlen($auth_settings['cas_link_on_username_' . $cas_num_server]) > 0 ? '1' : '';
-		// 	}
-		// }
+				// Sanitize CAS link on username (checkbox: value can only be '1' or empty string).
+				$auth_settings['cas_link_on_username_' . $cas_num_server] = array_key_exists('cas_link_on_username_' . $cas_num_server, $auth_settings) && strlen($auth_settings['cas_link_on_username_' . $cas_num_server]) > 0 ? '1' : '';
+			}
+		}
 
-		// // Sanitize Enable LDAP Logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['ldap'] = array_key_exists('ldap', $auth_settings) && strlen($auth_settings['ldap']) > 0 ? '1' : '';
+		// Sanitize Enable LDAP Logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['ldap'] = array_key_exists('ldap', $auth_settings) && strlen($auth_settings['ldap']) > 0 ? '1' : '';
 
-		// // Sanitize LDAP Port (int).
-		// $auth_settings['ldap_port'] = filter_var($auth_settings['ldap_port'], FILTER_SANITIZE_NUMBER_INT);
+		// Sanitize LDAP Port (int).
+		$auth_settings['ldap_port'] = filter_var($auth_settings['ldap_port'], FILTER_SANITIZE_NUMBER_INT);
 
-		// // Sanitize LDAP TLS (checkbox: value can only be '1' or empty string).
-		// $auth_settings['ldap_tls'] = array_key_exists('ldap_tls', $auth_settings) && strlen($auth_settings['ldap_tls']) > 0 ? '1' : '';
+		// Sanitize LDAP TLS (checkbox: value can only be '1' or empty string).
+		$auth_settings['ldap_tls'] = array_key_exists('ldap_tls', $auth_settings) && strlen($auth_settings['ldap_tls']) > 0 ? '1' : '';
 
-		// // Sanitize LDAP attributes (basically make sure they don't have any parentheses).
-		// $auth_settings['ldap_uid'] = filter_var($auth_settings['ldap_uid'], FILTER_SANITIZE_EMAIL);
+		// Sanitize LDAP attributes (basically make sure they don't have any parentheses).
+		$auth_settings['ldap_uid'] = filter_var($auth_settings['ldap_uid'], FILTER_SANITIZE_EMAIL);
 
-		// // Sanitize LDAP Lost Password URL.
-		// $auth_settings['ldap_lostpassword_url'] = filter_var($auth_settings['ldap_lostpassword_url'], FILTER_SANITIZE_URL);
+		// Sanitize LDAP Lost Password URL.
+		$auth_settings['ldap_lostpassword_url'] = filter_var($auth_settings['ldap_lostpassword_url'], FILTER_SANITIZE_URL);
 
-		// // Obfuscate LDAP directory user password.
-		// if (isset($auth_settings['ldap_password']) && strlen($auth_settings['ldap_password']) > 0) {
-		// 	// encrypt the directory user password for some minor obfuscation in the database.
-		// 	$auth_settings['ldap_password'] = $auth_settings['ldap_password'];
-		// }
+		// Obfuscate LDAP directory user password.
+		if (isset($auth_settings['ldap_password']) && strlen($auth_settings['ldap_password']) > 0) {
+			// encrypt the directory user password for some minor obfuscation in the database.
+			$auth_settings['ldap_password'] = $auth_settings['ldap_password'];
+		}
 
-		// // Sanitize LDAP attribute update (select: value can only be 'update-if-empty', '1', or empty string).
-		// if (! isset($auth_settings['ldap_attr_update_on_login']) || ! in_array($auth_settings['ldap_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
-		// 	$auth_settings['ldap_attr_update_on_login'] = '';
-		// }
+		// Sanitize LDAP attribute update (select: value can only be 'update-if-empty', '1', or empty string).
+		if (! isset($auth_settings['ldap_attr_update_on_login']) || ! in_array($auth_settings['ldap_attr_update_on_login'], array('', '1', 'update-if-empty'), true)) {
+			$auth_settings['ldap_attr_update_on_login'] = '';
+		}
 
-		// // Make sure public pages is an empty array if it's empty.
-		// // Note: this option doesn't exist in multisite options, so we first
-		// // check to see if it exists.
-		// if (array_key_exists('access_public_pages', $auth_settings) && ! is_array($auth_settings['access_public_pages'])) {
-		// 	$auth_settings['access_public_pages'] = array();
-		// }
+		// Make sure public pages is an empty array if it's empty.
+		// Note: this option doesn't exist in multisite options, so we first
+		// check to see if it exists.
+		if (array_key_exists('access_public_pages', $auth_settings) && ! is_array($auth_settings['access_public_pages'])) {
+			$auth_settings['access_public_pages'] = array();
+		}
 
-		// // Make sure all lockout options are integers (attempts_1, duration_1,
-		// // attempts_2, duration_2, reset_duration). Default to 0 if not.
-		// foreach ($auth_settings['advanced_lockouts'] as $key => $value) {
-		// 	$auth_settings['advanced_lockouts'][$key] = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-		// 	if (empty($auth_settings['advanced_lockouts'][$key])) {
-		// 		$auth_settings['advanced_lockouts'][$key] = 0;
-		// 	}
-		// }
+		// Make sure all lockout options are integers (attempts_1, duration_1,
+		// attempts_2, duration_2, reset_duration). Default to 0 if not.
+		foreach ($auth_settings['advanced_lockouts'] as $key => $value) {
+			$auth_settings['advanced_lockouts'][$key] = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+			if (empty($auth_settings['advanced_lockouts'][$key])) {
+				$auth_settings['advanced_lockouts'][$key] = 0;
+			}
+		}
 
-		// // Sanitize Hide WordPress logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['advanced_hide_wp_login'] = array_key_exists('advanced_hide_wp_login', $auth_settings) && strlen($auth_settings['advanced_hide_wp_login']) > 0 ? '1' : '';
+		// Sanitize Hide WordPress logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['advanced_hide_wp_login'] = array_key_exists('advanced_hide_wp_login', $auth_settings) && strlen($auth_settings['advanced_hide_wp_login']) > 0 ? '1' : '';
 
-		// // Sanitize Disable WordPress logins (checkbox: value can only be '1' or empty string).
-		// $auth_settings['advanced_disable_wp_login'] = array_key_exists('advanced_disable_wp_login', $auth_settings) && strlen($auth_settings['advanced_disable_wp_login']) > 0 ? '1' : '';
+		// Sanitize Disable WordPress logins (checkbox: value can only be '1' or empty string).
+		$auth_settings['advanced_disable_wp_login'] = array_key_exists('advanced_disable_wp_login', $auth_settings) && strlen($auth_settings['advanced_disable_wp_login']) > 0 ? '1' : '';
 
-		// // Sanitize Users per page (text: value can only int from 1 to MAX_INT).
-		// $auth_settings['advanced_users_per_page'] = array_key_exists('advanced_users_per_page', $auth_settings) && intval($auth_settings['advanced_users_per_page']) > 0 ? intval($auth_settings['advanced_users_per_page']) : 1;
+		// Sanitize Users per page (text: value can only int from 1 to MAX_INT).
+		$auth_settings['advanced_users_per_page'] = array_key_exists('advanced_users_per_page', $auth_settings) && intval($auth_settings['advanced_users_per_page']) > 0 ? intval($auth_settings['advanced_users_per_page']) : 1;
 
-		// // Sanitize Sort users by (select: value can be 'email', 'role', 'date_added', 'created').
-		// if (! isset($auth_settings['advanced_users_sort_by']) || ! in_array($auth_settings['advanced_users_sort_by'], array('email', 'role', 'date_added', 'created'), true)) {
-		// 	$auth_settings['advanced_users_sort_by'] = 'created';
-		// }
+		// Sanitize Sort users by (select: value can be 'email', 'role', 'date_added', 'created').
+		if (! isset($auth_settings['advanced_users_sort_by']) || ! in_array($auth_settings['advanced_users_sort_by'], array('email', 'role', 'date_added', 'created'), true)) {
+			$auth_settings['advanced_users_sort_by'] = 'created';
+		}
 
-		// // Sanitize Sort users order (select: value can be 'asc', 'desc').
-		// if (! isset($auth_settings['advanced_users_sort_order']) || ! in_array($auth_settings['advanced_users_sort_order'], array('asc', 'desc'), true)) {
-		// 	$auth_settings['advanced_users_sort_order'] = 'asc';
-		// }
+		// Sanitize Sort users order (select: value can be 'asc', 'desc').
+		if (! isset($auth_settings['advanced_users_sort_order']) || ! in_array($auth_settings['advanced_users_sort_order'], array('asc', 'desc'), true)) {
+			$auth_settings['advanced_users_sort_order'] = 'asc';
+		}
 
-		// // Sanitize Show Dashboard Widget (checkbox: value can only be '1' or empty string).
-		// $auth_settings['advanced_widget_enabled'] = array_key_exists('advanced_widget_enabled', $auth_settings) && strlen($auth_settings['advanced_widget_enabled']) > 0 ? '1' : '';
+		// Sanitize Show Dashboard Widget (checkbox: value can only be '1' or empty string).
+		$auth_settings['advanced_widget_enabled'] = array_key_exists('advanced_widget_enabled', $auth_settings) && strlen($auth_settings['advanced_widget_enabled']) > 0 ? '1' : '';
 
-		// // Sanitize Override multisite options (checkbox: value can only be '1' or empty string).
-		// $auth_settings['advanced_override_multisite'] = array_key_exists('advanced_override_multisite', $auth_settings) && strlen($auth_settings['advanced_override_multisite']) > 0 ? '1' : '';
+		// Sanitize Override multisite options (checkbox: value can only be '1' or empty string).
+		$auth_settings['advanced_override_multisite'] = array_key_exists('advanced_override_multisite', $auth_settings) && strlen($auth_settings['advanced_override_multisite']) > 0 ? '1' : '';
 
 		return $auth_settings;
 	}
@@ -1144,10 +1144,16 @@ class Options extends Singleton
 		?>
 			<h2 class="nav-tab-wrapper">
 				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
+				<!-- <a class="nav-tab nav-tab-external" href="javascript:chooseTab('external' );"><?php esc_html_e('External Service', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a> -->
 			</h2>
 		<?php else : ?>
 			<h2 class="nav-tab-wrapper">
 				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
+				<!-- <a class="nav-tab nav-tab-access_login" href="javascript:chooseTab('access_login' );"><?php esc_html_e('Login Access', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-access_public" href="javascript:chooseTab('access_public' );"><?php esc_html_e('Public Access', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-external" href="javascript:chooseTab('external' );"><?php esc_html_e('External Service', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-advanced" href="javascript:chooseTab('advanced' );"><?php esc_html_e('Advanced', 'authorizer'); ?></a> -->
 			</h2>
 <?php
 		endif;

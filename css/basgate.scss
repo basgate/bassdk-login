@@ -1,0 +1,611 @@
+// Authorizer Settings (wp-admin) styles.
+// Compiles to: authorizer.css via `sass css/authorizer.scss css/authorizer.css`.
+
+// Import WordPress 5.7 admin colors.
+// See: https://make.wordpress.org/core/2021/02/23/standardization-of-wp-admin-colors-in-wordpress-5-7/
+@import 'wp-admin-colors';
+
+// Target just the Dashboard > Authorizer, and Network Dashboard > Authorizer.
+.toplevel_page_authorizer,
+.settings_page_authorizer {
+	// Banner image (bottom corner; fade if not scrolled to the bottom).
+	#wpwrap::before {
+		background: url('../images/authorizer-banner-400x300.png') no-repeat right bottom;
+		background-attachment: fixed;
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		z-index: -1;
+		transition: opacity 1s ease;
+	}
+	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+		#wpwrap::before {
+			background: url('../images/authorizer-banner-800x600.png') no-repeat right bottom;
+			background-size: 400px 300px;
+		}
+	}
+	#wpwrap.not-faded::before {
+		opacity: 1;
+	}
+
+	// No bottom margins on user lists.
+	#list_auth_settings_access_users_pending,
+	#list_auth_settings_access_users_approved,
+	#list_auth_settings_access_users_blocked {
+		margin-bottom: 0;
+	}
+
+	// Demo CAS login button sizing.
+	.button.button-external {
+		padding: 3px 16px;
+		height: 40px;
+	}
+	.button-external .dashicons {
+		margin: 4px 4px 0 0;
+		font-size: 24px;
+	}
+	.button-external input[type=text] {
+		width: 100px;
+	}
+	@media screen and (max-width: 782px) {
+		.button-external {
+			width: 280px;
+			height: 50px;
+			font-size: 16px;
+		}
+		.button-external .dashicons {
+			margin: 4px 16px 0 0;
+			font-size: 30px;
+		}
+		.button-external input[type=text] {
+			width: 120px;
+			display: inline;
+		}
+	}
+
+	// LDAP connection test.
+	#ldap_test_user_spinner {
+		float: none;
+	}
+	#ldap_test_user_result {
+		font-family: monospace;
+		width: 100%;
+		opacity: 0.8;
+		color: black;
+	}
+
+	// Mobile screen sizing.
+	@media screen and (max-width: 782px) {
+		th {
+			padding: 8px 0 0;
+		}
+		td {
+			padding: 8px 0px;
+		}
+		#auth_settings_google_clientid {
+			width: 100%;
+		}
+
+		// Make pager fit on one line.
+		.tablenav {
+			.tablenav-pages {
+				text-align: left;
+			}
+
+			.current-page {
+				width: auto;
+				display: inline;
+			}
+		}
+
+		// Make "Limit invalid login attempts" inputs inline so they read like a
+		// sentence.
+		#auth_settings_advanced_lockouts_attempts_1,
+		#auth_settings_advanced_lockouts_duration_1,
+		#auth_settings_advanced_lockouts_attempts_2,
+		#auth_settings_advanced_lockouts_duration_2,
+		#auth_settings_advanced_lockouts_reset_duration {
+			display: inline;
+		}
+
+		// Textarea heights should match text/select heights on mobile.
+		textarea {
+			padding: 3px 10px;
+			line-height: 2;
+			min-height: 40px;
+		}
+
+		// Make Bootstrap button group label vertically centered.
+		@media screen and (max-width: 782px) {
+			.button-add-user {
+				line-height: 37px;
+			}
+		}
+	}
+
+	// Expand/collapse option sections.
+	.form-table {
+		th,
+		td {
+			transition: padding 0.25s ease;
+
+			&.hide-animate {
+				padding: 0;
+			}
+
+			&.hide-no-animate {
+				padding: 0;
+			}
+		}
+	}
+
+	// Remove 14px padding above pending user list (alignment with left label).
+	#list_auth_settings_access_users_pending {
+		margin: 6px 0;
+	}
+
+	// Remove 14px padding above blocked user list (alignment with left label).
+	#list_auth_settings_access_users_blocked {
+		margin: 0;
+	}
+
+	// Fix background and sizing of public pages (toggle lists).
+	.ms-container {
+		.ms-selectable,
+		.ms-selection {
+			background: none;
+		}
+		.ms-list {
+			background: white;
+
+		}
+	}
+
+	// Allow 100% width text fields with .wide class.
+	input[type="text"].wide {
+		width: 100%;
+	}
+
+	// Flex layout for user lists (pending, approved, blocked).
+	#list_auth_settings_access_users_pending li,
+	#list_auth_settings_access_users_approved li,
+	#new_auth_settings_access_users_approved,
+	#list_auth_settings_access_users_blocked li,
+	#new_auth_settings_access_users_blocked {
+		display: flex;
+		justify-content: flex-start;
+
+		// Spacing between elements.
+		& > :not(:last-child) { margin-right: 4px; }
+
+		// Let email and role grow the most.
+		& > :nth-child(1) { flex-grow: 4; }
+		& > :nth-child(2) { flex-grow: 2; }
+	}
+
+	// Section breaks for pages with many options.
+	table.form-table {
+		tr {
+			&.border-top {
+				border-top: 3px solid $color-gray-5;
+			}
+
+			&.border-top-small {
+				border-top: 1px solid $color-gray-5;
+			}
+		}
+	}
+
+	// Fix spinner text overlapping spinner icon and overflowing viewport boundaries.
+	.spinner:has(.spinner-text) {
+		width: auto;
+
+		.spinner-text {
+			margin-left: 24px;
+		}
+	}
+}
+
+
+// Target just the Dashboard widget.
+#auth_dashboard_widget {
+	// Style the settings icon in the meta box header.
+	.js-toggle-auth_settings_dashboard_widget_control {
+		display: inline-block;
+	 .toggle-indicator:before {
+			content: "\f111";
+			display: inline-block;
+			font: normal 20px/1 dashicons;
+		}
+	}
+
+	// Disable fixed height in table nav (widget usually too narrow so search
+	// wraps to second line).
+	.tablenav {
+		height: auto;
+
+		// Fix offset current page input relative to pager buttons.
+		.current-page {
+			margin-top: -4px;
+		}
+	}
+
+	// Tighter flex layout for user lists (pending, approved, blocked).
+	#list_auth_settings_access_users_pending li,
+	#list_auth_settings_access_users_approved li,
+	#new_auth_settings_access_users_approved,
+	#list_auth_settings_access_users_blocked li,
+	#new_auth_settings_access_users_blocked {
+		display: flex;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		margin-bottom: 12px;
+
+		// Spacing between elements.
+		& > :not(:last-child) {
+			margin-right: 2px;
+		}
+
+		// Let email and role grow the most.
+		& > :nth-child(1) { flex-grow: 1; }
+
+		// Shrink role dropdown.
+		.auth-role { max-width: 140px; }
+
+		// Specifically shrink fields when near media breakpoints to prevent
+		// wrapping to a second line when it's "really close."
+		// Breakpoints:
+		// 1 column: < 800px
+		@media only screen and (max-width: 550px) and (min-width:0px) {
+			.auth-email { max-width: 140px; }
+		}
+		// 2 column: 800px - 1499px
+		@media only screen and (max-width: 900px) and (min-width:800px) {
+			.auth-email { max-width: 200px; }
+			.auth-role { max-width: 140px; }
+		}
+		// 3 column: 1500px - 1800px
+		@media only screen and (max-width: 1550px) and (min-width:1500px) {
+			.auth-email { max-width: 200px; }
+			.auth-role { max-width: 140px; }
+		}
+		// 4 column: > 1800px
+		@media only screen and (max-width: 1800px) and (min-width:1500px) {
+		}
+	}
+
+	// Use flexbox to keep everything on one line in approved list.
+	#list_auth_settings_access_users_pending li,
+	#list_auth_settings_access_users_approved li,
+	#new_auth_settings_access_users_approved {
+		flex-wrap: nowrap;
+		& > * { flex: 0 0 auto; }
+		& > :nth-child(1) { flex-shrink: 1; }
+		& > :nth-child(2) { flex-shrink: 2; }
+		& > :nth-child(3) { flex-shrink: 2; }
+		& > :nth-child(4) { flex-shrink: 2; }
+		& > :nth-child(5) { flex-shrink: 1; }
+		input, select { min-width: 0; }
+	}
+}
+
+
+// Target Dashboard > Authorizer, Network Dashboard > Authorizer, and Dashboard
+// widget.
+.toplevel_page_authorizer,
+.settings_page_authorizer,
+#auth_dashboard_widget {
+	// Dashicons in buttons.
+	.button.dashicons-before:before {
+		vertical-align: middle;
+		padding-right: 2px;
+		font-size: 16px;
+	}
+
+	// Room at the bottom for logo.
+	#wpbody-content {
+		padding-bottom: 240px;
+	}
+
+	// Hide Role dropdown on Blocked user list.
+	#list_auth_settings_access_users_blocked .auth-role,
+	#new_auth_settings_access_users_blocked .auth-role {
+		display: none;
+	}
+
+	// Colors for user lists.
+	#list_auth_settings_access_users_pending {
+		.auth-email {
+			background-color: $color-yellow-5;
+			border-color: $color-yellow-20;
+		}
+	}
+	#list_auth_settings_access_users_approved {
+		.auth-email {
+			background-color: $color-green-5;
+			border-color: $color-green-20;
+		}
+	}
+	#list_auth_settings_access_users_blocked {
+		.auth-email {
+			background-color: $color-red-5;
+			border-color: $color-red-20;
+		}
+	}
+
+	// Fade multisite users (not editable); don't do this on network admin page.
+	&:not(.network-admin) {
+		.auth-multisite-username,
+		.auth-multisite-email,
+		.auth-multisite-role,
+		.auth-multisite-usermeta,
+		.auth-multisite-date-added {
+			opacity: 0.5;
+		}
+	}
+
+// Cap max size of date and meta (no need for them to grow large).
+	.auth-date-added,
+	.auth-usermeta {
+		max-width: 80px;
+	}
+
+	// Hidden element (maintains space).
+	.invisible {
+		visibility: hidden;
+	}
+
+	// Multisite overlays.
+	form table.form-table td {
+		position: relative;
+	}
+	.auth_multisite_override_overlay {
+		.overlay-note {
+			background: $color-white;
+			border: 1px solid $color-gray-30;
+			cursor: default;
+			margin: 0 15em;
+			opacity: 0;
+			padding: 8px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			-webkit-transition: opacity 0.1s ease-in-out;
+			-moz-transition: opacity 0.1s ease-in-out;
+			transition: opacity 0.1s ease-in-out;
+
+			a {
+				cursor: pointer;
+			}
+		}
+		&:hover .overlay-note { opacity: 1; }
+	}
+
+	// Bootstrap customizations (typically because of conflicts with WordPress styles)
+	.dropdown-menu > li {
+		margin-bottom: 0 !important;
+	}
+	.dropdown-menu > li > a {
+		text-decoration: none !important;
+		white-space: normal !important; // Allow text to wrap to multiple lines.
+	}
+	.dropdown-toggle {
+		border-bottom: 0;
+	}
+	.dropdown-toggle-split {
+		padding-right: .5625rem;
+		padding-left: .5625rem;
+
+		&::after {
+			margin-left: 0;
+  	}
+	}
+
+	// Portions below from Bootstrap.
+	// http://getbootstrap.com/getting-started/#download
+	.sr-only {
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+
+	.caret {
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-top: 4px solid;
+		display: inline-block;
+		height: 0;
+		margin-left: 2px;
+		vertical-align: middle;
+		width: 0;
+	}
+	.dropdown {
+		position: relative;
+	}
+	.dropdown-toggle:focus {
+		outline: 0;
+	}
+	.dropdown-menu {
+		background-clip: padding-box;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border: 1px solid rgba(0, 0, 0, .15);
+		border-radius: 4px;
+		-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+						box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+		display: none;
+		float: left;
+		font-size: 14px;
+		right: 0;
+		list-style: none;
+		margin: 2px 0 0;
+		min-width: 160px;
+		padding: 5px 0;
+		position: absolute;
+		top: 100%;
+		z-index: 1000;
+	}
+	.dropdown-menu.pull-right {
+		left: auto;
+		right: 0;
+	}
+	.dropdown-menu .divider {
+		background-color: #e5e5e5;
+		height: 1px;
+		margin: 9px 0;
+		overflow: hidden;
+	}
+	.dropdown-menu > li > a {
+		clear: both;
+		color: #333;
+		display: block;
+		font-weight: normal;
+		line-height: 1.42857143;
+		padding: 3px 20px;
+		white-space: nowrap;
+	}
+	.dropdown-menu > li > a:hover,
+	.dropdown-menu > li > a:focus {
+		background-color: #f5f5f5;
+		color: #262626;
+		text-decoration: none;
+	}
+	.dropdown-menu > .active > a,
+	.dropdown-menu > .active > a:hover,
+	.dropdown-menu > .active > a:focus {
+		background-color: #428bca;
+		color: #fff;
+		outline: 0;
+		text-decoration: none;
+	}
+	.dropdown-menu > .disabled > a,
+	.dropdown-menu > .disabled > a:hover,
+	.dropdown-menu > .disabled > a:focus {
+		color: #999;
+	}
+	.dropdown-menu > .disabled > a:hover,
+	.dropdown-menu > .disabled > a:focus {
+		background-color: transparent;
+		background-image: none;
+		cursor: not-allowed;
+		filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+		text-decoration: none;
+	}
+	.open > .dropdown-menu {
+		display: block;
+	}
+	.open > a {
+		outline: 0;
+	}
+
+	.btn-group,
+	.btn-group-vertical {
+		display: inline-flex;
+		position: relative;
+		vertical-align: middle;
+	}
+	.btn-group > .btn,
+	.btn-group-vertical > .btn {
+		flex: 0 1 auto;
+		position: relative;
+	}
+	.btn-group > .btn:hover,
+	.btn-group-vertical > .btn:hover,
+	.btn-group > .btn:focus,
+	.btn-group-vertical > .btn:focus,
+	.btn-group > .btn:active,
+	.btn-group-vertical > .btn:active,
+	.btn-group > .btn.active,
+	.btn-group-vertical > .btn.active {
+		z-index: 2;
+	}
+	.btn-group > .btn:focus,
+	.btn-group-vertical > .btn:focus {
+		outline: none;
+	}
+	.btn-group .btn + .btn,
+	.btn-group .btn + .btn-group,
+	.btn-group .btn-group + .btn,
+	.btn-group .btn-group + .btn-group {
+		margin-left: -1px;
+	}
+	.btn-toolbar {
+		margin-left: -5px;
+	}
+	.btn-toolbar .btn-group,
+	.btn-toolbar .input-group {
+		float: left;
+	}
+	.btn-toolbar > .btn,
+	.btn-toolbar > .btn-group,
+	.btn-toolbar > .input-group {
+		margin-left: 5px;
+	}
+	.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+		border-radius: 0;
+	}
+	.btn-group > .btn:first-child {
+		margin-left: 0;
+	}
+	.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
+	}
+	.btn-group > .btn:last-child:not(:first-child),
+	.btn-group > .dropdown-toggle:not(:first-child) {
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+	}
+	.btn-group > .btn-group {
+		float: left;
+	}
+	.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
+		border-radius: 0;
+	}
+	.btn-group > .btn-group:first-child > .btn:last-child,
+	.btn-group > .btn-group:first-child > .dropdown-toggle {
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
+	}
+	.btn-group > .btn-group:last-child > .btn:first-child {
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+	}
+	.btn-group .dropdown-toggle:active,
+	.btn-group.open .dropdown-toggle {
+		outline: 0;
+	}
+	.btn-group > .btn + .dropdown-toggle {
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+	.btn-group > .btn-lg + .dropdown-toggle {
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+	.btn-group.open .dropdown-toggle {
+		-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+						box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+	}
+	.btn-group.open .dropdown-toggle.btn-link {
+		-webkit-box-shadow: none;
+						box-shadow: none;
+	}
+	.btn .caret {
+		margin-left: 0;
+	}
+}
+
+// Busy cursor for ajax calls.
+html.busy, html.busy * {
+	cursor: wait !important;
+}

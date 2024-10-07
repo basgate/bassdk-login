@@ -15,7 +15,7 @@ namespace BasgateSDK;
 /**
  * Main plugin class. Activates/deactivates the plugin, and registers all hooks.
  */
-class WP_Plugin_Basgate extends Singleton
+class WP_Plugin_Authorizer extends Singleton
 {
 
 	/**
@@ -84,15 +84,14 @@ class WP_Plugin_Basgate extends Singleton
 
 		// Enqueue javascript and css on the plugin's options page, the
 		// dashboard (for the widget), and the network admin.
-		// add_action('load-settings_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
-		// add_action('load-toplevel_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
-		// add_action('admin_head-index.php', array(Admin_Page::get_instance(), 'load_options_page'));
+		add_action('load-settings_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
+		add_action('load-toplevel_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
+		add_action('admin_head-index.php', array(Admin_Page::get_instance(), 'load_options_page'));
 		// add_action('admin_head-index.php', array(Dashboard_Widget::get_instance(), 'widget_scripts'));
 
 		// // // Add custom css and js to wp-login.php.
+		add_action('login_enqueue_scripts', array(Login_Form::get_instance(), 'login_enqueue_scripts_and_styles'));
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
-
-		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
 		// // Modify login page with external auth links (if enabled; e.g., google or cas).
 		// add_action('login_form', array(Login_Form::get_instance(), 'login_form_add_external_service_links'));
@@ -161,16 +160,42 @@ class WP_Plugin_Basgate extends Singleton
 		}
 
 		// Add [authorizer_login_form] shortcode to render the login form.
-		// add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
-		add_shortcode('bassdk_login', array(Login_Form::get_instance(), 'bassdk_login_form'));
+		add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
 
-		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
+		// // Load custom javascript for the main site (e.g., for displaying alerts).
+		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'auth_public_scripts'), 20);
 
-		add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
+		// Multisite-specific actions.
+		if (is_multisite()) {
+			// Add network admin options page (global settings for all sites).
+			add_action('network_admin_menu', array(Admin_Page::get_instance(), 'network_admin_menu'));
+		}
 
+		// // Remove user from authorizer lists when that user is deleted in WordPress.
+		// add_action('delete_user', array(Sync_Userdata::get_instance(), 'remove_user_from_authorizer_when_deleted'));
+		// if (is_multisite()) {
+		// 	// Remove multisite user from authorizer lists when that user is deleted from Network Users.
+		// 	add_action('remove_user_from_blog', array(Sync_Userdata::get_instance(), 'remove_network_user_from_site_when_removed'), 10, 2);
+		// 	add_action('wpmu_delete_user', array(Sync_Userdata::get_instance(), 'remove_network_user_from_authorizer_when_deleted'));
+		// }
+
+		// // Add user to authorizer approved list when that user is added to a blog from the Users screen.
+		// // Multisite: invite_user action fired when adding (inviting) an existing network user to the current site (with email confirmation).
+		// add_action('invite_user', array(Sync_Userdata::get_instance(), 'add_existing_user_to_authorizer_when_created'), 10, 3);
+		// // Multisite: added_existing_user action fired when adding an existing network user to the current site (without email confirmation).
+		// add_action('added_existing_user', array(Sync_Userdata::get_instance(), 'add_existing_user_to_authorizer_when_created_noconfirmation'), 10, 2);
+		// // Multisite: after_signup_user action fired when adding a new user to the site (with or without email confirmation).
+		// add_action('after_signup_user', array(Sync_Userdata::get_instance(), 'add_new_user_to_authorizer_when_created'), 10, 4);
+		// // Single site: edit_user_created_user action fired when adding a new user to the site (with or without email notification).
+		// add_action('edit_user_created_user', array(Sync_Userdata::get_instance(), 'add_new_user_to_authorizer_when_created_single_site'), 10, 2);
+
+		// // Add user to network approved users (and remove from individual sites)
+		// // when user is elevated to super admin status.
+		// add_action('grant_super_admin', array(Sync_Userdata::get_instance(), 'grant_super_admin__add_to_network_approved'));
+		// // Remove user from network approved users (and add them to the approved
+		// // list on sites they are already on) when super admin status is removed.
+		// add_action('revoke_super_admin', array(Sync_Userdata::get_instance(), 'revoke_super_admin__remove_from_network_approved'));
 	}
-
-
 
 
 	/**
@@ -189,7 +214,7 @@ class WP_Plugin_Basgate extends Singleton
 		// If we're in a multisite environment, run the plugin activation for each
 		// site when network enabling.
 		// Note: wp-cli does not use nonces, so we skip the nonce check here to
-		// allow the "wp plugin activate basgate" command.
+		// allow the "wp plugin activate authorizer" command.
 		// phpcs:ignore WordPress.CSRF.NonceVerification.NoNonceVerification
 		if (is_multisite() && $network_wide) {
 
@@ -257,7 +282,7 @@ class WP_Plugin_Basgate extends Singleton
 	public function load_textdomain()
 	{
 		load_plugin_textdomain(
-			'basgate',
+			'authorizer',
 			false,
 			basename(dirname(plugin_root())) . '/languages'
 		);

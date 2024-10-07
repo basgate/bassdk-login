@@ -16,9 +16,8 @@ require_once __DIR__ . '/options/class-login-access.php';
 require_once __DIR__ . '/options/class-login-form.php';
 require_once __DIR__ . '/options/class-options.php';
 require_once __DIR__ . '/options/class-wp-plugin-authorizer.php';
-require_once __DIR__ . '/lib/BasgateConstants.php';
 
-// use BasgateSDK\Options\WP_Plugin_Basgate;
+// use BasgateSDK\Options\WP_Plugin_Authorizer;
 
 // function bassdk_enqueue_scripts()
 // {
@@ -95,4 +94,4 @@ function plugin_root()
 
 
 // Instantiate the plugin class.
-WP_Plugin_Basgate::get_instance();
+WP_Plugin_Authorizer::get_instance();

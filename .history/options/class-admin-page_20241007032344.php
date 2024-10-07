@@ -272,6 +272,13 @@ class Admin_Page extends Singleton
 	 */
 	public function page_init()
 	{
+		/**
+		 * Create one setting that holds all the options (array).
+		 *
+		 * @see http://codex.wordpress.org/Function_Reference/register_setting
+		 * @see http://codex.wordpress.org/Function_Reference/add_settings_section
+		 * @see http://codex.wordpress.org/Function_Reference/add_settings_field
+		 */
 		register_setting(
 			'auth_settings_group',
 			'auth_settings',
@@ -300,6 +307,20 @@ class Admin_Page extends Singleton
 			'basgate',
 			'auth_settings_basgate_config'
 		);
+		// add_settings_field(
+		// 	'auth_settings_access_who_can_login',
+		// 	__('Who can log into the site????', 'basgate'),
+		// 	array(Login_Access::get_instance(), 'print_radio_auth_access_who_can_login'),
+		// 	'basgate',
+		// 	'auth_settings_basgate_config'
+		// );
+		// add_settings_field(
+		// 	'auth_settings_access_role_receive_pending_emails',
+		// 	__('Which role should receive email notifications about pending users?', 'basgate'),
+		// 	array(Login_Access::get_instance(), 'print_select_auth_access_role_receive_pending_emails'),
+		// 	'basgate',
+		// 	'auth_settings_basgate_config'
+		// );
 		add_settings_field(
 			'environment',
 			__('Environment Mode', $this->id),
@@ -308,45 +329,38 @@ class Admin_Page extends Singleton
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'application_id',
-			__('Application Id',  $this->id),
-			array(Login_Access::get_instance(), 'print_text_application_id'),
+			'auth_settings_access_pending_redirect_to_message',
+			__('What message should pending users see after attempting to log in?',  $this->id),
+			array(Login_Access::get_instance(), 'print_wysiwyg_auth_access_pending_redirect_to_message'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'application_id',
-			__('Application Id',  $this->id),
-			array(Login_Access::get_instance(), 'print_text_application_id'),
+			'auth_settings_access_blocked_redirect_to_message',
+			__('What message should blocked users see after attempting to log in?',  $this->id),
+			array(Login_Access::get_instance(), 'print_wysiwyg_auth_access_blocked_redirect_to_message'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'merchant_key',
-			__('Merchant Key',  $this->id),
-			array(Login_Access::get_instance(), 'print_text_merchant_key'),
-			$this->id,
+			'auth_settings_access_should_email_approved_users',
+			__('Send welcome email to new approved users?', 'basgate'),
+			array(Login_Access::get_instance(), 'print_checkbox_auth_access_should_email_approved_users'),
+			'basgate',
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'client_id',
-			__('Client Id',  $this->id),
-			array(Login_Access::get_instance(), 'print_text_client_id'),
-			$this->id,
+			'auth_settings_access_email_approved_users_subject',
+			__('Welcome email subject', 'basgate'),
+			array(Login_Access::get_instance(), 'print_text_auth_access_email_approved_users_subject'),
+			'basgate',
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'client_secret',
-			__('Client Secret',  $this->id),
-			array(Login_Access::get_instance(), 'print_text_client_secret'),
-			$this->id,
-			'auth_settings_basgate_config'
-		);
-		add_settings_field(
-			'enabled',
-			__('Enable/Disable',  $this->id),
-			array(Login_Access::get_instance(), 'print_checkbox_enabled'),
-			$this->id,
+			'auth_settings_access_email_approved_users_body',
+			__('Welcome email body', 'basgate'),
+			array(Login_Access::get_instance(), 'print_wysiwyg_auth_access_email_approved_users_body'),
+			'basgate',
 			'auth_settings_basgate_config'
 		);
 	}
@@ -375,6 +389,56 @@ class Admin_Page extends Singleton
 
 
 	/**
+	 * Output the HTML for the options page.
+	 */
+	public function create_network_admin_page()
+	{
+		// if ( ! current_user_can( 'manage_network_options' ) ) {
+		// 	wp_die( wp_kses( __( 'You do not have sufficient permissions to access this page.', 'basgate' ), Helper::$allowed_html ) );
+		// }
+		$options       = Options::get_instance();
+		$login_access  = Login_Access::get_instance();
+		$auth_settings = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array());
+	?>
+		<div class="wrap">
+			<form method="post" action="" autocomplete="off">
+				<h2><?php esc_html_e('Basgate Settings', 'basgate'); ?></h2>
+				<p><?php echo wp_kses(__('Most <strong>Basgate</strong> settings are set in the individual sites, but you can specify a few options here that apply to <strong>all sites in the network</strong>. These settings will override settings in the individual sites.', 'basgate'), Helper::$allowed_html); ?></p>
+
+				<p><input type="checkbox" id="auth_settings_multisite_override" name="auth_settings[multisite_override]" value="1" <?php checked(1 === intval($auth_settings['multisite_override'])); ?> /><label for="auth_settings_multisite_override"><?php esc_html_e('Override individual site settings with the settings below', 'basgate'); ?></label></p>
+				<p><input type="checkbox" id="auth_settings_prevent_override_multisite" name="auth_settings[prevent_override_multisite]" value="1" <?php checked(1 === intval($auth_settings['prevent_override_multisite'])); ?> /><label for="auth_settings_prevent_override_multisite"><?php esc_html_e('Prevent site administrators from overriding any multisite settings defined here (via Basgate > Advanced > Override multisite options)', 'basgate'); ?></label></p>
+
+				<div id="auth_multisite_settings_disabled_overlay" style="display: none;"></div>
+
+				<div class="wrap" id="auth_multisite_settings">
+					<?php $options->print_section_info_tabs(array('context' => 'multisite_admin')); ?>
+
+					<?php wp_nonce_field('save_auth_settings', 'nonce_save_auth_settings'); ?>
+
+					<?php // Custom access lists (for network, we only really want approved list, not pending or blocked). 
+					?>
+					<div id="section_info_access_lists" class="section_info">
+						<p><?php esc_html_e('Manage who has access to all sites in the network.', 'basgate'); ?></p>
+					</div>
+					<table class="form-table">
+						<tbody>
+							<tr>
+								<th scope="row"><?php esc_html_e('Who can log in to sites in this network?', 'basgate'); ?></th>
+								<td><?php $login_access->print_radio_auth_access_who_can_login(array('context' => 'multisite_admin')); ?></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br class="clear" />
+				</div>
+				<input type="button" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e('Save Changes', 'basgate'); ?>" onclick="saveAuthMultisiteSettings(this);" />
+			</form>
+		</div>
+<?php
+	}
+
+
+	/**
 	 * Network Admin menu item
 	 *
 	 * Action: network_admin_menu
@@ -383,6 +447,16 @@ class Admin_Page extends Singleton
 	 */
 	public function network_admin_menu()
 	{
+		// @see http://codex.wordpress.org/Function_Reference/add_menu_page
+		// add_menu_page(
+		// 	'Basgate',
+		// 	'Basgate',
+		// 	'manage_network_options',
+		// 	'basgate',
+		// 	array(self::get_instance(), 'create_network_admin_page'),
+		// 	'dashicons-groups',
+		// 	89 // Position.
+		// );
 	}
 
 
@@ -412,7 +486,7 @@ class Admin_Page extends Singleton
 				'create_users',
 				'basgate',
 				array(self::get_instance(), 'create_admin_page'),
-				plugins_url('images/bassdk-logo.svg'),
+				'dashicons-groups',
 				'99.0018465' // position (decimal is to make overlap with other plugins less likely).
 			);
 		}

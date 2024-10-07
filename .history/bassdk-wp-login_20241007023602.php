@@ -16,7 +16,6 @@ require_once __DIR__ . '/options/class-login-access.php';
 require_once __DIR__ . '/options/class-login-form.php';
 require_once __DIR__ . '/options/class-options.php';
 require_once __DIR__ . '/options/class-wp-plugin-authorizer.php';
-require_once __DIR__ . '/lib/BasgateConstants.php';
 
 // use BasgateSDK\Options\WP_Plugin_Basgate;
 
