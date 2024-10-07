@@ -81,7 +81,7 @@ class Options extends Singleton
 ?>
 			<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
 				<span class="overlay-note">
-					<?php esc_html_e('This setting is overridden by a', 'authorizer'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=authorizer' . $tab)); ?>"><?php esc_html_e('multisite option', 'authorizer'); ?></a>.
+					<?php esc_html_e('This setting is overridden by a', 'basgate'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'basgate'); ?></a>.
 				</span>
 			</div>
 		<?php
@@ -324,10 +324,10 @@ class Options extends Singleton
 			$auth_settings['access_role_receive_pending_emails'] = '---';
 		}
 		if (! array_key_exists('access_pending_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_pending_redirect_to_message'] = '<p>' . __("You're not currently allowed to view this site. Your administrator has been notified, and once he/she has approved your request, you will be able to log in. If you need any other help, please contact your administrator.", 'authorizer') . '</p>';
+			$auth_settings['access_pending_redirect_to_message'] = '<p>' . __("You're not currently allowed to view this site. Your administrator has been notified, and once he/she has approved your request, you will be able to log in. If you need any other help, please contact your administrator.", 'basgate') . '</p>';
 		}
 		if (! array_key_exists('access_blocked_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_blocked_redirect_to_message'] = '<p>' . __("You're not currently allowed to log into this site. If you think this is a mistake, please contact your administrator.", 'authorizer') . '</p>';
+			$auth_settings['access_blocked_redirect_to_message'] = '<p>' . __("You're not currently allowed to log into this site. If you think this is a mistake, please contact your administrator.", 'basgate') . '</p>';
 		}
 		if (! array_key_exists('access_should_email_approved_users', $auth_settings)) {
 			$auth_settings['access_should_email_approved_users'] = '';
@@ -335,14 +335,14 @@ class Options extends Singleton
 		if (! array_key_exists('access_email_approved_users_subject', $auth_settings)) {
 			$auth_settings['access_email_approved_users_subject'] = sprintf(
 				/* TRANSLATORS: %s: Shortcode for name of site */
-				__('Welcome to %s!', 'authorizer'),
+				__('Welcome to %s!', 'basgate'),
 				'[site_name]'
 			);
 		}
 		if (! array_key_exists('access_email_approved_users_body', $auth_settings)) {
 			$auth_settings['access_email_approved_users_body'] = sprintf(
 				/* TRANSLATORS: 1: Shortcode for user email 2: Shortcode for site name 3: Shortcode for site URL */
-				__("Hello %1\$s,\nWelcome to %2\$s! You now have access to all content on the site. Please visit us here:\n%3\$s\n", 'authorizer'),
+				__("Hello %1\$s,\nWelcome to %2\$s! You now have access to all content on the site. Please visit us here:\n%3\$s\n", 'basgate'),
 				'[user_email]',
 				'[site_name]',
 				'[site_url]'
@@ -363,7 +363,7 @@ class Options extends Singleton
 			$auth_settings['access_public_warning'] = 'no_warning';
 		}
 		if (! array_key_exists('access_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_redirect_to_message'] = '<p>' . __('Notice: You are browsing this site anonymously, and only have access to a portion of its content.', 'authorizer') . '</p>';
+			$auth_settings['access_redirect_to_message'] = '<p>' . __('Notice: You are browsing this site anonymously, and only have access to a portion of its content.', 'basgate') . '</p>';
 		}
 
 		// External Service Defaults.
@@ -901,8 +901,8 @@ class Options extends Singleton
 	/**
 	 * Settings sanitizer callback.
 	 *
-	 * @param  array $auth_settings Authorizer settings array.
-	 * @return array                Sanitized Authorizer settings array.
+	 * @param  array $auth_settings Basgate settings array.
+	 * @return array                Sanitized Basgate settings array.
 	 */
 	public function sanitize_options($auth_settings)
 	{
@@ -1064,7 +1064,7 @@ class Options extends Singleton
 
 
 	/**
-	 * Sanitizes an array of user update commands coming from the AJAX handler in Authorizer Settings.
+	 * Sanitizes an array of user update commands coming from the AJAX handler in Basgate Settings.
 	 *
 	 * Example $users array:
 	 * array(
@@ -1143,11 +1143,11 @@ class Options extends Singleton
 		if ('multisite_admin' === $this->get_context($args)) :
 		?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'basgate'); ?></a>
 			</h2>
 		<?php else : ?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Access Lists', 'authorizer'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'basgate'); ?></a>
 			</h2>
 <?php
 		endif;

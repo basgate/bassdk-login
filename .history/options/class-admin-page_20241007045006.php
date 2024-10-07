@@ -78,7 +78,7 @@ class Admin_Page extends Singleton
 		$screen->add_help_tab(
 			array(
 				'id'      => 'help_auth_settings_access_lists_content',
-				'title'   => __('Authentication', 'basgate'),
+				'title'   => __('Access Lists', 'basgate'),
 				'content' => wp_kses_post($help_auth_settings_access_lists_content),
 			)
 		);
