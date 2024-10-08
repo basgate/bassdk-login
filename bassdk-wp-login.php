@@ -2,7 +2,7 @@
 /*
 Plugin Name: Bassdk WP Login
 Description: A popup login dialog that appears when the user opens the website.
-Version: 1.13
+Version: 1.14
 Author: Bas Gate SDK
 */
 
@@ -17,7 +17,6 @@ require_once __DIR__ . '/options/class-login-form.php';
 require_once __DIR__ . '/options/class-options.php';
 require_once __DIR__ . '/options/class-wp-plugin-authorizer.php';
 require_once __DIR__ . '/options/class-authentication.php';
-require_once __DIR__ . '/options/class-authorization.php';
 require_once __DIR__ . '/lib/BasgateConstants.php';
 
 // use BasgateSDK\Options\WP_Plugin_Basgate;

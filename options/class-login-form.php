@@ -75,6 +75,10 @@ class Login_Form extends Singleton
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
+		if (!array_key_exists('bas_client_id', $auth_settings)) {
+			$auth_settings['bas_client_id']="no_client_id";
+		}
+
 		ob_start();
 ?>
 
@@ -87,7 +91,7 @@ class Login_Form extends Singleton
 					if (isJSBridgeReady) {
 						$('#bassdk-login-modal').show();
 						console.log("JSBridgeReady Successfully loaded ");
-						await getBasAuthCode(<?php echo esc_attr(trim($auth_settings['client_id'])); ?>).then((res) => {
+						await getBasAuthCode(<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>).then((res) => {
 							if (res) {
 								console.log("Logined Successfully :", res)
 								// if (res.status == 1) {
@@ -177,7 +181,7 @@ class Login_Form extends Singleton
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
 							credential: res.data,
-							nonce: $('#g_id_onload').data('nonce'),
+							// nonce: $('#g_id_onload').data('nonce'),
 						}, function() {
 							// Reload wp-login.php to continue the authentication process.
 							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');

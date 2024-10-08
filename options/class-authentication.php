@@ -302,6 +302,106 @@ class Authentication extends Singleton
 	}
 
 
+		/**
+	 * Verify the Google login and set a session token.
+	 *
+	 * Flow: "Sign in with Google" button clicked; JS Google library
+	 * called; JS function signInCallback() fired with results from Google;
+	 * signInCallback() posts code and nonce (via AJAX) to this function;
+	 * This function checks the token using the Google PHP library, and
+	 * saves it to a session variable if it's authentic; control passes
+	 * back to signInCallback(), which will reload the current page
+	 * (wp-login.php) on success; wp-login.php reloads; custom_authenticate
+	 * hooked into authenticate action fires again, and
+	 * custom_authenticate_google() runs to verify the token; once verified
+	 * custom_authenticate proceeds as normal with the google email address
+	 * as a successfully authenticated external user.
+	 *
+	 * Action: wp_ajax_process_google_login
+	 * Action: wp_ajax_nopriv_process_google_login
+	 *
+	 * @return void, but die with the value to return to the success() function in AJAX call signInCallback().
+	 */
+	public function ajax_process_basgate_login() {
+		// Nonce check.
+		// if (
+		// 	! isset( $_POST['nonce'] ) ||
+		// 	! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'google_csrf_nonce' )
+		// ) {
+		// 	die( '' );
+		// }
+
+		// Google authentication token.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$id_token = isset( $_POST['data'] ) ? wp_unslash( $_POST['data'] ) : null;
+
+		// Grab plugin settings.
+		$options       = Options::get_instance();
+		$auth_settings = $options->get_all( Helper::SINGLE_CONTEXT, 'allow override' );
+
+		// Fetch the Google Client ID (allow overrides from filter or constant).
+		// if ( defined( 'AUTHORIZER_GOOGLE_CLIENT_ID' ) ) {
+		// 	$auth_settings['bas_client_id'] = \AUTHORIZER_GOOGLE_CLIENT_ID;
+		// }
+		/**
+		 * Filters the Google Client ID used by Authorizer to authenticate.
+		 *
+		 * @since 3.9.0
+		 *
+		 * @param string $google_client_id  The stored Google Client ID.
+		 */
+		// $auth_settings['bas_client_id'] = apply_filters( 'authorizer_basgate_client_id', $auth_settings['bas_client_id'] );
+
+		// Fetch the Google Client Secret (allow overrides from filter or constant).
+		// if ( defined( 'AUTHORIZER_GOOGLE_CLIENT_SECRET' ) ) {
+		// 	$auth_settings['bas_client_secret'] = \AUTHORIZER_GOOGLE_CLIENT_SECRET;
+		// }
+		/**
+		 * Filters the Google Client Secret used by Authorizer to authenticate.
+		 *
+		 * @since 3.6.1
+		 *
+		 * @param string $google_client_secret  The stored Google Client Secret.
+		 */
+		// $auth_settings['bas_client_secret'] = apply_filters( 'authorizer_google_client_secret', $auth_settings['bas_client_secret'] );
+
+		// Build the Google Client.
+		// $client = new \Google_Client();
+		// $client->setApplicationName( 'WordPress' );
+		// $client->setClientId( trim( $auth_settings['bas_client_id'] ) );
+		// $client->setClientSecret( trim( $auth_settings['bas_client_secret'] ) );
+		// $client->setRedirectUri( 'postmessage' );
+
+		// /**
+		//  * If the hosted domain parameter is set, restrict logins to that domain
+		//  * (only available in google-api-php-client v2 or higher).
+		//  */
+		// if (
+		// 	array_key_exists( 'google_hosteddomain', $auth_settings ) &&
+		// 	strlen( $auth_settings['google_hosteddomain'] ) > 0 &&
+		// 	$client::LIBVER >= '2.0.0'
+		// ) {
+		// 	$google_hosteddomains = explode( "\n", str_replace( "\r", '', $auth_settings['google_hosteddomain'] ) );
+		// 	$google_hosteddomain  = trim( $google_hosteddomains[0] );
+		// 	$client->setHostedDomain( $google_hosteddomain );
+		// }
+
+		// Store the token (for verifying later in wp-login).
+		session_start();
+		if ( empty( $_SESSION['token'] ) ) {
+			// Store the token in the session for later use.
+			$_SESSION['token'] = $id_token;
+
+			$response = 'Successfully authenticated.';
+		} else {
+			$response = 'Already authenticated.';
+		}
+
+		die( esc_html( $response ) );
+	}
+
+
+
 	// /**
 	//  * Validate this user's credentials against selected OAuth2 provider.
 	//  *

@@ -141,9 +141,9 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // AJAX: Verify basgate login.
 
-		add_action('wp_ajax_process_basgate_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_basgate_login'));
+		add_action('wp_ajax_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 		// add_action('wp_ajax_process_google_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_google_login'));
-		add_action('wp_ajax_nopriv_process_basgate_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_basgate_login'));
+		add_action('wp_ajax_nopriv_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 
 		// // AJAX: Refresh approved user list.
 		// add_action('wp_ajax_refresh_approved_user_list', array(Ajax_Endpoints::get_instance(), 'ajax_refresh_approved_user_list'));
