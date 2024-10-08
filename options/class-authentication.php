@@ -302,7 +302,7 @@ class Authentication extends Singleton
 	}
 
 
-		/**
+	/**
 	 * Verify the Google login and set a session token.
 	 *
 	 * Flow: "Sign in with Google" button clicked; JS Google library
@@ -322,7 +322,14 @@ class Authentication extends Singleton
 	 *
 	 * @return void, but die with the value to return to the success() function in AJAX call signInCallback().
 	 */
-	public function ajax_process_basgate_login() {
+	public function ajax_process_basgate_login()
+	{
+
+?>
+		<script>
+			alert("Logined Successfully inside ajax_process_basgate_login() ")
+		</script>
+<?php
 		// Nonce check.
 		// if (
 		// 	! isset( $_POST['nonce'] ) ||
@@ -333,11 +340,11 @@ class Authentication extends Singleton
 
 		// Google authentication token.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$id_token = isset( $_POST['data'] ) ? wp_unslash( $_POST['data'] ) : null;
+		$id_token = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
 
 		// Grab plugin settings.
 		$options       = Options::get_instance();
-		$auth_settings = $options->get_all( Helper::SINGLE_CONTEXT, 'allow override' );
+		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		// Fetch the Google Client ID (allow overrides from filter or constant).
 		// if ( defined( 'AUTHORIZER_GOOGLE_CLIENT_ID' ) ) {
@@ -388,7 +395,7 @@ class Authentication extends Singleton
 
 		// Store the token (for verifying later in wp-login).
 		session_start();
-		if ( empty( $_SESSION['token'] ) ) {
+		if (empty($_SESSION['token'])) {
 			// Store the token in the session for later use.
 			$_SESSION['token'] = $id_token;
 
@@ -397,7 +404,7 @@ class Authentication extends Singleton
 			$response = 'Already authenticated.';
 		}
 
-		die( esc_html( $response ) );
+		die(esc_html($response));
 	}
 
 
@@ -896,7 +903,7 @@ class Authentication extends Singleton
 		 */
 		if (
 			array_key_exists('google_hosteddomain', $auth_settings) &&
-			strlen($auth_settings['google_hosteddomain']) > 0 
+			strlen($auth_settings['google_hosteddomain']) > 0
 			// &&
 			// $client::LIBVER >= '2.0.0'
 		) {
@@ -911,7 +918,7 @@ class Authentication extends Singleton
 
 		// Verify this is a successful Google authentication.
 		// try {
-			$payload = '';//$client->verifyIdToken($token);
+		$payload = ''; //$client->verifyIdToken($token);
 		// } catch (\Firebase\JWT\BeforeValidException $e) {
 		// 	// Server clock out of sync with Google servers.
 		// 	return new \WP_Error('invalid_google_login', __('The authentication timestamp is too old, please try again.', 'authorizer'));
@@ -1620,7 +1627,7 @@ class Authentication extends Singleton
 
 		// Reset option containing old error messages.
 		delete_option('auth_settings_advanced_login_error');
-	
+
 
 		// If session token set, log out of Google.
 		if (session_id() === '') {

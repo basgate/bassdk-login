@@ -178,6 +178,8 @@ class Login_Form extends Singleton
 							credential: res.data,
 							// nonce: $('#g_id_onload').data('nonce'),
 						}, function() {
+						
+							alert("Logined Successfully inside signInCallback() Successed " )
 							// Reload wp-login.php to continue the authentication process.
 							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');
 
