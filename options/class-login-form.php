@@ -85,7 +85,7 @@ class Login_Form extends Singleton
 			try {
 				window.addEventListener("JSBridgeReady", async (event) => {
 					alert("JSBridgeReady READY Now :");
-					alert($auth_settings['bas_client_id']);
+					// alert($auth_settings['bas_client_id']);
 					if (isJSBridgeReady) {
 						$('#bassdk-login-modal').show();
 						console.log("JSBridgeReady Successfully loaded ");
