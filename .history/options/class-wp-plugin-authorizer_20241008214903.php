@@ -46,7 +46,7 @@ class WP_Plugin_Basgate extends Singleton
 		add_filter('lostpassword_url', array(Login_Form::get_instance(), 'custom_lostpassword_url'));
 
 		// Modify the log in URL (if applicable options are set).
-		// add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
+		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
 
 		// If we have a custom login error, add the filter to show it.
 		$error = get_option('auth_settings_advanced_login_error');
@@ -79,9 +79,10 @@ class WP_Plugin_Basgate extends Singleton
 		// // // Add custom css and js to wp-login.php.
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
 
+		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
 		// // Modify login page with external auth links (if enabled; e.g., google or cas).
-		add_action('login_form', array(Login_Form::get_instance(), 'login_form_add_external_service_links'));
+		// add_action('login_form', array(Login_Form::get_instance(), 'login_form_add_external_service_links'));
 
 		// // Redirect to CAS login when visiting login page (only if option is
 		// // enabled, CAS is the only service, and WordPress logins are hidden).
@@ -89,7 +90,7 @@ class WP_Plugin_Basgate extends Singleton
 		// // authenticate hook (where the redirect to CAS happens), but before html
 		// // output is started (so the redirect header doesn't complain about data
 		// // already being sent).
-		add_filter('wp_login_errors', array(Login_Form::get_instance(), 'wp_login_errors__maybe_redirect_to_cas'), 10, 2);
+		// add_filter('wp_login_errors', array(Login_Form::get_instance(), 'wp_login_errors__maybe_redirect_to_cas'), 10, 2);
 
 		// // Redirect to OAuth2 login when visiting login page (only if option is
 		// // enabled, OAuth2 is the only service, and WordPress logins are hidden).
@@ -111,7 +112,6 @@ class WP_Plugin_Basgate extends Singleton
 		// // Hide private pages in search and archives for anonymous users if "only
 		// // logged in users can see the site" is enabled.
 		// add_action('pre_get_posts', array(Authorization::get_instance(), 'remove_private_pages_from_search_and_archives'), 10, 1);
-		// add_action('pre_get_posts', array(Login_Form::get_instance(), 'load_login_footer_js'), 10, 1);
 
 		// // Prevent REST API access if user isn't authenticated and "only logged in
 		// // users can see the site" is enabled.
@@ -139,17 +139,13 @@ class WP_Plugin_Basgate extends Singleton
 			// 	add_action('network_admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
 		}
 
-		// Load custom javascript for the main site (e.g., for displaying alerts).
-		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'auth_public_scripts'), 20);
-		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
-
 		// Add [authorizer_login_form] shortcode to render the login form.
 		// add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
 		add_shortcode('bassdk_login', array(Login_Form::get_instance(), 'bassdk_login_form'));
 
-		add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
-
 		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
+
+		add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 	}
 
 

@@ -113,7 +113,7 @@ class Login_Form extends Singleton
 					console.log("JSBridgeReady Successfully loaded ");
 					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
 						if (res) {
-							console.log("Logined Successfully :", res.status ?? "xx")
+							console.log("Logined Successfully :", res)
 							// if (res.status == 1) {
 							signInCallback(res);
 							// }
@@ -164,7 +164,11 @@ class Login_Form extends Singleton
 	 */
 	public function load_login_footer_js()
 	{
-
+		?>
+		<script>
+			alert("STARTED load_login_footer_js()")
+		</script>
+		<?php
 		// Grab plugin settings.
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
@@ -192,35 +196,27 @@ class Login_Form extends Singleton
 
 				// eslint-disable-next-line
 				function signInCallback(res) { // jshint ignore:line
-					console("STARTED signInCallback() ")
 					var $ = jQuery;
-					console("Logined Successfully inside signInCallback() ", JSON.stringify(res))
+					alert("Logined Successfully inside signInCallback() " + JSON.stringify(res))
 
 					if (res.hasOwnProperty('data')) {
 						// Send the JWT to the server
 						alert("Logined Successfully inside res.hasOwnProperty('data') ")
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
-						var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
 							data: res.data,
-							nonce: nonce,
+							nonce: "<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>",
 						}, function() {
 
-							alert("inside signInCallback() ajaxurl :" + ajaxurl + "  - nonce :" + nonce)
+							alert("Logined Successfully inside signInCallback() Successed ajaxurl :" + ajaxurl)
 							// Reload wp-login.php to continue the authentication process.
 							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');
 
 							// If we have a login form embedded via [authorizer_login_form], we are
 							// not on wp-login.php, so change the location to wp-login.php.
-
 							if ('undefined' !== typeof auth && auth.hasOwnProperty('wpLoginUrl')) {
 								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
-							} else {
-								<?php
-								wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
-								exit;
-								?>
 							}
 							alert("Logined Successfully inside signInCallback() newHref: " + newHref)
 
@@ -405,12 +401,6 @@ class Login_Form extends Singleton
 	 */
 	public function wp_login_errors__maybe_redirect_to_cas($errors, $redirect_to)
 	{
-
-	?>
-		<script>
-			alert("STARTED wp_login_errors__maybe_redirect_to_cas()")
-		</script>
-		<?php
 		// If the query string 'checkemail=confirm' is set, we do not want to automatically redirect to
 		// the CAS login screen using 'external=cas', and instead want to directly access the check email
 		// confirmation page.  So we will instead set the URL parameter 'external=wordpress' and redirect.
@@ -632,7 +622,7 @@ class Login_Form extends Singleton
 	public function maybe_add_external_wordpress_to_log_in_links($login_url)
 	{
 
-		?>
+	?>
 		<script>
 			alert("STARTED maybe_add_external_wordpress_to_log_in_links() ")
 		</script>
