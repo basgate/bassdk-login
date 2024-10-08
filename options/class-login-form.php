@@ -76,18 +76,16 @@ class Login_Form extends Singleton
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		if (!array_key_exists('bas_client_id', $auth_settings)) {
-			$auth_settings['bas_client_id']="no_client_id";
+			$auth_settings['bas_client_id'] = "no_client_id";
 		}
 
 		ob_start();
 ?>
-
-
-
 		<script type="text/javascript">
 			try {
 				window.addEventListener("JSBridgeReady", async (event) => {
 					console.log("isJSBridgeReady :", isJSBridgeReady)
+					alert("JSBridgeReady READY Now");
 					if (isJSBridgeReady) {
 						$('#bassdk-login-modal').show();
 						console.log("JSBridgeReady Successfully loaded ");
