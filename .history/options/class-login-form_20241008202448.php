@@ -198,7 +198,7 @@ class Login_Form extends Singleton
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
-							data: res.data,
+							credential: res.data,
 							nonce: "<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>",
 						}, function() {
 

@@ -75,14 +75,13 @@ class Login_Form extends Singleton
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
-		if (array_key_exists('advanced_disable_wp_login', $auth_settings)) {
-			if ($auth_settings['advanced_disable_wp_login'] === 1) {
-?>
+		if(array_key_exists('advanced_disable_wp_login', $auth_settings)){
+			if($auth_settings['advanced_disable_wp_login']===1){
+				?>
 				<style type="text/css">
 					body.login-action-login form {
 						padding-bottom: 8px;
 					}
-
 					body.login-action-login form p>label,
 					body.login-action-login form #user_login,
 					body.login-action-login form .user-pass-wrap,
@@ -93,7 +92,7 @@ class Login_Form extends Singleton
 						display: none;
 					}
 				</style>
-		<?php
+			<?php
 			}
 		}
 
@@ -198,8 +197,8 @@ class Login_Form extends Singleton
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
-							data: res.data,
-							nonce: "<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>",
+							credential: res.data,
+							nonce: $('#g_id_onload').data('nonce'),
 						}, function() {
 
 							alert("Logined Successfully inside signInCallback() Successed ")
@@ -211,9 +210,6 @@ class Login_Form extends Singleton
 							if ('undefined' !== typeof auth && auth.hasOwnProperty('wpLoginUrl')) {
 								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
 							}
-							alert("Logined Successfully inside signInCallback() newHref: " + newHref)
-
-							alert("Logined Successfully inside signInCallback() location.href: " + location.href)
 
 							if (location.href === newHref) {
 								location.reload();

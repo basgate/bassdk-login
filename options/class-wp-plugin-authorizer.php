@@ -54,14 +54,8 @@ class WP_Plugin_Basgate extends Singleton
 			add_filter('login_errors', array(Login_Form::get_instance(), 'show_advanced_login_error'));
 		}
 
-		// // Redirect to wp-login.php?redirect_to=? destination after an Azure login.
-		// add_filter('login_redirect', array(Options\External\OAuth2::get_instance(), 'maybe_redirect_after_azure_login'), 10, 2);
-
 		// // Enable localization. Translation files stored in /languages.
 		add_action('plugins_loaded', array($this, 'load_textdomain'));
-
-		// // Perform plugin updates if newer version installed.
-		// add_action('plugins_loaded', array(Updates::get_instance(), 'auth_update_check'));
 
 		// // Update the user meta with this user's failed login attempt.
 		add_action('wp_login_failed', array(Login_Form::get_instance(), 'update_login_failed_count'));
@@ -81,13 +75,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // Update user email in approved list if it's changed in the WordPress edit user page.
 		// add_filter('send_email_change_email', array(Sync_Userdata::get_instance(), 'edit_user_profile_update_email'), 10, 3);
-
-		// Enqueue javascript and css on the plugin's options page, the
-		// dashboard (for the widget), and the network admin.
-		// add_action('load-settings_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
-		// add_action('load-toplevel_page_authorizer', array(Admin_Page::get_instance(), 'load_options_page'));
-		// add_action('admin_head-index.php', array(Admin_Page::get_instance(), 'load_options_page'));
-		// add_action('admin_head-index.php', array(Dashboard_Widget::get_instance(), 'widget_scripts'));
 
 		// // // Add custom css and js to wp-login.php.
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
@@ -145,22 +132,12 @@ class WP_Plugin_Basgate extends Singleton
 		// add_action('wp_ajax_process_google_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_google_login'));
 		add_action('wp_ajax_nopriv_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 
-		// // AJAX: Refresh approved user list.
-		// add_action('wp_ajax_refresh_approved_user_list', array(Ajax_Endpoints::get_instance(), 'ajax_refresh_approved_user_list'));
-
-		// // AJAX: Test LDAP user.
-		// add_action('wp_ajax_auth_settings_ldap_test_user', array(Ajax_Endpoints::get_instance(), 'ajax_auth_settings_ldap_test_user'));
-
-		// // Add dashboard widget so instructors can add/edit users with access.
-		// // Hint: For Multisite Network Admin Dashboard use wp_network_dashboard_setup instead of wp_dashboard_setup.
-		// add_action('wp_dashboard_setup', array(Dashboard_Widget::get_instance(), 'add_dashboard_widgets'));
-
 		// If we have a custom admin message, add the action to show it.
-		// $notice = get_option('auth_settings_advanced_admin_notice');
-		// if ($notice && strlen($notice) > 0) {
-		add_action('admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
-		// 	add_action('network_admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
-		// }
+		$notice = get_option('auth_settings_advanced_admin_notice');
+		if ($notice && strlen($notice) > 0) {
+			add_action('admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
+			// 	add_action('network_admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
+		}
 
 		// Add [authorizer_login_form] shortcode to render the login form.
 		// add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
