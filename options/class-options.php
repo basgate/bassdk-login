@@ -72,12 +72,12 @@ class Options extends Singleton
 			// in multisite options (most options are on the External Service tab;
 			// only access_who_can_login and access_who_can_view are on the Access
 			// Lists tab; all options on the Advanced tab start with "advanced_").
-			$tab = '&tab=external';
-			if ('access_who_can_login' === $option || 'access_who_can_view' === $option) {
-				$tab = '&tab=access_lists';
-			} elseif (0 === strpos($option, 'advanced_')) {
-				$tab = '&tab=advanced';
-			}
+			// $tab = '&tab=external';
+			// if ('access_who_can_login' === $option || 'access_who_can_view' === $option) {
+			// 	$tab = '&tab=access_lists';
+			// } elseif (0 === strpos($option, 'advanced_')) {
+			// 	$tab = '&tab=advanced';
+			// }
 ?>
 			<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
 				<span class="overlay-note">
@@ -124,152 +124,34 @@ class Options extends Singleton
 		}
 
 		// Merge multisite options if we're in a network.
-		if (is_multisite()) {
-			// Get multisite options.
-			$auth_multisite_settings = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array());
+		// if (is_multisite()) {
+		// 	// Get multisite options.
+		// 	$auth_multisite_settings = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array());
 
-			// Return the multisite options if we're viewing the network admin options page.
-			// Otherwise override options with their multisite equivalents.
-			if ('multisite_admin' === $admin_mode) {
-				$auth_settings = $auth_multisite_settings;
-			} elseif (
-				'allow override' === $override_mode &&
-				array_key_exists('multisite_override', $auth_multisite_settings) &&
-				'1' === $auth_multisite_settings['multisite_override']
-			) {
-				// Keep track of the multisite override (and prevention) selection.
-				$auth_settings['multisite_override']         = $auth_multisite_settings['multisite_override'];
-				$auth_settings['prevent_override_multisite'] = $auth_multisite_settings['prevent_override_multisite'];
+		// 	// Return the multisite options if we're viewing the network admin options page.
+		// 	// Otherwise override options with their multisite equivalents.
+		// 	if ('multisite_admin' === $admin_mode) {
+		// 		$auth_settings = $auth_multisite_settings;
+		// 	} elseif (
+		// 		'allow override' === $override_mode &&
+		// 		array_key_exists('multisite_override', $auth_multisite_settings) &&
+		// 		'1' === $auth_multisite_settings['multisite_override']
+		// 	) {
+		// 		// Keep track of the multisite override (and prevention) selection.
+		// 		$auth_settings['multisite_override']         = $auth_multisite_settings['multisite_override'];
+		// 		$auth_settings['prevent_override_multisite'] = $auth_multisite_settings['prevent_override_multisite'];
 
-				// Don't merge multisite options if the current site has overridden them
-				// (and isn't prevented from doing so).
-				if (
-					array_key_exists('advanced_override_multisite', $auth_settings) &&
-					1 === intval($auth_settings['advanced_override_multisite']) &&
-					empty($auth_settings['prevent_override_multisite'])
-				) {
-					return $auth_settings;
-				}
-
-				/**
-				 * Note: the options below should be the complete list of overridden
-				 * options. It is *not* the complete list of all options (some options
-				 * don't have a multisite equivalent).
-				 */
-
-				/**
-				 * Note: access_users_approved, access_users_pending, and
-				 * access_users_blocked do not get overridden. However, since
-				 * access_users_approved has a multisite equivalent, you must retrieve
-				 * them both seperately. This is done because the two lists should be
-				 * treated differently.
-				 *
-				 * $approved_users    = $options->get( 'access_users_approved', Helper::SINGLE_CONTEXT );
-				 * $ms_approved_users = $options->get( 'access_users_approved', Helper::NETWORK_CONTEXT );
-				 */
-
-				// Override external service (Oauth2) and associated options.
-				$auth_settings['oauth2']                      = $auth_multisite_settings['oauth2'];
-				$auth_settings['oauth2_auto_login']           = $auth_multisite_settings['oauth2_auto_login'] ?? '';
-				$auth_settings['oauth2_provider']             = $auth_multisite_settings['oauth2_provider'];
-				$auth_settings['oauth2_custom_label']         = $auth_multisite_settings['oauth2_custom_label'];
-				$auth_settings['oauth2_clientid']             = $auth_multisite_settings['oauth2_clientid'];
-				$auth_settings['oauth2_clientsecret']         = $auth_multisite_settings['oauth2_clientsecret'];
-				$auth_settings['oauth2_hosteddomain']         = $auth_multisite_settings['oauth2_hosteddomain'];
-				$auth_settings['oauth2_tenant_id']            = $auth_multisite_settings['oauth2_tenant_id'];
-				$auth_settings['oauth2_url_authorize']        = $auth_multisite_settings['oauth2_url_authorize'];
-				$auth_settings['oauth2_url_token']            = $auth_multisite_settings['oauth2_url_token'];
-				$auth_settings['oauth2_url_resource']         = $auth_multisite_settings['oauth2_url_resource'];
-				$auth_settings['oauth2_attr_username']        = $auth_multisite_settings['oauth2_attr_username'] ?? '';
-				$auth_settings['oauth2_attr_email']           = $auth_multisite_settings['oauth2_attr_email'] ?? '';
-				$auth_settings['oauth2_attr_first_name']      = $auth_multisite_settings['oauth2_attr_first_name'] ?? '';
-				$auth_settings['oauth2_attr_last_name']       = $auth_multisite_settings['oauth2_attr_last_name'] ?? '';
-				$auth_settings['oauth2_attr_update_on_login'] = $auth_multisite_settings['oauth2_attr_update_on_login'] ?? '';
-
-				// Override external service (Google) and associated options.
-				$auth_settings['google']              = $auth_multisite_settings['google'];
-				$auth_settings['google_clientid']     = $auth_multisite_settings['google_clientid'];
-				$auth_settings['google_clientsecret'] = $auth_multisite_settings['google_clientsecret'];
-				$auth_settings['google_hosteddomain'] = $auth_multisite_settings['google_hosteddomain'];
-
-				// Override external service (CAS) and associated options.
-				$auth_settings['cas']                      = $auth_multisite_settings['cas'];
-				$auth_settings['cas_auto_login']           = $auth_multisite_settings['cas_auto_login'];
-				$auth_settings['cas_num_servers']          = $auth_multisite_settings['cas_num_servers'] ?? 1;
-				$auth_settings['cas_custom_label']         = $auth_multisite_settings['cas_custom_label'];
-				$auth_settings['cas_host']                 = $auth_multisite_settings['cas_host'];
-				$auth_settings['cas_port']                 = $auth_multisite_settings['cas_port'];
-				$auth_settings['cas_path']                 = $auth_multisite_settings['cas_path'];
-				$auth_settings['cas_method']               = $auth_multisite_settings['cas_method'];
-				$auth_settings['cas_version']              = $auth_multisite_settings['cas_version'];
-				$auth_settings['cas_attr_email']           = $auth_multisite_settings['cas_attr_email'];
-				$auth_settings['cas_attr_first_name']      = $auth_multisite_settings['cas_attr_first_name'];
-				$auth_settings['cas_attr_last_name']       = $auth_multisite_settings['cas_attr_last_name'];
-				$auth_settings['cas_attr_update_on_login'] = $auth_multisite_settings['cas_attr_update_on_login'];
-				$auth_settings['cas_link_on_username']     = $auth_multisite_settings['cas_link_on_username'];
-				// Add any options for extra CAS servers.
-				if (! empty($auth_multisite_settings['cas_num_servers']) && intval($auth_multisite_settings['cas_num_servers']) > 1) {
-					foreach (range(2, min(intval($auth_multisite_settings['cas_num_servers']), 10)) as $cas_num_server) {
-						$auth_settings['cas_custom_label_' . $cas_num_server]         = $auth_multisite_settings['cas_custom_label_' . $cas_num_server] ?? 'CAS';
-						$auth_settings['cas_host_' . $cas_num_server]                 = $auth_multisite_settings['cas_host_' . $cas_num_server] ?? '';
-						$auth_settings['cas_port_' . $cas_num_server]                 = $auth_multisite_settings['cas_port_' . $cas_num_server] ?? '';
-						$auth_settings['cas_path_' . $cas_num_server]                 = $auth_multisite_settings['cas_path_' . $cas_num_server] ?? '';
-						$auth_settings['cas_method_' . $cas_num_server]               = $auth_multisite_settings['cas_method_' . $cas_num_server] ?? '';
-						$auth_settings['cas_version_' . $cas_num_server]              = $auth_multisite_settings['cas_version_' . $cas_num_server] ?? '';
-						$auth_settings['cas_attr_email_' . $cas_num_server]           = $auth_multisite_settings['cas_attr_email_' . $cas_num_server] ?? '';
-						$auth_settings['cas_attr_first_name_' . $cas_num_server]      = $auth_multisite_settings['cas_attr_first_name_' . $cas_num_server] ?? '';
-						$auth_settings['cas_attr_last_name_' . $cas_num_server]       = $auth_multisite_settings['cas_attr_last_name_' . $cas_num_server] ?? '';
-						$auth_settings['cas_attr_update_on_login_' . $cas_num_server] = $auth_multisite_settings['cas_attr_update_on_login_' . $cas_num_server] ?? '';
-						$auth_settings['cas_link_on_username_' . $cas_num_server]     = $auth_multisite_settings['cas_link_on_username_' . $cas_num_server] ?? '';
-					}
-				}
-
-				// Override external service (LDAP) and associated options.
-				$auth_settings['ldap']                      = $auth_multisite_settings['ldap'];
-				$auth_settings['ldap_host']                 = $auth_multisite_settings['ldap_host'];
-				$auth_settings['ldap_port']                 = $auth_multisite_settings['ldap_port'];
-				$auth_settings['ldap_tls']                  = $auth_multisite_settings['ldap_tls'];
-				$auth_settings['ldap_search_base']          = $auth_multisite_settings['ldap_search_base'];
-				$auth_settings['ldap_search_filter']        = $auth_multisite_settings['ldap_search_filter'];
-				$auth_settings['ldap_uid']                  = $auth_multisite_settings['ldap_uid'];
-				$auth_settings['ldap_attr_email']           = $auth_multisite_settings['ldap_attr_email'];
-				$auth_settings['ldap_user']                 = $auth_multisite_settings['ldap_user'];
-				$auth_settings['ldap_password']             = $auth_multisite_settings['ldap_password'];
-				$auth_settings['ldap_lostpassword_url']     = $auth_multisite_settings['ldap_lostpassword_url'];
-				$auth_settings['ldap_attr_first_name']      = $auth_multisite_settings['ldap_attr_first_name'];
-				$auth_settings['ldap_attr_last_name']       = $auth_multisite_settings['ldap_attr_last_name'];
-				$auth_settings['ldap_attr_update_on_login'] = $auth_multisite_settings['ldap_attr_update_on_login'];
-				$auth_settings['ldap_test_user']            = $auth_multisite_settings['ldap_test_user'] ?? '';
-
-				// Override access_who_can_login and access_who_can_view.
-				$auth_settings['access_who_can_login'] = $auth_multisite_settings['access_who_can_login'];
-				$auth_settings['access_who_can_view']  = $auth_multisite_settings['access_who_can_view'];
-
-				// Override access_default_role.
-				$auth_settings['access_default_role'] = $auth_multisite_settings['access_default_role'];
-
-				// Override lockouts.
-				$auth_settings['advanced_lockouts'] = $auth_multisite_settings['advanced_lockouts'];
-
-				// Override Hide WordPress login.
-				$auth_settings['advanced_hide_wp_login'] = $auth_multisite_settings['advanced_hide_wp_login'];
-
-				// Override Disable WordPress login.
-				$auth_settings['advanced_disable_wp_login'] = $auth_multisite_settings['advanced_disable_wp_login'];
-
-				// Override Users per page.
-				$auth_settings['advanced_users_per_page'] = $auth_multisite_settings['advanced_users_per_page'];
-
-				// Override Sort users by.
-				$auth_settings['advanced_users_sort_by'] = $auth_multisite_settings['advanced_users_sort_by'];
-
-				// Override Sort users order.
-				$auth_settings['advanced_users_sort_order'] = $auth_multisite_settings['advanced_users_sort_order'];
-
-				// Override Show Dashboard Widget.
-				$auth_settings['advanced_widget_enabled'] = $auth_multisite_settings['advanced_widget_enabled'];
-			}
-		}
+		// 		// Don't merge multisite options if the current site has overridden them
+		// 		// (and isn't prevented from doing so).
+		// 		if (
+		// 			array_key_exists('advanced_override_multisite', $auth_settings) &&
+		// 			1 === intval($auth_settings['advanced_override_multisite']) &&
+		// 			empty($auth_settings['prevent_override_multisite'])
+		// 		) {
+		// 			return $auth_settings;
+		// 		}
+		// 	}
+		// }
 		return $auth_settings;
 	}
 
@@ -332,52 +214,30 @@ class Options extends Singleton
 		// 	}
 		// }
 
-		if (! array_key_exists('oauth2_provider', $auth_settings)) {
-			$auth_settings['oauth2_provider'] = '';
+		if (! array_key_exists('bas_description', $auth_settings)) {
+			$auth_settings['bas_description'] = '';
 		}
-		if (! array_key_exists('oauth2_custom_label', $auth_settings)) {
-			$auth_settings['oauth2_custom_label'] = 'OAuth2';
+		if (! array_key_exists('bas_environment', $auth_settings)) {
+			$auth_settings['bas_environment'] = '0';
 		}
-		if (! array_key_exists('oauth2_clientid', $auth_settings)) {
-			$auth_settings['oauth2_clientid'] = '';
+		if (! array_key_exists('bas_application_id', $auth_settings)) {
+			$auth_settings['bas_application_id'] = '';
 		}
-		if (! array_key_exists('oauth2_clientsecret', $auth_settings)) {
-			$auth_settings['oauth2_clientsecret'] = '';
+		if (! array_key_exists('bas_merchant_key', $auth_settings)) {
+			$auth_settings['bas_merchant_key'] = '';
 		}
-		if (! array_key_exists('oauth2_hosteddomain', $auth_settings)) {
-			$auth_settings['oauth2_hosteddomain'] = '';
+		if (! array_key_exists('bas_client_id', $auth_settings)) {
+			$auth_settings['bas_client_id'] = '';
 		}
-		if (! array_key_exists('oauth2_tenant_id', $auth_settings)) {
-			$auth_settings['oauth2_tenant_id'] = 'common';
+		if (! array_key_exists('bas_client_secret', $auth_settings)) {
+			$auth_settings['bas_client_secret'] = '';
 		}
-		if (! array_key_exists('oauth2_url_authorize', $auth_settings)) {
-			$auth_settings['oauth2_url_authorize'] = '';
+		if (! array_key_exists('bas_enabled', $auth_settings)) {
+			$auth_settings['bas_enabled'] = '1';
 		}
-		if (! array_key_exists('oauth2_url_token', $auth_settings)) {
-			$auth_settings['oauth2_url_token'] = '';
+		if (! array_key_exists('advanced_disable_wp_login', $auth_settings)) {
+			$auth_settings['advanced_disable_wp_login'] = '0';
 		}
-		if (! array_key_exists('oauth2_url_resource', $auth_settings)) {
-			$auth_settings['oauth2_url_resource'] = '';
-		}
-		if (! array_key_exists('oauth2_attr_username', $auth_settings)) {
-			$auth_settings['oauth2_attr_username'] = '';
-		}
-		if (! array_key_exists('oauth2_attr_email', $auth_settings)) {
-			$auth_settings['oauth2_attr_email'] = '';
-		}
-		if (! array_key_exists('oauth2_attr_first_name', $auth_settings)) {
-			$auth_settings['oauth2_attr_first_name'] = '';
-		}
-		if (! array_key_exists('oauth2_attr_last_name', $auth_settings)) {
-			$auth_settings['oauth2_attr_last_name'] = '';
-		}
-		if (! array_key_exists('oauth2_attr_update_on_login', $auth_settings)) {
-			$auth_settings['oauth2_attr_update_on_login'] = '';
-		}
-		if (! array_key_exists('oauth2_auto_login', $auth_settings)) {
-			$auth_settings['oauth2_auto_login'] = '';
-		}
-
 
 		// Advanced defaults.
 		if (! array_key_exists('advanced_lockouts', $auth_settings)) {
@@ -688,15 +548,15 @@ class Options extends Singleton
 	 */
 	public function sanitize_options($auth_settings)
 	{
-		// Default to "Approved Users" login access restriction.
-		if (! in_array($auth_settings['access_who_can_login'], array('external_users', 'approved_users'), true)) {
-			$auth_settings['access_who_can_login'] = 'approved_users';
-		}
+		// // Default to "Approved Users" login access restriction.
+		// if (! in_array($auth_settings['access_who_can_login'], array('external_users', 'approved_users'), true)) {
+		// 	$auth_settings['access_who_can_login'] = 'approved_users';
+		// }
 
-		// Default to "Everyone" view access restriction.
-		if (! in_array($auth_settings['access_who_can_view'], array('everyone', 'logged_in_users'), true)) {
-			$auth_settings['access_who_can_view'] = 'everyone';
-		}
+		// // Default to "Everyone" view access restriction.
+		// if (! in_array($auth_settings['access_who_can_view'], array('everyone', 'logged_in_users'), true)) {
+		// 	$auth_settings['access_who_can_view'] = 'everyone';
+		// }
 
 		// Default to WordPress login access redirect.
 		// Note: this option doesn't exist in multisite options, so we first
