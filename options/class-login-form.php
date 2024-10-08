@@ -26,25 +26,25 @@ class Login_Form extends Singleton
 	 *
 	 * Action: wp_enqueue_scripts
 	 */
-	// public function auth_public_scripts()
-	// {
-	// 	// Load (and localize) public scripts.
-	// 	// $options = Options::get_instance();
-	// 	// if (
-	// 	// 	'logged_in_users' === $options->get('access_who_can_view') &&
-	// 	// 	'warning' === $options->get('access_public_warning') &&
-	// 	// 	get_option('auth_settings_advanced_public_notice')
-	// 	// ) {
-	// 	$current_path = ! empty($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url();
-	// 	wp_enqueue_script('auth_public_scripts', plugins_url('/js/basgate-public.js', plugin_root()), array('jquery'), '3.2.2', false);
-	// 	$auth_localized = array(
-	// 		'wpLoginUrl'      => wp_login_url($current_path),
-	// 		'anonymousNotice' => "hi abdooh",
-	// 		'logIn'           => esc_html__('Log In', BasgateConstants::ID),
-	// 	);
-	// 	wp_localize_script('auth_public_scripts', 'auth', $auth_localized);
-	// 	// }
-	// }
+	public function auth_public_scripts()
+	{
+		// Load (and localize) public scripts.
+		$options = Options::get_instance();
+		if (
+			'logged_in_users' === $options->get('access_who_can_view') &&
+			'warning' === $options->get('access_public_warning') &&
+			get_option('auth_settings_advanced_public_notice')
+		) {
+			$current_path = ! empty($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url();
+			wp_enqueue_script('auth_public_scripts', plugins_url('/js/authorizer-public.js', plugin_root()), array('jquery'), '3.2.2', false);
+			$auth_localized = array(
+				'wpLoginUrl'      => wp_login_url($current_path),
+				'anonymousNotice' => $options->get('access_redirect_to_message'),
+				'logIn'           => esc_html__('Log In', 'authorizer'),
+			);
+			wp_localize_script('auth_public_scripts', 'auth', $auth_localized);
+		}
+	}
 
 
 	/**
@@ -76,34 +76,15 @@ class Login_Form extends Singleton
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
-		if (array_key_exists('advanced_disable_wp_login', $auth_settings)) {
-			if ($auth_settings['advanced_disable_wp_login'] === 1) {
-?>
-				<style type="text/css">
-					body.login-action-login form {
-						padding-bottom: 8px;
-					}
-
-					body.login-action-login form p>label,
-					body.login-action-login form #user_login,
-					body.login-action-login form .user-pass-wrap,
-					body.login-action-login form .forgetmenot,
-					body.login-action-login form .submit,
-					body.login-action-login #nav {
-						/* csslint allow: ids */
-						display: none;
-					}
-				</style>
-		<?php
-			}
-		}
-
 		if (!array_key_exists('bas_client_id', $auth_settings)) {
 			$auth_settings['bas_client_id'] = "no_client_id";
 		}
 
 		ob_start();
-		?>
+?>
+
+
+
 		<script type="text/javascript">
 			try {
 				window.addEventListener("JSBridgeReady", async (event) => {
@@ -113,10 +94,8 @@ class Login_Form extends Singleton
 					console.log("JSBridgeReady Successfully loaded ");
 					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
 						if (res) {
-							console.log("Logined Successfully :", res.status ?? "xx")
-							// if (res.status == 1) {
+							console.log("Logined Successfully :", res)
 							signInCallback(res);
-							// }
 						}
 					}).catch((error) => {
 						console.error("ERROR on catch getBasAuthCode:", error)
@@ -140,7 +119,7 @@ class Login_Form extends Singleton
 						}
 					}
 				</script>
-				<!-- <form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post')); ?>">
+				<form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post')); ?>">
 					<label for="username">Username:</label>
 					<input type="text" name="log" id="username" required>
 
@@ -148,7 +127,7 @@ class Login_Form extends Singleton
 					<input type="password" name="pwd" id="password" required>
 
 					<input type="submit" value="Login By BAS">
-				</form> -->
+				</form>
 			</div>
 		</div>
 		<script type="application/javascript" crossorigin="anonymous" src="https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/merchant/v1/public.js" onload="invokeBasLogin();"></script>
@@ -204,10 +183,11 @@ class Login_Form extends Singleton
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
 							data: res.data,
-							nonce: nonce,
+							// nonce: nonce,
 						}, function() {
 
-							alert("inside signInCallback() ajaxurl :" + ajaxurl + "  - nonce :" + nonce)
+							alert("inside signInCallback() ajaxurl :" + ajaxurl)
+							// alert("inside signInCallback() ajaxurl :" + ajaxurl + "  - nonce :" + nonce)
 							// Reload wp-login.php to continue the authentication process.
 							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');
 
@@ -218,8 +198,9 @@ class Login_Form extends Singleton
 								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
 							} else {
 								<?php
-								wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
-								exit;
+								// 	wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+								// 	exit;
+								// 	
 								?>
 							}
 							alert("Logined Successfully inside signInCallback() newHref: " + newHref)
@@ -242,7 +223,7 @@ class Login_Form extends Singleton
 						// console.log('Sign-in state: ' + credentialResponse['error']);
 
 						// If user denies access, reload the login page.
-						if (res.error === 'access_denied' || res.error === 'user_signed_out') {
+						if (credentialResponse.error === 'access_denied' || credentialResponse.error === 'user_signed_out') {
 							window.location.reload();
 						}
 					}
@@ -671,9 +652,9 @@ class Login_Form extends Singleton
 				}
 				// }
 			}
-		} else {
-			// wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
-			exit;
+			// } else {
+			// 	// wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+			// 	exit;
 		}
 		return $login_url;
 	}
