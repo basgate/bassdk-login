@@ -2,7 +2,9 @@
 /*
 Plugin Name: Bassdk WP Login
 Description: A popup login dialog that appears when the user opens the website.
-Version: 1.15
+Version: 1.16
+Tested up to: 5.8.0
+Requires PHP: 6.6.2
 Author: Bas Gate SDK
 */
 

@@ -37,7 +37,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_description';
+		$option               = 'bas_description';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -58,7 +58,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_environment_mode';
+		$option               = 'bas_environment_mode';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -79,7 +79,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_application_id';
+		$option               = 'bas_application_id';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -96,7 +96,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_merchant_key';
+		$option               = 'bas_merchant_key';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -114,7 +114,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_client_id';
+		$option               = 'bas_client_id';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -132,7 +132,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_client_secret';
+		$option               = 'bas_client_secret';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
@@ -151,7 +151,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'basgate_settings_enabled';
+		$option               = 'bas_enabled';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
