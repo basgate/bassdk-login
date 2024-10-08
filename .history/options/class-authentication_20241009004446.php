@@ -53,13 +53,100 @@ class Authentication extends Singleton
 			$user = null;
 		}
 
+
+		// // If username and password are blank, this isn't a log in attempt.
+		// $is_login_attempt = strlen($username) > 0 && strlen($password) > 0;
+
+		// // Check to make sure that $username is not locked out due to too
+		// // many invalid login attempts. If it is, tell the user how much
+		// // time remains until they can try again.
+		// $unauthenticated_user            = $is_login_attempt ? get_user_by('login', $username) : false;
+		// $unauthenticated_user_is_blocked = false;
+		// if ($is_login_attempt && false !== $unauthenticated_user) {
+		// 	$last_attempt = get_user_meta($unauthenticated_user->ID, 'auth_settings_advanced_lockouts_time_last_failed', true);
+		// 	$num_attempts = get_user_meta($unauthenticated_user->ID, 'auth_settings_advanced_lockouts_failed_attempts', true);
+		// 	// Also check the auth_blocked user_meta flag (users in blocked list will get this flag).
+		// 	$unauthenticated_user_is_blocked = get_user_meta($unauthenticated_user->ID, 'auth_blocked', true) === 'yes';
+		// } else {
+		// 	$last_attempt = get_option('auth_settings_advanced_lockouts_time_last_failed');
+		// 	$num_attempts = get_option('auth_settings_advanced_lockouts_failed_attempts');
+		// }
+
+		// // Inactive users should be treated like deleted users (we just
+		// // do this to preserve any content they created, but here we should
+		// // pretend they don't exist).
+		// if ($unauthenticated_user_is_blocked) {
+		// 	remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
+		// 	remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
+		// 	return new \WP_Error('empty_password', __('<strong>ERROR</strong>: Incorrect username or password.', 'authorizer'));
+		// }
+
+
 		// Grab plugin settings.
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
+		// // Make sure $last_attempt (time) and $num_attempts are positive integers.
+		// // Note: this addresses resetting them if either is unset from above.
+		// $last_attempt = absint($last_attempt);
+		// $num_attempts = absint($num_attempts);
+
+		// // Create semantic lockout variables.
+		// $lockouts                        = $auth_settings['advanced_lockouts'];
+		// $time_since_last_fail            = time() - $last_attempt;
+		// $reset_duration                  = absint($lockouts['reset_duration']) * 60; // minutes to seconds.
+		// $num_attempts_long_lockout       = absint($lockouts['attempts_1']) + absint($lockouts['attempts_2']);
+		// $num_attempts_short_lockout      = absint($lockouts['attempts_1']);
+		// $seconds_remaining_long_lockout  = absint($lockouts['duration_2']) * 60 - $time_since_last_fail;
+		// $seconds_remaining_short_lockout = absint($lockouts['duration_1']) * 60 - $time_since_last_fail;
+
+		// // Check if we need to institute a lockout delay.
+		// if ($is_login_attempt && $time_since_last_fail > $reset_duration) {
+		// 	// Enough time has passed since the last invalid attempt and
+		// 	// now that we can reset the failed attempt count, and let this
+		// 	// login attempt go through.
+		// 	$num_attempts = 0; // This does nothing, but include it for semantic meaning.
+		// } elseif ($is_login_attempt && $num_attempts > $num_attempts_long_lockout && $seconds_remaining_long_lockout > 0) {
+		// 	// Stronger lockout (1st/2nd round of invalid attempts reached)
+		// 	// Note: set the error code to 'empty_password' so it doesn't
+		// 	// trigger the wp_login_failed hook, which would continue to
+		// 	// increment the failed attempt count.
+		// 	remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
+		// 	remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
+		// 	return new \WP_Error(
+		// 		'empty_password',
+		// 		sprintf(
+		// 			/* TRANSLATORS: 1: username 2: duration of lockout in seconds 3: duration of lockout as a phrase 4: lost password URL */
+		// 			__('<strong>ERROR</strong>: There have been too many invalid login attempts for the username <strong>%1$s</strong>. Please wait <strong id="seconds_remaining" data-seconds="%2$s">%3$s</strong> before trying again. <a href="%4$s" title="Password Lost and Found">Lost your password</a>?', 'authorizer'),
+		// 			$username,
+		// 			$seconds_remaining_long_lockout,
+		// 			Helper::seconds_as_sentence($seconds_remaining_long_lockout),
+		// 			wp_lostpassword_url()
+		// 		)
+		// 	);
+		// } elseif ($is_login_attempt && $num_attempts > $num_attempts_short_lockout && $seconds_remaining_short_lockout > 0) {
+		// 	// Normal lockout (1st round of invalid attempts reached)
+		// 	// Note: set the error code to 'empty_password' so it doesn't
+		// 	// trigger the wp_login_failed hook, which would continue to
+		// 	// increment the failed attempt count.
+		// 	remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
+		// 	remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
+		// 	return new \WP_Error(
+		// 		'empty_password',
+		// 		sprintf(
+		// 			/* TRANSLATORS: 1: username 2: duration of lockout in seconds 3: duration of lockout as a phrase 4: lost password URL */
+		// 			__('<strong>ERROR</strong>: There have been too many invalid login attempts for the username <strong>%1$s</strong>. Please wait <strong id="seconds_remaining" data-seconds="%2$s">%3$s</strong> before trying again. <a href="%4$s" title="Password Lost and Found">Lost your password</a>?', 'authorizer'),
+		// 			$username,
+		// 			$seconds_remaining_short_lockout,
+		// 			Helper::seconds_as_sentence($seconds_remaining_short_lockout),
+		// 			wp_lostpassword_url()
+		// 		)
+		// 	);
+		// }
+
 		// Start external authentication.
 		$externally_authenticated_emails = array();
-		$authenticated_by                = 'basgate';
+		$authenticated_by                = '';
 		$result                          = null;
 
 		// Try Basgate authentication if it's enabled and we don't have a
@@ -118,6 +205,13 @@ class Authentication extends Singleton
 
 		// Remove duplicate and blank emails, if any.
 		$externally_authenticated_emails = array_filter(array_unique($externally_authenticated_emails));
+
+		/**
+		 * If we've made it this far, we should have an externally
+		 * authenticated user. The following should be set:
+		 *   $externally_authenticated_emails
+		 *   $authenticated_by
+		 */
 
 		// Get the external user's WordPress account by email address. This is
 		// the normal behavior (and the most secure).
@@ -192,34 +286,48 @@ class Authentication extends Singleton
 
 		// Basgate authentication token.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$data = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
-		if (array_key_exists('auth_id', $data)) {
-			$auth_id = $data["auth_id"];
-		}
+		$id_token = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
+
 		?>
 		<script>
-			alert("ajax_process_basgate_login() after $data ")
+			alert("ajax_process_basgate_login() after $id_token ")
 		</script>
 		<?php
 		// Grab plugin settings.
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
+		/**
+		 * Filters the Basgate Client ID used by Authorizer to authenticate.
+		 *
+		 * @since 3.9.0
+		 *
+		 * @param string $google_client_id  The stored Basgate Client ID.
+		 */
 		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+
+		/**
+		 * Filters the Basgate Client Secret used by Authorizer to authenticate.
+		 *
+		 * @since 3.6.1
+		 *
+		 * @param string $google_client_secret  The stored Basgate Client Secret.
+		 */
 		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
+		// Build the Basgate Client.
+		// $client = new \Google_Client();
+		// $client->setApplicationName( 'WordPress' );
+		// $client->setClientId( trim( $auth_settings['bas_client_id'] ) );
+		// $client->setClientSecret( trim( $auth_settings['bas_client_secret'] ) );
+		// $client->setRedirectUri( 'postmessage' );
 
-		//TODO: Add basgate backend request for token and userinfo
-		if (empty($auth_id)) {
-			return null;
-		}
-		$bas_token = $this->getBasToken($auth_id);
 
 		// Store the token (for verifying later in wp-login).
 		session_start();
 		if (empty($_SESSION['token'])) {
 			// Store the token in the session for later use.
-			$_SESSION['token'] = $bas_token;
+			$_SESSION['token'] = $id_token;
 
 			$response = 'Successfully authenticated.';
 		} else {
@@ -247,7 +355,7 @@ class Authentication extends Singleton
 		<script>
 			alert("STARTED custom_authenticate_basgate() ")
 		</script>
-		<?php
+<?php
 		// Move on if Basgate auth hasn't been requested here.
 		// phpcs:ignore WordPress.Security.NonceVerification
 		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
@@ -272,6 +380,10 @@ class Authentication extends Singleton
 		 */
 		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
 
+		// Fetch the Basgate Client Secret (allow overrides from filter or constant).
+		if (defined('AUTHORIZER_GOOGLE_CLIENT_SECRET')) {
+			// $auth_settings['bas_client_secret'] = \AUTHORIZER_GOOGLE_CLIENT_SECRET;
+		}
 		/**
 		 * Filters the Basgate Client Secret used by Authorizer to authenticate.
 		 *
@@ -280,6 +392,8 @@ class Authentication extends Singleton
 		 * @param string $google_client_secret  The stored Basgate Client Secret.
 		 */
 		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+
+		//TODO: Add basgate backend request for token and userinfo
 
 		// Verify this is a successful Basgate authentication.
 		// try {
@@ -329,89 +443,11 @@ class Authentication extends Singleton
 			'username'          => $username,
 			'first_name'        => '',
 			'last_name'         => '',
-			'authenticated_by'  => 'basgate',
+			'authenticated_by'  => 'google',
 			'google_attributes' => $payload,
 		);
 	}
 
-
-
-
-	//Process BASSuperApp  Payment
-	public function getBasToken($auth_id)
-	{
-
-		?>
-		<script>
-			alert("STARTED getBasToken() ")
-		</script>
-		<?php
-		$options       = Options::get_instance();
-		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
-
-		//access BASSuperApp  settings
-		if (array_key_exists('bas_environment', $auth_settings) && $auth_settings["bas_environment"] === "1") {
-			$bassdk_api =  BasgateConstants::PRODUCTION_HOST;
-		} else {
-			$bassdk_api = BasgateConstants::STAGING_HOST;
-		}
-
-		$client_id  = $auth_settings["bas_client_id"];
-		$client_secret  =  $auth_settings["bas_client_secret"];
-		$grant_type  = "authorization_code";
-		$code = $auth_id;
-		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
-
-		$data = json_encode([
-			'client_id' => $client_id,
-			'client_secret' => $client_secret,
-			'grant_type' => $grant_type,
-			'code' => $code,
-			'redirect_uri' => $redirect_uri
-		]);
-
-		try {
-			//Send Post request to get payment session details
-			$curl = curl_init();
-			curl_setopt_array($curl, [
-				CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => $data,
-				CURLOPT_HTTPHEADER => [
-					"Content-Type:application/x-www-form-urlencoded"
-				],
-			]);
-			$result = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
-			if ($err) {
-
-		?>
-				<script>
-					var error = '<?php echo esc_attr($err); ?>'
-					alert("ERROR on getBasToken :" + error)
-				</script>
-			<?php
-
-			} else {
-				$response = json_decode($result, true);
-				$code = $response['code'];
-			?>
-				<script>
-					var result = '<?php echo esc_attr($result); ?>'
-					alert("getBasToken Result :" + result)
-				</script>
-<?php
-			}
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-	}
 
 	/**
 	 * Fetch the logging out user's external service (so we can log out of it

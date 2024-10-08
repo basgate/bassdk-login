@@ -58,7 +58,7 @@ class Login_Access extends Singleton
 	{
 		// Get plugin option.
 		$options              = Options::get_instance();
-		$option               = 'bas_environment_mode';
+		$option               = 'bas_environment';
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.

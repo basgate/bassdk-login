@@ -183,7 +183,7 @@ class Login_Form extends Singleton
 						$.post(ajaxurl, {
 							action: 'process_basgate_login',
 							data: res.data,
-							nonce: nonce,
+							// nonce: nonce,
 						}, function() {
 
 							alert("inside signInCallback() ajaxurl :" + ajaxurl)
@@ -193,15 +193,17 @@ class Login_Form extends Singleton
 
 							// If we have a login form embedded via [authorizer_login_form], we are
 							// not on wp-login.php, so change the location to wp-login.php.
-							
-							alert("Logined Successfully inside signInCallback() 111 newHref: " + newHref)
 
 							if ('undefined' !== typeof auth && auth.hasOwnProperty('wpLoginUrl')) {
 								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
 							} else {
-								newHref = '<?php echo esc_attr(Helper::modify_current_url_for_external_login('basgate')); ?>';
+								<?php
+								// 	wp_redirect(Helper::modify_current_url_for_external_login('basgate'));  // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect
+								// 	exit;
+								// 	
+								?>
 							}
-							alert("Logined Successfully inside signInCallback() 222 newHref: " + newHref)
+							alert("Logined Successfully inside signInCallback() newHref: " + newHref)
 
 							alert("Logined Successfully inside signInCallback() location.href: " + location.href)
 
