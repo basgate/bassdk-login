@@ -66,19 +66,14 @@ class Login_Form extends Singleton
 	public function bassdk_add_modal()
 	{
 		echo do_shortcode('[bassdk_login]');
-		$this->load_login_footer_js();
 	}
 
 
 	function bassdk_login_form()
 	{
-		$options       = Options::get_instance();
-		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
-
+		$client_id=get_option("");
 		ob_start();
 ?>
-
-
 
 		<script type="text/javascript">
 			try {
@@ -87,12 +82,13 @@ class Login_Form extends Singleton
 					if (isJSBridgeReady) {
 						$('#bassdk-login-modal').show();
 						console.log("JSBridgeReady Successfully loaded ");
-						await getBasAuthCode(<?php echo esc_attr(trim($auth_settings['client_id'])); ?>).then((res) => {
+						await getBasAuthCode().then((res) => {
 							if (res) {
 								console.log("Logined Successfully :", res)
-								// if (res.status == 1) {
-								signInCallback(res);
-								// }
+								if (res.status == 1) {
+									alert("Logined Successfully ")
+
+								}
 							}
 						}).catch((error) => {
 							console.error("ERROR on catch getBasAuthCode:", error)
@@ -145,7 +141,7 @@ class Login_Form extends Singleton
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 		$ajaxurl       = admin_url('admin-ajax.php');
-		if ('1' === $auth_settings['bas_enabled']) :
+		if ('1' === $auth_settings['google']) :
 		?>
 			<script>
 				/* global location, window */
@@ -167,25 +163,24 @@ class Login_Form extends Singleton
 				}
 
 				// eslint-disable-next-line
-				function signInCallback(res) { // jshint ignore:line
+				function signInCallback(credentialResponse) { // jshint ignore:line
 					var $ = jQuery;
-					alert("Logined Successfully inside signInCallback() " + JSON.stringify(res))
 
-					if (res.hasOwnProperty('data')) {
+					if (credentialResponse.hasOwnProperty('credential')) {
 						// Send the JWT to the server
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
 						$.post(ajaxurl, {
-							action: 'process_basgate_login',
-							credential: res.data,
+							action: 'process_google_login',
+							credential: credentialResponse.credential,
 							nonce: $('#g_id_onload').data('nonce'),
 						}, function() {
 							// Reload wp-login.php to continue the authentication process.
-							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');
+							var newHref = authUpdateQuerystringParam(location.href, 'external', 'google');
 
 							// If we have a login form embedded via [authorizer_login_form], we are
 							// not on wp-login.php, so change the location to wp-login.php.
 							if ('undefined' !== typeof auth && auth.hasOwnProperty('wpLoginUrl')) {
-								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
+								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'google');
 							}
 
 							if (location.href === newHref) {
@@ -308,18 +303,7 @@ class Login_Form extends Singleton
 				<?php endif; ?>
 			<?php endif; ?>
 
-			<?php if ((isset($auth_settings['advanced_hide_wp_login'])
-					&& '1' === $auth_settings['advanced_hide_wp_login']
-					&& isset($_SERVER['QUERY_STRING'])
-					&& false === strpos($_SERVER['QUERY_STRING'], 'external=wordpress')
-				)
-				|| (
-					isset($auth_settings['advanced_disable_wp_login'])
-					&& '1' === $auth_settings['advanced_disable_wp_login']
-					&& '1' !== $auth_settings['ldap']
-					&& ('1' === $auth_settings['cas'] || '1' === $auth_settings['google'])
-				)
-			) : // phpcs:ignore WordPress.Security.ValidatedSanitizedInput 
+			<?php if ((isset($auth_settings['advanced_hide_wp_login']) && '1' === $auth_settings['advanced_hide_wp_login'] && isset($_SERVER['QUERY_STRING']) && false === strpos($_SERVER['QUERY_STRING'], 'external=wordpress')) || (isset($auth_settings['advanced_disable_wp_login']) && '1' === $auth_settings['advanced_disable_wp_login'] && '1' !== $auth_settings['ldap'] && ('1' === $auth_settings['cas'] || '1' === $auth_settings['google']))) : // phpcs:ignore WordPress.Security.ValidatedSanitizedInput 
 			?>
 				<style type="text/css">
 					body.login-action-login form {
@@ -745,45 +729,5 @@ class Login_Form extends Singleton
 		}
 
 		return $errors;
-	}
-
-
-	public function createNewUser($user_data)
-	{
-		if (array_key_exists('username', $user_data)) {
-			$username = $user_data['username'];
-		} else {
-			$username = explode('@', $user_data['email']);
-			$username = $username[0];
-		}
-		// If there's already a user with this username (e.g.,
-		// johndoe/johndoe@gmail.com exists, and we're trying to add
-		// johndoe/johndoe@example.com), use the full email address
-		// as the username.
-		if (get_user_by('login', $username) !== false) {
-			$username = $user_data['email'];
-		}
-
-		$result = wp_insert_user(
-			array(
-				'user_login'      => strtolower($username),
-				'user_pass'       => wp_generate_password(), // random password.
-				'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
-				'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
-				'user_email'      => Helper::lowercase($user_data['email']),
-				'user_registered' => wp_date('Y-m-d H:i:s'),
-				'role'            => $user_data['role'],
-			)
-		);
-
-		// Fail with message if error.
-		if (is_wp_error($result) || 0 === $result) {
-			return $result;
-		}
-
-		// Authenticate as new user.
-		$user = new \WP_User($result);
-
-		do_action('authorizer_user_register', $user, $user_data);
 	}
 }

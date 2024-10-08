@@ -306,29 +306,29 @@ class Admin_Page extends Singleton
 	 */
 	public function add_plugin_page()
 	{
-		// $options    = Options::get_instance();
-		// $admin_menu = $options->get('advanced_admin_menu');
-		// if ('settings' === $admin_menu) {
-		// 	// @see http://codex.wordpress.org/Function_Reference/add_options_page
-		// 	add_options_page(
-		// 		'Basgate',
-		// 		'Basgate',
-		// 		'create_users',
-		// 		$this->id,
-		// 		array(self::get_instance(), 'create_admin_page')
-		// 	);
-		// } else {
-		// @see http://codex.wordpress.org/Function_Reference/add_menu_page
-		add_menu_page(
-			'Basgate',
-			'Basgate',
-			'create_users',
-			$this->id,
-			array(self::get_instance(), 'create_admin_page'),
-			plugins_url('images/bassdk-logo.svg', \BasgateSDK\plugin_root()),
-			'99.0018465' // position (decimal is to make overlap with other plugins less likely).
-		);
-		// }
+		$options    = Options::get_instance();
+		$admin_menu = $options->get('advanced_admin_menu');
+		if ('settings' === $admin_menu) {
+			// @see http://codex.wordpress.org/Function_Reference/add_options_page
+			add_options_page(
+				'Basgate',
+				'Basgate',
+				'create_users',
+				$this->id,
+				array(self::get_instance(), 'create_admin_page')
+			);
+		} else {
+			// @see http://codex.wordpress.org/Function_Reference/add_menu_page
+			add_menu_page(
+				'Basgate',
+				'Basgate',
+				'create_users',
+				$this->id,
+				array(self::get_instance(), 'create_admin_page'),
+				plugins_url('images/bassdk-logo.svg', \BasgateSDK\plugin_root()),
+				'99.0018465' // position (decimal is to make overlap with other plugins less likely).
+			);
+		}
 	}
 
 

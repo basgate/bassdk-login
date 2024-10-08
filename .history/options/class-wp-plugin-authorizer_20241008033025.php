@@ -95,7 +95,7 @@ class WP_Plugin_Basgate extends Singleton
 		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
 		// // Modify login page with external auth links (if enabled; e.g., google or cas).
-		// add_action('login_form', array(Login_Form::get_instance(), 'login_form_add_external_service_links'));
+		add_action('login_form', array(Login_Form::get_instance(), 'login_form_add_external_service_links'));
 
 		// // Redirect to CAS login when visiting login page (only if option is
 		// // enabled, CAS is the only service, and WordPress logins are hidden).
@@ -139,11 +139,9 @@ class WP_Plugin_Basgate extends Singleton
 		// // AJAX: Save usermeta from options page.
 		// add_action('wp_ajax_update_auth_usermeta', array(Ajax_Endpoints::get_instance(), 'ajax_update_auth_usermeta'));
 
-		// // AJAX: Verify basgate login.
-
-		add_action('wp_ajax_process_basgate_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_basgate_login'));
+		// // AJAX: Verify google login.
 		// add_action('wp_ajax_process_google_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_google_login'));
-		add_action('wp_ajax_nopriv_process_basgate_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_basgate_login'));
+		// add_action('wp_ajax_nopriv_process_google_login', array(Ajax_Endpoints::get_instance(), 'ajax_process_google_login'));
 
 		// // AJAX: Refresh approved user list.
 		// add_action('wp_ajax_refresh_approved_user_list', array(Ajax_Endpoints::get_instance(), 'ajax_refresh_approved_user_list'));

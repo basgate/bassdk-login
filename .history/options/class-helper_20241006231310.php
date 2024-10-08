@@ -41,7 +41,6 @@ class Helper
 		'br'     => array(),
 		'div'    => array(
 			'class' => array(),
-			'style' => array(),
 		),
 		'em'     => array(),
 		'hr'     => array(),
@@ -551,17 +550,5 @@ class Helper
 		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
 
 		return "$scheme$user$pass$host$port$path$query$fragment";
-	}
-
-
-	public static function getcURLversion()
-	{
-		if (function_exists('curl_version')) {
-			$curl_version = curl_version();
-			if (!empty($curl_version['version'])) {
-				return $curl_version['version'];
-			}
-		}
-		return false;
 	}
 }

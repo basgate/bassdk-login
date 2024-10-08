@@ -41,7 +41,6 @@ class Helper
 		'br'     => array(),
 		'div'    => array(
 			'class' => array(),
-			'style' => array(),
 		),
 		'em'     => array(),
 		'hr'     => array(),

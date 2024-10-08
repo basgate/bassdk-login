@@ -116,7 +116,7 @@ class Options extends Singleton
 	public function get_all($admin_mode = 'single_admin', $override_mode = 'no override')
 	{
 		// Grab plugin settings (skip if in Helper::NETWORK_CONTEXT mode).
-		$auth_settings = 'multisite_admin' === $admin_mode ? array() : get_option('auth_settings');
+		$auth_settings = 'multisite_admin' === $admin_mode ? array() : get_option(BasgateConstants::OPTION_DATA_NAME);
 
 		// Initialize to default values if the plugin option doesn't exist.
 		if (false === $auth_settings) {
@@ -297,110 +297,40 @@ class Options extends Singleton
 		);
 		$args     = wp_parse_args($args, $defaults);
 
-		$auth_settings = get_option('auth_settings');
+		$auth_settings = get_option(BasgateConstants::OPTION_DATA_NAME);
 		if (false === $auth_settings) {
 			$auth_settings = array();
 		}
 
-		// Access Lists Defaults.
-		$auth_settings_access_users_pending = get_option('auth_settings_access_users_pending');
-		if (false === $auth_settings_access_users_pending) {
-			$auth_settings_access_users_pending = array();
-		}
-		$auth_settings_access_users_approved = get_option('auth_settings_access_users_approved');
-		if (false === $auth_settings_access_users_approved) {
-			$auth_settings_access_users_approved = array();
-		}
-		$auth_settings_access_users_blocked = get_option('auth_settings_access_users_blocked');
-		if (false === $auth_settings_access_users_blocked) {
-			$auth_settings_access_users_blocked = array();
-		}
+		// if (! array_key_exists('access_email_approved_users_subject', $auth_settings)) {
+		// 	$auth_settings['access_email_approved_users_subject'] = sprintf(
+		// 		/* TRANSLATORS: %s: Shortcode for name of site */
+		// 		__('Welcome to %s!', BasgateConstants::ID),
+		// 		'[site_name]'
+		// 	);
+		// }
+		// if (! array_key_exists('access_email_approved_users_body', $auth_settings)) {
+		// 	$auth_settings['access_email_approved_users_body'] = sprintf(
+		// 		/* TRANSLATORS: 1: Shortcode for user email 2: Shortcode for site name 3: Shortcode for site URL */
+		// 		__("Hello %1\$s,\nWelcome to %2\$s! You now have access to all content on the site. Please visit us here:\n%3\$s\n", 'basgate'),
+		// 		'[user_email]',
+		// 		'[site_name]',
+		// 		'[site_url]'
+		// 	);
+		// }
 
-		// Login Access Defaults.
-		if (! array_key_exists('access_who_can_login', $auth_settings)) {
-			$auth_settings['access_who_can_login'] = 'approved_users';
-		}
-		if (! array_key_exists('access_role_receive_pending_emails', $auth_settings)) {
-			$auth_settings['access_role_receive_pending_emails'] = '---';
-		}
-		if (! array_key_exists('access_pending_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_pending_redirect_to_message'] = '<p>' . __("You're not currently allowed to view this site. Your administrator has been notified, and once he/she has approved your request, you will be able to log in. If you need any other help, please contact your administrator.", 'basgate') . '</p>';
-		}
-		if (! array_key_exists('access_blocked_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_blocked_redirect_to_message'] = '<p>' . __("You're not currently allowed to log into this site. If you think this is a mistake, please contact your administrator.", 'basgate') . '</p>';
-		}
-		if (! array_key_exists('access_should_email_approved_users', $auth_settings)) {
-			$auth_settings['access_should_email_approved_users'] = '';
-		}
-		if (! array_key_exists('access_email_approved_users_subject', $auth_settings)) {
-			$auth_settings['access_email_approved_users_subject'] = sprintf(
-				/* TRANSLATORS: %s: Shortcode for name of site */
-				__('Welcome to %s!', 'basgate'),
-				'[site_name]'
-			);
-		}
-		if (! array_key_exists('access_email_approved_users_body', $auth_settings)) {
-			$auth_settings['access_email_approved_users_body'] = sprintf(
-				/* TRANSLATORS: 1: Shortcode for user email 2: Shortcode for site name 3: Shortcode for site URL */
-				__("Hello %1\$s,\nWelcome to %2\$s! You now have access to all content on the site. Please visit us here:\n%3\$s\n", 'basgate'),
-				'[user_email]',
-				'[site_name]',
-				'[site_url]'
-			);
-		}
-
-		// Public Access to Private Page Defaults.
-		if (! array_key_exists('access_who_can_view', $auth_settings)) {
-			$auth_settings['access_who_can_view'] = 'everyone';
-		}
-		if (! array_key_exists('access_public_pages', $auth_settings)) {
-			$auth_settings['access_public_pages'] = array();
-		}
-		if (! array_key_exists('access_redirect', $auth_settings)) {
-			$auth_settings['access_redirect'] = 'login';
-		}
-		if (! array_key_exists('access_public_warning', $auth_settings)) {
-			$auth_settings['access_public_warning'] = 'no_warning';
-		}
-		if (! array_key_exists('access_redirect_to_message', $auth_settings)) {
-			$auth_settings['access_redirect_to_message'] = '<p>' . __('Notice: You are browsing this site anonymously, and only have access to a portion of its content.', 'basgate') . '</p>';
-		}
-
-		// External Service Defaults.
-		if (! array_key_exists('access_default_role', $auth_settings)) {
-			// Set default role to 'subscriber', or 'student' if that role exists.
-			$auth_settings['access_default_role'] = 'subscriber';
-			if (! empty($wp_roles)) {
-				$all_roles      = $wp_roles->roles;
-				$editable_roles = apply_filters('editable_roles', $all_roles);
-				if (is_array($editable_roles) && array_key_exists('student', $editable_roles)) {
-					$auth_settings['access_default_role'] = 'student';
-				}
-			}
-		}
-
-		if (! array_key_exists('oauth2', $auth_settings)) {
-			$auth_settings['oauth2'] = '';
-		}
-		if (! array_key_exists('google', $auth_settings)) {
-			$auth_settings['google'] = '';
-		}
-		if (! array_key_exists('cas', $auth_settings)) {
-			$auth_settings['cas'] = '';
-		}
-		if (! array_key_exists('ldap', $auth_settings)) {
-			$auth_settings['ldap'] = '';
-		}
-
-		if (! array_key_exists('google_clientid', $auth_settings)) {
-			$auth_settings['google_clientid'] = '';
-		}
-		if (! array_key_exists('google_clientsecret', $auth_settings)) {
-			$auth_settings['google_clientsecret'] = '';
-		}
-		if (! array_key_exists('google_hosteddomain', $auth_settings)) {
-			$auth_settings['google_hosteddomain'] = '';
-		}
+		// // External Service Defaults.
+		// if (! array_key_exists('access_default_role', $auth_settings)) {
+		// 	// Set default role to 'subscriber', or 'student' if that role exists.
+		// 	$auth_settings['access_default_role'] = 'subscriber';
+		// 	if (! empty($wp_roles)) {
+		// 		$all_roles      = $wp_roles->roles;
+		// 		$editable_roles = apply_filters('editable_roles', $all_roles);
+		// 		if (is_array($editable_roles) && array_key_exists('student', $editable_roles)) {
+		// 			$auth_settings['access_default_role'] = 'student';
+		// 		}
+		// 	}
+		// }
 
 		if (! array_key_exists('oauth2_provider', $auth_settings)) {
 			$auth_settings['oauth2_provider'] = '';
@@ -448,125 +378,6 @@ class Options extends Singleton
 			$auth_settings['oauth2_auto_login'] = '';
 		}
 
-		if (! array_key_exists('cas_auto_login', $auth_settings)) {
-			$auth_settings['cas_auto_login'] = '';
-		}
-		if (! array_key_exists('cas_num_servers', $auth_settings)) {
-			$auth_settings['cas_num_servers'] = '1';
-		}
-		if (! array_key_exists('cas_custom_label', $auth_settings)) {
-			$auth_settings['cas_custom_label'] = 'CAS';
-		}
-		if (! array_key_exists('cas_host', $auth_settings)) {
-			$auth_settings['cas_host'] = '';
-		}
-		if (! array_key_exists('cas_port', $auth_settings)) {
-			$auth_settings['cas_port'] = '';
-		}
-		if (! array_key_exists('cas_path', $auth_settings)) {
-			$auth_settings['cas_path'] = '';
-		}
-		if (! array_key_exists('cas_method', $auth_settings)) {
-			$auth_settings['cas_method'] = '';
-		}
-		if (! array_key_exists('cas_version', $auth_settings)) {
-			$auth_settings['cas_version'] = '';
-		}
-		if (! array_key_exists('cas_attr_email', $auth_settings)) {
-			$auth_settings['cas_attr_email'] = '';
-		}
-		if (! array_key_exists('cas_attr_first_name', $auth_settings)) {
-			$auth_settings['cas_attr_first_name'] = '';
-		}
-		if (! array_key_exists('cas_attr_last_name', $auth_settings)) {
-			$auth_settings['cas_attr_last_name'] = '';
-		}
-		if (! array_key_exists('cas_attr_update_on_login', $auth_settings)) {
-			$auth_settings['cas_attr_update_on_login'] = '';
-		}
-		if (! array_key_exists('cas_link_on_username', $auth_settings)) {
-			$auth_settings['cas_link_on_username'] = '';
-		}
-		if (intval($auth_settings['cas_num_servers']) > 1) {
-			foreach (range(2, min(intval($auth_settings['cas_num_servers']), 10)) as $cas_num_server) {
-				if (! array_key_exists('cas_custom_label_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_custom_label_' . $cas_num_server] = 'CAS';
-				}
-				if (! array_key_exists('cas_host_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_host_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_port_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_port_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_path_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_path_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_method_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_method_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_version_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_version_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_attr_email_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_attr_email_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_attr_first_name_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_attr_first_name_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_attr_last_name_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_attr_last_name_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_attr_update_on_login_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_attr_update_on_login_' . $cas_num_server] = '';
-				}
-				if (! array_key_exists('cas_link_on_username_' . $cas_num_server, $auth_settings)) {
-					$auth_settings['cas_link_on_username_' . $cas_num_server] = '';
-				}
-			}
-		}
-
-		if (! array_key_exists('ldap_host', $auth_settings)) {
-			$auth_settings['ldap_host'] = '';
-		}
-		if (! array_key_exists('ldap_port', $auth_settings)) {
-			$auth_settings['ldap_port'] = '389';
-		}
-		if (! array_key_exists('ldap_tls', $auth_settings)) {
-			$auth_settings['ldap_tls'] = '1';
-		}
-		if (! array_key_exists('ldap_search_base', $auth_settings)) {
-			$auth_settings['ldap_search_base'] = '';
-		}
-		if (! array_key_exists('ldap_search_filter', $auth_settings)) {
-			$auth_settings['ldap_search_filter'] = '';
-		}
-		if (! array_key_exists('ldap_uid', $auth_settings)) {
-			$auth_settings['ldap_uid'] = 'uid';
-		}
-		if (! array_key_exists('ldap_attr_email', $auth_settings)) {
-			$auth_settings['ldap_attr_email'] = '';
-		}
-		if (! array_key_exists('ldap_user', $auth_settings)) {
-			$auth_settings['ldap_user'] = '';
-		}
-		if (! array_key_exists('ldap_password', $auth_settings)) {
-			$auth_settings['ldap_password'] = '';
-		}
-		if (! array_key_exists('ldap_lostpassword_url', $auth_settings)) {
-			$auth_settings['ldap_lostpassword_url'] = '';
-		}
-		if (! array_key_exists('ldap_attr_first_name', $auth_settings)) {
-			$auth_settings['ldap_attr_first_name'] = '';
-		}
-		if (! array_key_exists('ldap_attr_last_name', $auth_settings)) {
-			$auth_settings['ldap_attr_last_name'] = '';
-		}
-		if (! array_key_exists('ldap_attr_update_on_login', $auth_settings)) {
-			$auth_settings['ldap_attr_update_on_login'] = '';
-		}
-		if (! array_key_exists('ldap_test_user', $auth_settings)) {
-			$auth_settings['ldap_test_user'] = '';
-		}
 
 		// Advanced defaults.
 		if (! array_key_exists('advanced_lockouts', $auth_settings)) {
@@ -578,299 +389,270 @@ class Options extends Singleton
 				'reset_duration' => 120,
 			);
 		}
-		if (! array_key_exists('advanced_hide_wp_login', $auth_settings)) {
-			$auth_settings['advanced_hide_wp_login'] = '';
-		}
+
 		if (! array_key_exists('advanced_disable_wp_login', $auth_settings)) {
 			$auth_settings['advanced_disable_wp_login'] = '';
 		}
-		if (! array_key_exists('advanced_branding', $auth_settings)) {
-			$auth_settings['advanced_branding'] = 'default';
-		}
-		if (! array_key_exists('advanced_admin_menu', $auth_settings)) {
-			$auth_settings['advanced_admin_menu'] = 'top';
-		}
-		if (! array_key_exists('advanced_usermeta', $auth_settings)) {
-			$auth_settings['advanced_usermeta'] = '';
-		}
-		if (! array_key_exists('advanced_users_per_page', $auth_settings)) {
-			$auth_settings['advanced_users_per_page'] = 20;
-		}
-		if (! array_key_exists('advanced_users_sort_by', $auth_settings)) {
-			$auth_settings['advanced_users_sort_by'] = 'created';
-		}
-		if (! array_key_exists('advanced_users_sort_order', $auth_settings)) {
-			$auth_settings['advanced_users_sort_order'] = 'asc';
-		}
-		if (! array_key_exists('advanced_widget_enabled', $auth_settings)) {
-			$auth_settings['advanced_widget_enabled'] = '1';
-		}
-		if (! array_key_exists('advanced_override_multisite', $auth_settings)) {
-			$auth_settings['advanced_override_multisite'] = '';
-		}
 
 		// Save default options to database.
-		update_option('auth_settings', $auth_settings);
-		update_option('auth_settings_access_users_pending', $auth_settings_access_users_pending);
-		update_option('auth_settings_access_users_approved', $auth_settings_access_users_approved);
-		update_option('auth_settings_access_users_blocked', $auth_settings_access_users_blocked);
+		update_option(BasgateConstants::OPTION_DATA_NAME, $auth_settings);
 
-		// Multisite defaults.
-		if (is_multisite() && $args['set_multisite_options']) {
-			$auth_multisite_settings = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array());
+		// // Multisite defaults.
+		// if (is_multisite() && $args['set_multisite_options']) {
+		// 	$auth_multisite_settings = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array());
 
-			if (false === $auth_multisite_settings) {
-				$auth_multisite_settings = array();
-			}
-			// Global switch for enabling multisite options.
-			if (! array_key_exists('multisite_override', $auth_multisite_settings)) {
-				$auth_multisite_settings['multisite_override'] = '';
-			}
-			// Global switch for preventing sites from overriding multisite options.
-			if (! array_key_exists('prevent_override_multisite', $auth_multisite_settings)) {
-				$auth_multisite_settings['prevent_override_multisite'] = '';
-			}
-			// Access Lists Defaults.
-			$auth_multisite_settings_access_users_approved = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved');
-			if (false === $auth_multisite_settings_access_users_approved) {
-				$auth_multisite_settings_access_users_approved = array();
-			}
-			// Login Access Defaults.
-			if (! array_key_exists('access_who_can_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['access_who_can_login'] = 'approved_users';
-			}
-			// View Access Defaults.
-			if (! array_key_exists('access_who_can_view', $auth_multisite_settings)) {
-				$auth_multisite_settings['access_who_can_view'] = 'everyone';
-			}
-			// External Service Defaults.
-			if (! array_key_exists('access_default_role', $auth_multisite_settings)) {
-				// Set default role to 'subscriber', or 'student' if that role exists.
-				$auth_multisite_settings['access_default_role'] = 'subscriber';
-				if (! empty($wp_roles)) {
-					$all_roles      = $wp_roles->roles;
-					$editable_roles = apply_filters('editable_roles', $all_roles);
-					if (is_array($editable_roles) && array_key_exists('student', $editable_roles)) {
-						$auth_multisite_settings['access_default_role'] = 'student';
-					}
-				}
-			}
-			if (! array_key_exists('oauth2', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2'] = '';
-			}
-			if (! array_key_exists('google', $auth_multisite_settings)) {
-				$auth_multisite_settings['google'] = '';
-			}
-			if (! array_key_exists('cas', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas'] = '';
-			}
-			if (! array_key_exists('ldap', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap'] = '';
-			}
-			if (! array_key_exists('oauth2_provider', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_provider'] = '';
-			}
-			if (! array_key_exists('oauth2_custom_label', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_custom_label'] = 'OAuth2';
-			}
-			if (! array_key_exists('oauth2_clientid', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_clientid'] = '';
-			}
-			if (! array_key_exists('oauth2_clientsecret', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_clientsecret'] = '';
-			}
-			if (! array_key_exists('oauth2_hosteddomain', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_hosteddomain'] = '';
-			}
-			if (! array_key_exists('oauth2_tenant_id', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_tenant_id'] = 'common';
-			}
-			if (! array_key_exists('oauth2_url_authorize', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_url_authorize'] = '';
-			}
-			if (! array_key_exists('oauth2_url_token', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_url_token'] = '';
-			}
-			if (! array_key_exists('oauth2_url_resource', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_url_resource'] = '';
-			}
-			if (! array_key_exists('oauth2_attr_username', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_attr_username'] = '';
-			}
-			if (! array_key_exists('oauth2_attr_email', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_attr_email'] = '';
-			}
-			if (! array_key_exists('oauth2_attr_first_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_attr_first_name'] = '';
-			}
-			if (! array_key_exists('oauth2_attr_last_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_attr_last_name'] = '';
-			}
-			if (! array_key_exists('oauth2_attr_update_on_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_attr_update_on_login'] = '';
-			}
-			if (! array_key_exists('oauth2_auto_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['oauth2_auto_login'] = '';
-			}
-			if (! array_key_exists('google_clientid', $auth_multisite_settings)) {
-				$auth_multisite_settings['google_clientid'] = '';
-			}
-			if (! array_key_exists('google_clientsecret', $auth_multisite_settings)) {
-				$auth_multisite_settings['google_clientsecret'] = '';
-			}
-			if (! array_key_exists('google_hosteddomain', $auth_multisite_settings)) {
-				$auth_multisite_settings['google_hosteddomain'] = '';
-			}
-			if (! array_key_exists('cas_auto_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_auto_login'] = '';
-			}
-			if (! array_key_exists('cas_num_servers', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_num_servers'] = '1';
-			}
-			if (! array_key_exists('cas_custom_label', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_custom_label'] = 'CAS';
-			}
-			if (! array_key_exists('cas_host', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_host'] = '';
-			}
-			if (! array_key_exists('cas_port', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_port'] = '';
-			}
-			if (! array_key_exists('cas_path', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_path'] = '';
-			}
-			if (! array_key_exists('cas_method', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_method'] = '';
-			}
-			if (! array_key_exists('cas_version', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_version'] = '';
-			}
-			if (! array_key_exists('cas_attr_email', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_attr_email'] = '';
-			}
-			if (! array_key_exists('cas_attr_first_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_attr_first_name'] = '';
-			}
-			if (! array_key_exists('cas_attr_last_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_attr_last_name'] = '';
-			}
-			if (! array_key_exists('cas_attr_update_on_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_attr_update_on_login'] = '';
-			}
-			if (! array_key_exists('cas_link_on_username', $auth_multisite_settings)) {
-				$auth_multisite_settings['cas_link_on_username'] = '';
-			}
-			if (intval($auth_multisite_settings['cas_num_servers']) > 1) {
-				foreach (range(2, min(intval($auth_multisite_settings['cas_num_servers']), 10)) as $cas_num_server) {
-					if (! array_key_exists('cas_custom_label_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_custom_label_' . $cas_num_server] = 'CAS';
-					}
-					if (! array_key_exists('cas_host_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_host_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_port_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_port_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_path_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_path_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_method_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_method_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_version_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_version_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_attr_email_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_attr_email_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_attr_first_name_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_attr_first_name_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_attr_last_name_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_attr_last_name_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_attr_update_on_login_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_attr_update_on_login_' . $cas_num_server] = '';
-					}
-					if (! array_key_exists('cas_link_on_username_' . $cas_num_server, $auth_multisite_settings)) {
-						$auth_multisite_settings['cas_link_on_username_' . $cas_num_server] = '';
-					}
-				}
-			}
-			if (! array_key_exists('ldap_host', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_host'] = '';
-			}
-			if (! array_key_exists('ldap_port', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_port'] = '389';
-			}
-			if (! array_key_exists('ldap_tls', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_tls'] = '1';
-			}
-			if (! array_key_exists('ldap_search_base', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_search_base'] = '';
-			}
-			if (! array_key_exists('ldap_search_filter', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_search_filter'] = '';
-			}
-			if (! array_key_exists('ldap_uid', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_uid'] = 'uid';
-			}
-			if (! array_key_exists('ldap_attr_email', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_attr_email'] = '';
-			}
-			if (! array_key_exists('ldap_user', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_user'] = '';
-			}
-			if (! array_key_exists('ldap_password', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_password'] = '';
-			}
-			if (! array_key_exists('ldap_lostpassword_url', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_lostpassword_url'] = '';
-			}
-			if (! array_key_exists('ldap_attr_first_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_attr_first_name'] = '';
-			}
-			if (! array_key_exists('ldap_attr_last_name', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_attr_last_name'] = '';
-			}
-			if (! array_key_exists('ldap_attr_update_on_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_attr_update_on_login'] = '';
-			}
-			if (! array_key_exists('ldap_test_user', $auth_multisite_settings)) {
-				$auth_multisite_settings['ldap_test_user'] = '';
-			}
-			// Advanced defaults.
-			if (! array_key_exists('advanced_lockouts', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_lockouts'] = array(
-					'attempts_1'     => 10,
-					'duration_1'     => 1,
-					'attempts_2'     => 10,
-					'duration_2'     => 10,
-					'reset_duration' => 120,
-				);
-			}
-			if (! array_key_exists('advanced_hide_wp_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_hide_wp_login'] = '';
-			}
-			if (! array_key_exists('advanced_disable_wp_login', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_disable_wp_login'] = '';
-			}
-			if (! array_key_exists('advanced_users_per_page', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_users_per_page'] = 20;
-			}
-			if (! array_key_exists('advanced_users_sort_by', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_users_sort_by'] = 'created';
-			}
-			if (! array_key_exists('advanced_users_sort_order', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_users_sort_order'] = 'asc';
-			}
-			if (! array_key_exists('advanced_widget_enabled', $auth_multisite_settings)) {
-				$auth_multisite_settings['advanced_widget_enabled'] = '1';
-			}
-			// Save default network options to database.
-			update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', $auth_multisite_settings);
-			update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', $auth_multisite_settings_access_users_approved);
-		}
+		// 	if (false === $auth_multisite_settings) {
+		// 		$auth_multisite_settings = array();
+		// 	}
+		// 	// Global switch for enabling multisite options.
+		// 	if (! array_key_exists('multisite_override', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['multisite_override'] = '';
+		// 	}
+		// 	// Global switch for preventing sites from overriding multisite options.
+		// 	if (! array_key_exists('prevent_override_multisite', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['prevent_override_multisite'] = '';
+		// 	}
+		// 	// Access Lists Defaults.
+		// 	$auth_multisite_settings_access_users_approved = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved');
+		// 	if (false === $auth_multisite_settings_access_users_approved) {
+		// 		$auth_multisite_settings_access_users_approved = array();
+		// 	}
+		// 	// Login Access Defaults.
+		// 	if (! array_key_exists('access_who_can_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['access_who_can_login'] = 'approved_users';
+		// 	}
+		// 	// View Access Defaults.
+		// 	if (! array_key_exists('access_who_can_view', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['access_who_can_view'] = 'everyone';
+		// 	}
+		// 	// External Service Defaults.
+		// 	if (! array_key_exists('access_default_role', $auth_multisite_settings)) {
+		// 		// Set default role to 'subscriber', or 'student' if that role exists.
+		// 		$auth_multisite_settings['access_default_role'] = 'subscriber';
+		// 		if (! empty($wp_roles)) {
+		// 			$all_roles      = $wp_roles->roles;
+		// 			$editable_roles = apply_filters('editable_roles', $all_roles);
+		// 			if (is_array($editable_roles) && array_key_exists('student', $editable_roles)) {
+		// 				$auth_multisite_settings['access_default_role'] = 'student';
+		// 			}
+		// 		}
+		// 	}
+		// 	if (! array_key_exists('oauth2', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2'] = '';
+		// 	}
+		// 	if (! array_key_exists('google', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['google'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_provider', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_provider'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_custom_label', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_custom_label'] = 'OAuth2';
+		// 	}
+		// 	if (! array_key_exists('oauth2_clientid', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_clientid'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_clientsecret', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_clientsecret'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_hosteddomain', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_hosteddomain'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_tenant_id', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_tenant_id'] = 'common';
+		// 	}
+		// 	if (! array_key_exists('oauth2_url_authorize', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_url_authorize'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_url_token', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_url_token'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_url_resource', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_url_resource'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_attr_username', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_attr_username'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_attr_email', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_attr_email'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_attr_first_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_attr_first_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_attr_last_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_attr_last_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_attr_update_on_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_attr_update_on_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('oauth2_auto_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['oauth2_auto_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('google_clientid', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['google_clientid'] = '';
+		// 	}
+		// 	if (! array_key_exists('google_clientsecret', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['google_clientsecret'] = '';
+		// 	}
+		// 	if (! array_key_exists('google_hosteddomain', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['google_hosteddomain'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_auto_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_auto_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_num_servers', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_num_servers'] = '1';
+		// 	}
+		// 	if (! array_key_exists('cas_custom_label', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_custom_label'] = 'CAS';
+		// 	}
+		// 	if (! array_key_exists('cas_host', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_host'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_port', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_port'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_path', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_path'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_method', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_method'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_version', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_version'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_attr_email', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_attr_email'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_attr_first_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_attr_first_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_attr_last_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_attr_last_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_attr_update_on_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_attr_update_on_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('cas_link_on_username', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['cas_link_on_username'] = '';
+		// 	}
+		// 	if (intval($auth_multisite_settings['cas_num_servers']) > 1) {
+		// 		foreach (range(2, min(intval($auth_multisite_settings['cas_num_servers']), 10)) as $cas_num_server) {
+		// 			if (! array_key_exists('cas_custom_label_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_custom_label_' . $cas_num_server] = 'CAS';
+		// 			}
+		// 			if (! array_key_exists('cas_host_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_host_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_port_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_port_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_path_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_path_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_method_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_method_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_version_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_version_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_attr_email_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_attr_email_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_attr_first_name_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_attr_first_name_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_attr_last_name_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_attr_last_name_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_attr_update_on_login_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_attr_update_on_login_' . $cas_num_server] = '';
+		// 			}
+		// 			if (! array_key_exists('cas_link_on_username_' . $cas_num_server, $auth_multisite_settings)) {
+		// 				$auth_multisite_settings['cas_link_on_username_' . $cas_num_server] = '';
+		// 			}
+		// 		}
+		// 	}
+		// 	if (! array_key_exists('ldap_host', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_host'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_port', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_port'] = '389';
+		// 	}
+		// 	if (! array_key_exists('ldap_tls', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_tls'] = '1';
+		// 	}
+		// 	if (! array_key_exists('ldap_search_base', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_search_base'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_search_filter', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_search_filter'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_uid', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_uid'] = 'uid';
+		// 	}
+		// 	if (! array_key_exists('ldap_attr_email', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_attr_email'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_user', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_user'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_password', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_password'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_lostpassword_url', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_lostpassword_url'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_attr_first_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_attr_first_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_attr_last_name', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_attr_last_name'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_attr_update_on_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_attr_update_on_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('ldap_test_user', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['ldap_test_user'] = '';
+		// 	}
+		// 	// Advanced defaults.
+		// 	if (! array_key_exists('advanced_lockouts', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_lockouts'] = array(
+		// 			'attempts_1'     => 10,
+		// 			'duration_1'     => 1,
+		// 			'attempts_2'     => 10,
+		// 			'duration_2'     => 10,
+		// 			'reset_duration' => 120,
+		// 		);
+		// 	}
+		// 	if (! array_key_exists('advanced_hide_wp_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_hide_wp_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('advanced_disable_wp_login', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_disable_wp_login'] = '';
+		// 	}
+		// 	if (! array_key_exists('advanced_users_per_page', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_users_per_page'] = 20;
+		// 	}
+		// 	if (! array_key_exists('advanced_users_sort_by', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_users_sort_by'] = 'created';
+		// 	}
+		// 	if (! array_key_exists('advanced_users_sort_order', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_users_sort_order'] = 'asc';
+		// 	}
+		// 	if (! array_key_exists('advanced_widget_enabled', $auth_multisite_settings)) {
+		// 		$auth_multisite_settings['advanced_widget_enabled'] = '1';
+		// 	}
+		// 	// Save default network options to database.
+		// 	update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', $auth_multisite_settings);
+		// 	update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', $auth_multisite_settings_access_users_approved);
+		// }
 
 		return $auth_settings;
 	}

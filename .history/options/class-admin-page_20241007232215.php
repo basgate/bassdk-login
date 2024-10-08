@@ -63,7 +63,7 @@ class Admin_Page extends Singleton
 	{
 		$screen = get_current_screen();
 
-		print("===== admin_head => screen->id :" . $screen->id);
+		print("admin_head => screen->id :" . $screen->id);
 		// Don't print any help items if not on the Basgate Settings page.
 		if (empty($screen->id) || ! in_array($screen->id, array('toplevel_page_authorizer-network', 'toplevel_page_authorizer', 'settings_page_authorizer'), true)) {
 			return;
@@ -71,15 +71,15 @@ class Admin_Page extends Singleton
 
 		// Add help tab for Access Lists Settings.
 		$help_auth_settings_access_lists_content = '
-			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", $this->id) . '</p>
-			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', $this->id) . '</p>
-			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', $this->id) . '</p>
-			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', $this->id) . '</p>
+			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", 'basgate') . '</p>
+			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', 'basgate') . '</p>
+			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', 'basgate') . '</p>
+			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', 'basgate') . '</p>
 		';
 		$screen->add_help_tab(
 			array(
 				'id'      => 'help_auth_settings_access_lists_content',
-				'title'   => __('Authentication', $this->id),
+				'title'   => __('Authentication', 'basgate'),
 				'content' => wp_kses_post($help_auth_settings_access_lists_content),
 			)
 		);
@@ -143,7 +143,7 @@ class Admin_Page extends Singleton
 		$options      = Options::get_instance();
 		$admin_menu   = $options->get('advanced_admin_menu');
 		$settings_url = 'settings' === $admin_menu ? admin_url('options-general.php?page=basgate') : admin_url('admin.php?page=basgate');
-		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', $this->id) . '</a>');
+		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', 'basgate') . '</a>');
 		return $links;
 	}
 
@@ -159,7 +159,7 @@ class Admin_Page extends Singleton
 	 */
 	public function network_admin_plugin_settings_link($links)
 	{
-		$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings', $this->id) . '</a>';
+		$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings', 'basgate') . '</a>';
 		array_unshift($links, $settings_link);
 		return $links;
 	}
@@ -174,7 +174,7 @@ class Admin_Page extends Singleton
 	{
 		register_setting(
 			'auth_settings_group',
-			BasgateConstants::OPTION_DATA_NAME,
+			'auth_settings',
 			array(Options::get_instance(), 'sanitize_options')
 		);
 
@@ -182,7 +182,7 @@ class Admin_Page extends Singleton
 			'auth_settings_tabs',
 			'',
 			array(Options::get_instance(), 'print_section_info_tabs'),
-			$this->id
+			'basgate'
 		);
 
 		// Create Login Access section.
@@ -190,62 +190,62 @@ class Admin_Page extends Singleton
 			'auth_settings_basgate_config',
 			'',
 			array(Login_Access::get_instance(), 'print_section_info_basgate_config'),
-			$this->id
+			'basgate'
 		);
 
 		add_settings_field(
-			'bas_description',
+			'description',
 			__('Description',  $this->id),
 			array(Login_Access::get_instance(), 'print_text_description'),
-			$this->id,
+			'basgate',
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_environment',
+			'environment',
 			__('Environment Mode', $this->id),
 			array(Login_Access::get_instance(), 'print_select_environment_mode'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_application_id',
+			'application_id',
 			__('Application Id',  $this->id),
 			array(Login_Access::get_instance(), 'print_text_application_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_merchant_key',
+			'application_id',
+			__('Application Id',  $this->id),
+			array(Login_Access::get_instance(), 'print_text_application_id'),
+			$this->id,
+			'auth_settings_basgate_config'
+		);
+		add_settings_field(
+			'merchant_key',
 			__('Merchant Key',  $this->id),
 			array(Login_Access::get_instance(), 'print_text_merchant_key'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_client_id',
+			'client_id',
 			__('Client Id',  $this->id),
 			array(Login_Access::get_instance(), 'print_text_client_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_client_secret',
+			'client_secret',
 			__('Client Secret',  $this->id),
 			array(Login_Access::get_instance(), 'print_text_client_secret'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
-			'bas_enabled',
+			'enabled',
 			__('Enable/Disable',  $this->id),
 			array(Login_Access::get_instance(), 'print_checkbox_enabled'),
-			$this->id,
-			'auth_settings_basgate_config'
-		);
-		add_settings_field(
-			'advanced_disable_wp_login',
-			__('Disable Default login',  $this->id),
-			array(Login_Access::get_instance(), 'print_checkbox_disable_wp_login'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
@@ -259,20 +259,20 @@ class Admin_Page extends Singleton
 	{
 		?>
 		<div class="wrap">
-			<h2><?php esc_html_e('Basgate Settings', $this->id); ?></h2>
+			<h2><?php esc_html_e('Basgate Settings', 'basgate'); ?></h2>
 			<form method="post" action="options.php" autocomplete="off">
 				<?php
 				// This prints out all hidden settings fields.
 				settings_fields('auth_settings_group');
 				// This prints out all the sections.
-				do_settings_sections($this->id);
+				do_settings_sections('basgate');
 				submit_button();
 				?>
 			</form>
 		</div>
 		<div>
 			<?php
-			$this->bassdk_admin_footer();
+			// bassdk_admin_footer();
 			?>
 		</div>
 <?php
@@ -280,24 +280,80 @@ class Admin_Page extends Singleton
 
 	public function bassdk_admin_footer()
 	{
+		//Echoing HTML safely start
+		// $default_attribs = array(
+		// 	'id' => array(),
+		// 	'class' => array(),
+		// 	'title' => array(),
+		// 	'style' => array(),
+		// 	'data' => array(),
+		// 	'data-mce-id' => array(),
+		// 	'data-mce-style' => array(),
+		// 	'data-mce-bogus' => array(),
+		// );
+		// $allowed_tags = array(
+		// 	'div'           => $default_attribs,
+		// 	'span'          => $default_attribs,
+		// 	'p'             => $default_attribs,
+		// 	'a'             => array_merge(
+		// 		$default_attribs,
+		// 		array(
+		// 			'href' => array(),
+		// 			'target' => array('_blank', '_top'),
+		// 		)
+		// 	),
+		// 	'u'             =>  $default_attribs,
+		// 	'i'             =>  $default_attribs,
+		// 	'q'             =>  $default_attribs,
+		// 	'b'             =>  $default_attribs,
+		// 	'ul'            => $default_attribs,
+		// 	'ol'            => $default_attribs,
+		// 	'li'            => $default_attribs,
+		// 	'br'            => $default_attribs,
+		// 	'hr'            => $default_attribs,
+		// 	'strong'        => $default_attribs,
+		// 	'blockquote'    => $default_attribs,
+		// 	'del'           => $default_attribs,
+		// 	'strike'        => $default_attribs,
+		// 	'em'            => $default_attribs,
+		// 	'code'          => $default_attribs,
+		// 	'h1'            => $default_attribs,
+		// 	'h2'            => $default_attribs,
+		// 	'h3'            => $default_attribs,
+		// 	'h4'            => $default_attribs,
+		// 	'h5'            => $default_attribs,
+		// 	'h6'            => $default_attribs,
+		// 	'table'         => $default_attribs
+		// );
 
-		$curl_version = Helper::getcURLversion();
-		$last_updated = date("d F Y", strtotime(BasgateConstants::LAST_UPDATED)) . ' - ' . BasgateConstants::PLUGIN_VERSION;
-		// eslint-disable-next-line
-		$wooVersion = defined("WOOCOMMERCE_VERSION") ? WOOCOMMERCE_VERSION : "N/A";
+
+        // $curl_version = Helper::getcURLversion();
+		// $last_updated = date("d F Y", strtotime(BasgateConstants::LAST_UPDATED)) . ' - ' . BasgateConstants::PLUGIN_VERSION;
 
 		$footer_text = '<div style="text-align: center;"><hr/>';
 		$footer_text .= '<strong>' . __('PHP Version') . '</strong> ' . PHP_VERSION . ' | ';
-		$footer_text .= '<strong>' . __('cURL Version') . '</strong> ' . $curl_version . ' | ';
-		$footer_text .= '<strong>' . __('Wordpress Version') . '</strong> ' . get_bloginfo('version') . ' | ';
-		$footer_text .= '<strong>' . __('WooCommerce Version') . '</strong> ' . $wooVersion . ' | ';
-		$footer_text .= '<strong>' . __('SDK Last Updated') . '</strong> ' . $last_updated . ' | ';
+		// $footer_text .= '<strong>' . __('cURL Version') . '</strong> ' . $curl_version . ' | ';
+		// $footer_text .= '<strong>' . __('Wordpress Version') . '</strong> ' . get_bloginfo('version') . ' | ';
+		// $footer_text .= '<strong>' . __('WooCommerce Version') . '</strong> ' . WOOCOMMERCE_VERSION . ' | ';
+		// $footer_text .= '<strong>' . __('Last Updated') . '</strong> ' . $last_updated . ' | ';
 		$footer_text .= '<a href="' . esc_url(BasgateConstants::PLUGIN_DOC_URL) . '" target="_blank">Developer Docs</a>';
 
 		$footer_text .= '</div>';
 
-		echo wp_kses($footer_text, Helper::$allowed_html);
+		// echo wp_kses($footer_text, $allowed_tags);
+		echo wp_kses($footer_text,array());
 	}
+
+
+	/**
+	 * Network Admin menu item
+	 *
+	 * Action: network_admin_menu
+	 *
+	 * @return void
+	 */
+	public function network_admin_menu() {}
+
 
 	/**
 	 * Create the options page under Dashboard > Settings.
@@ -306,29 +362,29 @@ class Admin_Page extends Singleton
 	 */
 	public function add_plugin_page()
 	{
-		// $options    = Options::get_instance();
-		// $admin_menu = $options->get('advanced_admin_menu');
-		// if ('settings' === $admin_menu) {
-		// 	// @see http://codex.wordpress.org/Function_Reference/add_options_page
-		// 	add_options_page(
-		// 		'Basgate',
-		// 		'Basgate',
-		// 		'create_users',
-		// 		$this->id,
-		// 		array(self::get_instance(), 'create_admin_page')
-		// 	);
-		// } else {
-		// @see http://codex.wordpress.org/Function_Reference/add_menu_page
-		add_menu_page(
-			'Basgate',
-			'Basgate',
-			'create_users',
-			$this->id,
-			array(self::get_instance(), 'create_admin_page'),
-			plugins_url('images/bassdk-logo.svg', \BasgateSDK\plugin_root()),
-			'99.0018465' // position (decimal is to make overlap with other plugins less likely).
-		);
-		// }
+		$options    = Options::get_instance();
+		$admin_menu = $options->get('advanced_admin_menu');
+		if ('settings' === $admin_menu) {
+			// @see http://codex.wordpress.org/Function_Reference/add_options_page
+			add_options_page(
+				'Basgate',
+				'Basgate',
+				'create_users',
+				'basgate',
+				array(self::get_instance(), 'create_admin_page')
+			);
+		} else {
+			// @see http://codex.wordpress.org/Function_Reference/add_menu_page
+			add_menu_page(
+				'Basgate',
+				'Basgate',
+				'create_users',
+				'basgate',
+				array(self::get_instance(), 'create_admin_page'),
+				plugins_url('images/bassdk-logo.svg', \BasgateSDK\plugin_root()),
+				'99.0018465' // position (decimal is to make overlap with other plugins less likely).
+			);
+		}
 	}
 
 
@@ -341,22 +397,22 @@ class Admin_Page extends Singleton
 	//  */
 	// public function load_options_page()
 	// {
-	// 	wp_enqueue_script($this->id, plugins_url('js/basgate.js', \BasgateSDK\plugin_root()), array('jquery-effects-shake'), '3.10.0', true);
+	// 	wp_enqueue_script('basgate', plugins_url('js/basgate.js', \BasgateSDK\plugin_root()), array('jquery-effects-shake'), '3.10.0', true);
 	// 	wp_localize_script(
-	// 		$this->id,
+	// 		'basgate',
 	// 		'authL10n',
 	// 		array(
 	// 			'baseurl'              => get_bloginfo('url'),
-	// 			'saved'                => esc_html__('Saved', $this->id),
-	// 			'duplicate'            => esc_html__('Duplicate', $this->id),
-	// 			'failed'               => esc_html__('Failed', $this->id),
-	// 			'local_wordpress_user' => esc_html__('Local WordPress user', $this->id),
-	// 			'block_ban_user'       => esc_html__('Block/Ban user', $this->id),
-	// 			'remove_user'          => esc_html__('Remove user', $this->id),
-	// 			'no_users_in'          => esc_html__('No users in', $this->id),
-	// 			'save_changes'         => esc_html__('Save Changes', $this->id),
-	// 			'private_pages'        => esc_html__('Private Pages', $this->id),
-	// 			'public_pages'         => esc_html__('Public Pages', $this->id),
+	// 			'saved'                => esc_html__('Saved', 'basgate'),
+	// 			'duplicate'            => esc_html__('Duplicate', 'basgate'),
+	// 			'failed'               => esc_html__('Failed', 'basgate'),
+	// 			'local_wordpress_user' => esc_html__('Local WordPress user', 'basgate'),
+	// 			'block_ban_user'       => esc_html__('Block/Ban user', 'basgate'),
+	// 			'remove_user'          => esc_html__('Remove user', 'basgate'),
+	// 			'no_users_in'          => esc_html__('No users in', 'basgate'),
+	// 			'save_changes'         => esc_html__('Save Changes', 'basgate'),
+	// 			'private_pages'        => esc_html__('Private Pages', 'basgate'),
+	// 			'public_pages'         => esc_html__('Public Pages', 'basgate'),
 	// 			'first_page'           => esc_html__('First page'),
 	// 			'previous_page'        => esc_html__('Previous page'),
 	// 			'next_page'            => esc_html__('Next page'),
