@@ -201,11 +201,7 @@ class Login_Form extends Singleton
 							if ('undefined' !== typeof auth && auth.hasOwnProperty('wpLoginUrl')) {
 								newHref = authUpdateQuerystringParam(auth.wpLoginUrl, 'external', 'basgate');
 							} else {
-								session_start();
-								if (empty($_SESSION['token'])) {
-									$_SESSION['token'] = $bas_token;
-								}
-								newHref = '<?php echo esc_attr(Helper::modify_current_url_for_external_login('basgate')); ?>';
+								newHref = '<?php echo esc_attr(Helper::modify_current_url_for_external_login()); ?>';
 							}
 
 
@@ -260,7 +256,7 @@ class Login_Form extends Singleton
 	{
 		if (array_key_exists('username', $user_data)) {
 			$username = $user_data['username'];
-		} else if (array_key_exists('email', $user_data)) {
+		} else if(array_key_exists('email', $user_data)){
 			$username = explode('@', $user_data['email']);
 			$username = $username[0];
 		}

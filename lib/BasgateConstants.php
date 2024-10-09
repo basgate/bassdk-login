@@ -30,7 +30,6 @@ class BasgateConstants
     const TIMEOUT = 10;
 
     const LAST_UPDATED = "20241003";
-    const PLUGIN_VERSION = "0.1.5";
     const PLUGIN_VERSION_FOLDER = "015";
 
     const CUSTOM_CALLBACK_URL = "";

@@ -486,12 +486,13 @@ class Helper
 
 
 	/**
-	 * Generate Basgate authentication URL (wp-login.php URL with reauth=1 removed
-	 * and external=basgate added).
+	 * Generate CAS or OAuth2 authentication URL (wp-login.php URL with reauth=1 removed
+	 * and external=cas or external=oauth2 added).
 	 *
-	 * @param string    $auth_id       Basgate AuthId (e.g., A2ED.....545454).
+	 * @param string $provider External service provider type (e.g., 'cas', or 'oauth2').
+	 * @param int    $id       CAS server number (e.g., 1).
 	 */
-	public static function modify_current_url_for_external_login($provider = 'basgate', $id = 1)
+	public static function modify_current_url_for_external_login($provider = 'cas', $id = 1)
 	{
 
 		// Construct the URL of the current page (wp-login.php).

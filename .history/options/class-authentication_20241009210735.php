@@ -39,6 +39,7 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
+
 		?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
@@ -180,6 +181,7 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
+
 		?>
 		<script>
 			console.log("STARTED custom_authenticate_basgate() ")
@@ -272,6 +274,7 @@ class Authentication extends Singleton
 	 */
 	public function ajax_process_basgate_login()
 	{
+
 		// Nonce check.
 		if (
 			! isset($_POST['nonce']) ||
@@ -300,11 +303,10 @@ class Authentication extends Singleton
 
 		//TODO: Add basgate backend request for token and userinfo
 		if (empty($auth_id)) {
-			die('');
 			return null;
 		}
 
-
+		
 		$bas_token = $this->getBasToken($auth_id);
 
 		sprintf(" === token:%s", $bas_token)
@@ -377,19 +379,21 @@ class Authentication extends Singleton
 			if ($err) {
 			} else {
 				$response = json_decode($result, true);
-				if (array_key_exists('access_token', $response)) {
-					// if ($response['status'] === '1') {
-					sprintf("token:%s", $response['access_token'])
+				if (array_key_exists('status', $response)) {
+					if ($response['status'] === '1') {
+						sprintf("token:%s", $response['data']['access_token'])
 		?>
-					<script>
-						var token = '<?php echo esc_attr($response['access_token']) ?>'
+						<script>
+							var token = '<?php echo esc_attr($response['data']['access_token']) ?>'
 
-						console.log("custom_authenticate_basgate() token 111:", token)
-						console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
-					</script>
-<?php
-					return $response['access_token'];
-					// }
+							console.log("custom_authenticate_basgate() token 111:", token)
+							console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
+						</script>
+		<?php
+						return $response['data']['access_token'];
+					} else {
+						return $response['messages'];
+					}
 				}
 			}
 		} catch (\Throwable $th) {
@@ -491,7 +495,30 @@ class Authentication extends Singleton
 		if ('google' === self::$authenticated_by && array_key_exists('token', $_SESSION)) {
 			$token = $_SESSION['token'];
 
+			// Fetch the Basgate Client ID (allow overrides from filter or constant).
+			if (defined('AUTHORIZER_GOOGLE_CLIENT_ID')) {
+				// $auth_settings['bas_client_id'] = \AUTHORIZER_GOOGLE_CLIENT_ID;
+			}
+			/**
+			 * Filters the Basgate Client ID used by Authorizer to authenticate.
+			 *
+			 * @since 3.9.0
+			 *
+			 * @param string $google_client_id  The stored Basgate Client ID.
+			 */
 			$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+
+			// Fetch the Basgate Client Secret (allow overrides from filter or constant).
+			if (defined('AUTHORIZER_GOOGLE_CLIENT_SECRET')) {
+				// $auth_settings['bas_client_secret'] = \AUTHORIZER_GOOGLE_CLIENT_SECRET;
+			}
+			/**
+			 * Filters the Basgate Client Secret used by Authorizer to authenticate.
+			 *
+			 * @since 3.6.1
+			 *
+			 * @param string $google_client_secret  The stored Basgate Client Secret.
+			 */
 			$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 			// Build the Basgate Client.

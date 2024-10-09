@@ -282,7 +282,8 @@ class Admin_Page extends Singleton
 	{
 
 		$curl_version = Helper::getcURLversion();
-		$last_updated = date("d F Y", strtotime(BasgateConstants::LAST_UPDATED)) . ' - ' . BasgateConstants::PLUGIN_VERSION;
+		// $last_updated = date("d F Y", strtotime(BasgateConstants::LAST_UPDATED)) . ' - ' . Helper::get_plugin_data()['version'];
+		$last_updated = Helper::get_plugin_data()['version'];
 		// eslint-disable-next-line
 		$wooVersion = defined("WOOCOMMERCE_VERSION") ? WOOCOMMERCE_VERSION : "N/A";
 
@@ -291,7 +292,7 @@ class Admin_Page extends Singleton
 		$footer_text .= '<strong>' . __('cURL Version') . '</strong> ' . $curl_version . ' | ';
 		$footer_text .= '<strong>' . __('Wordpress Version') . '</strong> ' . get_bloginfo('version') . ' | ';
 		$footer_text .= '<strong>' . __('WooCommerce Version') . '</strong> ' . $wooVersion . ' | ';
-		$footer_text .= '<strong>' . __('SDK Last Updated') . '</strong> ' . $last_updated . ' | ';
+		$footer_text .= '<strong>' . __('SDK Version') . '</strong> ' . $last_updated . ' | ';
 		$footer_text .= '<a href="' . esc_url(BasgateConstants::PLUGIN_DOC_URL) . '" target="_blank">Developer Docs</a>';
 
 		$footer_text .= '</div>';

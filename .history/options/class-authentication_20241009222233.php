@@ -39,7 +39,8 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-		?>
+
+?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
 		</script>
@@ -180,6 +181,7 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
+
 		?>
 		<script>
 			console.log("STARTED custom_authenticate_basgate() ")
@@ -234,7 +236,7 @@ class Authentication extends Singleton
 			var payload = '<?php echo esc_attr($payload); ?>'
 			console.log("custom_authenticate() $payload :", payload)
 		</script>
-		<?php
+	<?php
 
 
 		return array(
@@ -272,6 +274,7 @@ class Authentication extends Singleton
 	 */
 	public function ajax_process_basgate_login()
 	{
+
 		// Nonce check.
 		if (
 			! isset($_POST['nonce']) ||
@@ -300,7 +303,6 @@ class Authentication extends Singleton
 
 		//TODO: Add basgate backend request for token and userinfo
 		if (empty($auth_id)) {
-			die('');
 			return null;
 		}
 
@@ -309,7 +311,7 @@ class Authentication extends Singleton
 
 		sprintf(" === token:%s", $bas_token)
 
-		?>
+	?>
 		<script>
 			var token = '<?php echo esc_attr($bas_token) ?>'
 			console.log("ajax_process_basgate_login() token 111:", token)
@@ -378,18 +380,18 @@ class Authentication extends Singleton
 			} else {
 				$response = json_decode($result, true);
 				if (array_key_exists('access_token', $response)) {
-					// if ($response['status'] === '1') {
-					sprintf("token:%s", $response['access_token'])
-		?>
-					<script>
-						var token = '<?php echo esc_attr($response['access_token']) ?>'
+					if ($response['status'] === '1') {
+						sprintf("token:%s", $response['access_token'])
+						?>
+							<script>
+								var token = '<?php echo esc_attr($response['access_token']) ?>'
 
-						console.log("custom_authenticate_basgate() token 111:", token)
-						console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
-					</script>
-<?php
-					return $response['access_token'];
-					// }
+								console.log("custom_authenticate_basgate() token 111:", token)
+								console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
+							</script>
+						<?php
+						return $response['access_token'];
+					}
 				}
 			}
 		} catch (\Throwable $th) {

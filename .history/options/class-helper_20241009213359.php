@@ -491,9 +491,10 @@ class Helper
 	 *
 	 * @param string    $auth_id       Basgate AuthId (e.g., A2ED.....545454).
 	 */
-	public static function modify_current_url_for_external_login($provider = 'basgate', $id = 1)
+	public static function modify_current_url_for_external_login($auth_id)
 	{
 
+		$provider = 'basgate';
 		// Construct the URL of the current page (wp-login.php).
 		$url = '';
 		if (isset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'])) {
@@ -524,7 +525,7 @@ class Helper
 		}
 		unset($querystring['reauth']);
 		$querystring['external'] = $provider;
-		$querystring['id']       = $id;
+		$querystring['authId']       = $auth_id;
 		$parsed_url['query']     = http_build_query($querystring);
 
 		// Return the URL as a string.
