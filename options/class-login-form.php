@@ -79,7 +79,7 @@ class Login_Form extends Singleton
 		if (!array_key_exists('bas_client_id', $auth_settings)) {
 			$auth_settings['bas_client_id'] = "no_client_id";
 		}
-
+		$sdk_path = plugins_url('js/public.js', plugin_root());
 		ob_start();
 ?>
 		<script type="text/javascript">
@@ -128,7 +128,7 @@ class Login_Form extends Singleton
 				</form>
 			</div>
 		</div>
-		<script type="application/javascript" crossorigin="anonymous" src="https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/merchant/v1/public.js" onload="invokeBasLogin();"></script>
+		<script type="application/javascript" crossorigin="anonymous" src="<?php echo esc_attr($sdk_path); ?>" onload="invokeBasLogin();"></script>
 		<?php
 		return ob_get_clean();
 	}
@@ -183,7 +183,8 @@ class Login_Form extends Singleton
 							console.log("signInCallback() textStatus :", textStatus)
 							console.log("signInCallback() data :", data)
 
-							var newHref = '<?php echo esc_attr(Helper::modify_current_url_for_external_login('basgate')); ?>';
+							var newHref = '<?php echo esc_url(Helper::modify_current_url_for_external_login('basgate')); ?>';
+							newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
 							console.log("signInCallback()  newHref: ", newHref)
 
 							if (location.href === newHref) {

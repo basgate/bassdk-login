@@ -186,8 +186,7 @@ class Authentication extends Singleton
 
 		// Move on if Basgate auth hasn't been requested here.
 		// phpcs:ignore WordPress.Security.NonceVerification
-		// if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
-		if (!array_key_exists('basToken', $_SESSION)) {
+		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
 			return null;
 		}
 
