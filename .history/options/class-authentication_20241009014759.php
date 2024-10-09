@@ -82,7 +82,6 @@ class Authentication extends Singleton
 					$externally_authenticated_emails[] = $result['email'];
 				}
 				$authenticated_by = $result['authenticated_by'];
-				$openId = $result['open_id'];
 			}
 		}
 
@@ -133,7 +132,6 @@ class Authentication extends Singleton
 		// We'll track how this user was authenticated in user meta.
 		if ($user) {
 			update_user_meta($user->ID, 'authenticated_by', $authenticated_by);
-			update_user_meta($user->ID, 'open_id', $openId);
 		}
 
 		// Check this external user's access against the access lists
@@ -154,6 +152,83 @@ class Authentication extends Singleton
 		// If we haven't exited yet, we have a valid/approved user, so authenticate them.
 		return $user;
 	}
+
+
+	/**
+	 * Verify the Basgate login and set a session token.
+	 *
+	 * Flow: "Sign in with Basgate" button clicked; JS Basgate library
+	 * called; JS function signInCallback() fired with results from Basgate;
+	 * signInCallback() posts code and nonce (via AJAX) to this function;
+	 * This function checks the token using the Basgate PHP library, and
+	 * saves it to a session variable if it's authentic; control passes
+	 * back to signInCallback(), which will reload the current page
+	 * (wp-login.php) on success; wp-login.php reloads; custom_authenticate
+	 * hooked into authenticate action fires again, and
+	 * custom_authenticate_google() runs to verify the token; once verified
+	 * custom_authenticate proceeds as normal with the google email address
+	 * as a successfully authenticated external user.
+	 *
+	 * Action: wp_ajax_process_google_login
+	 * Action: wp_ajax_nopriv_process_google_login
+	 *
+	 * @return void, but die with the value to return to the success() function in AJAX call signInCallback().
+	 */
+	public function ajax_process_basgate_login()
+	{
+
+		?>
+		<script>
+			alert("======= STARTED ajax_process_basgate_login() ====== ")
+		</script>
+		<?php
+		// Nonce check.
+		if (
+			! isset($_POST['nonce']) ||
+			! wp_verify_nonce(sanitize_key($_POST['nonce']), 'basgate_login_nonce')
+		) {
+			die('');
+		}
+
+		// Basgate authentication token.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$data = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
+		if (array_key_exists('auth_id', $data)) {
+			$auth_id = $data["auth_id"];
+		}
+		?>
+		<script>
+			alert("ajax_process_basgate_login() after $data ")
+		</script>
+		<?php
+		// Grab plugin settings.
+		$options       = Options::get_instance();
+		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
+
+		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+
+
+		//TODO: Add basgate backend request for token and userinfo
+		if (empty($auth_id)) {
+			return null;
+		}
+		$bas_token = $this->getBasToken($auth_id);
+
+		// Store the token (for verifying later in wp-login).
+		session_start();
+		if (empty($_SESSION['token'])) {
+			// Store the token in the session for later use.
+			$_SESSION['token'] = $bas_token;
+
+			$response = 'Successfully authenticated.';
+		} else {
+			$response = 'Already authenticated.';
+		}
+
+		die(esc_html($response));
+	}
+
 
 
 	/**
@@ -183,126 +258,94 @@ class Authentication extends Singleton
 		session_start();
 		$token = array_key_exists('token', $_SESSION) ? $_SESSION['token'] : null;
 
-		?>
-		<script>
-			var token = '<?php echo esc_attr($token) ?>'
-			alert("custom_authenticate_basgate() :" + token)
-		</script>
-<?php
-
 		// No token, so this is not a succesful Basgate login.
 		if (empty($token)) {
 			return null;
 		}
 
-		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+		/**
+		 * Filters the Basgate Client ID used by Authorizer to authenticate.
+		 *
+		 * @since 3.9.0
+		 *
+		 * @param string $google_client_id  The stored Basgate Client ID.
+		 */
+		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+
+		/**
+		 * Filters the Basgate Client Secret used by Authorizer to authenticate.
+		 *
+		 * @since 3.6.1
+		 *
+		 * @param string $google_client_secret  The stored Basgate Client Secret.
+		 */
+		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 		// Verify this is a successful Basgate authentication.
-		try {
-			$payload = $this->getBasUserInfo($token);
-		} catch (\Throwable $th) {
-			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', BasgateConstants::ID));
-		}
+		// try {
+		$payload = ''; //$client->verifyIdToken($token);
+		// } catch (\Firebase\JWT\BeforeValidException $e) {
+		// 	// Server clock out of sync with Basgate servers.
+		// 	return new \WP_Error('invalid_google_login', __('The authentication timestamp is too old, please try again.', 'authorizer'));
+		// } catch (Google_Auth_Exception $e) {
+		// 	// Invalid ticket, so this in not a successful Basgate login.
+		// 	return new \WP_Error('invalid_google_login', __('Invalid Basgate credentials provided.', 'authorizer'));
+		// }
 
 		// Invalid ticket, so this in not a successful Basgate login.
-		if (empty($payload['user_name'])) {
-			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', BasgateConstants::ID));
+		if (empty($payload['email'])) {
+			return new \WP_Error('invalid_google_login', __('Invalid Basgate credentials provided.', 'authorizer'));
 		}
 
+		// Get email address.
+		$email = Helper::lowercase($payload['email']);
 
-		$username     = $payload['user_name'];
-		$name     = $payload['name'];
-		$openId     = $payload['open_id'];
-		$phone     = $payload['phone'];
+		$email_domain = substr(strrchr($email, '@'), 1);
+		$username     = current(explode('@', $email));
 
+		/**
+		 * Fail if hd param is set and the logging in user's email address doesn't
+		 * match the allowed hosted domain.
+		 *
+		 * See: https://developers.google.com/identity/protocols/OpenIDConnect#hd-param
+		 * See: https://github.com/google/google-api-php-client/blob/v1-master/src/Google/Client.php#L407-L416
+		 *
+		 * Note: this is a failsafe if the setHostedDomain() feature in v2 does not work above.
+		 */
+		if (
+			array_key_exists('google_hosteddomain', $auth_settings) &&
+			strlen($auth_settings['google_hosteddomain']) > 0
+		) {
+			// Allow multiple whitelisted domains.
+			$google_hosteddomains = explode("\n", str_replace("\r", '', $auth_settings['google_hosteddomain']));
+			if (! in_array($email_domain, $google_hosteddomains, true)) {
+				$this->custom_logout();
+				return new \WP_Error('invalid_google_login', __('Basgate credentials do not match the allowed hosted domain', 'authorizer'));
+			}
+		}
 
 		return array(
-			'email'             => $phone,
+			'email'             => $email,
 			'username'          => $username,
-			'first_name'        => $name,
+			'first_name'        => '',
 			'last_name'         => '',
-			'open_id'         => $openId,
 			'authenticated_by'  => 'basgate',
-			'bas_attributes' => $payload,
+			'google_attributes' => $payload,
 		);
 	}
 
 
 
-	/**
-	 * Verify the Basgate login and set a session token.
-	 *
-	 * Flow: "Sign in with Basgate" button clicked; JS Basgate library
-	 * called; JS function signInCallback() fired with results from Basgate;
-	 * signInCallback() posts code and nonce (via AJAX) to this function;
-	 * This function checks the token using the Basgate PHP library, and
-	 * saves it to a session variable if it's authentic; control passes
-	 * back to signInCallback(), which will reload the current page
-	 * (wp-login.php) on success; wp-login.php reloads; custom_authenticate
-	 * hooked into authenticate action fires again, and
-	 * custom_authenticate_google() runs to verify the token; once verified
-	 * custom_authenticate proceeds as normal with the google email address
-	 * as a successfully authenticated external user.
-	 *
-	 * Action: wp_ajax_process_google_login
-	 * Action: wp_ajax_nopriv_process_google_login
-	 *
-	 * @return void, but die with the value to return to the success() function in AJAX call signInCallback().
-	 */
-	public function ajax_process_basgate_login()
-	{
 
-		// Nonce check.
-		if (
-			! isset($_POST['nonce']) ||
-			! wp_verify_nonce(sanitize_key($_POST['nonce']), 'basgate_login_nonce')
-		) {
-			die(esc_html("ERROR wrong nonce"));
-		}
-
-		// Basgate authentication token.
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$data = isset($_POST['data']) ? wp_unslash($_POST['data']) : null;
-		if (array_key_exists('auth_id', $data)) {
-			$auth_id = $data["auth_id"];
-		}
-
-		// Grab plugin settings.
-		// $options       = Options::get_instance();
-		// $auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
-
-		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
-
-
-		//TODO: Add basgate backend request for token and userinfo
-		if (empty($auth_id)) {
-			return null;
-		}
-		$bas_token = $this->getBasToken($auth_id);
-
-		// Store the token (for verifying later in wp-login).
-		session_start();
-		if (empty($_SESSION['token'])) {
-			// Store the token in the session for later use.
-			$_SESSION['token'] = $bas_token;
-
-			$response = 'Successfully authenticated. :' . $bas_token;
-		} else {
-			$response = 'Already authenticated. :' . $_SESSION['token'];
-			$_SESSION['token'] = $bas_token;
-		}
-
-		die(esc_html($response));
-	}
-
-
-
-	//Process Basgate Token
+	//Process BASSuperApp  Payment
 	public function getBasToken($auth_id)
 	{
 
+		?>
+		<script>
+			alert("STARTED getBasToken() ")
+		</script>
+		<?php
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
@@ -319,6 +362,14 @@ class Authentication extends Singleton
 		$code = $auth_id;
 		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
 
+		$data = json_encode([
+			'client_id' => $client_id,
+			'client_secret' => $client_secret,
+			'grant_type' => $grant_type,
+			'code' => $code,
+			'redirect_uri' => $redirect_uri
+		]);
+
 		try {
 			//Send Post request to get payment session details
 			$curl = curl_init();
@@ -328,76 +379,34 @@ class Authentication extends Singleton
 				CURLOPT_ENCODING => "",
 				CURLOPT_MAXREDIRS => 10,
 				CURLOPT_TIMEOUT => 30,
-				CURLOPT_FOLLOWLOCATION => true,
 				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => 'grant_type=' . $grant_type . '&client_id=' . $client_id . '&client_secret=' . $client_secret . '&code=' . $code . '&redirect_uri=' . $redirect_uri,
+				CURLOPT_POSTFIELDS => $data,
 				CURLOPT_HTTPHEADER => [
-					"Content-Type: application/x-www-form-urlencoded"
+					"Content-Type:application/x-www-form-urlencoded"
 				],
 			]);
 			$result = curl_exec($curl);
 			$err = curl_error($curl);
 			curl_close($curl);
 			if ($err) {
+
+		?>
+				<script>
+					var error = '<?php echo esc_attr($err); ?>'
+					alert("ERROR on getBasToken :" + error)
+				</script>
+			<?php
+
 			} else {
 				$response = json_decode($result, true);
-				if (array_key_exists('status', $response)) {
-					if ($response['status'] === '1') {
-						return $response['data']['access_token'];
-					} else {
-						return $response['messages'];
-					}
-				}
-			}
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-	}
-
-	//Process Basgate get UserInfo
-	public function getBasUserInfo($token)
-	{
-
-		$options       = Options::get_instance();
-		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
-
-		//access BASSuperApp  settings
-		if (array_key_exists('bas_environment', $auth_settings) && $auth_settings["bas_environment"] === "1") {
-			$bassdk_api =  BasgateConstants::PRODUCTION_HOST;
-		} else {
-			$bassdk_api = BasgateConstants::STAGING_HOST;
-		}
-
-		try {
-			$curl = curl_init();
-			curl_setopt_array($curl, [
-				CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "GET",
-				CURLOPT_HTTPHEADER => [
-					"Content-Type: application/json",
-					"Authorization: Bearer " . $token
-				],
-			]);
-			$result = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
-			if ($err) {
-			} else {
-				$response = json_decode($result, true);
-				if (array_key_exists('status', $response)) {
-					if ($response['status'] === '1') {
-						return $response['data'];
-					} else {
-						return $response['messages'];
-					}
-				}
+				$code = $response['code'];
+			?>
+				<script>
+					var result = '<?php echo esc_attr($result); ?>'
+					alert("getBasToken Result :" + result)
+				</script>
+<?php
 			}
 		} catch (\Throwable $th) {
 			throw $th;
