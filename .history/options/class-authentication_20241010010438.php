@@ -71,7 +71,7 @@ class Authentication extends Singleton
 			<script>
 				console.log("custom_authenticate() bas_enabled=true")
 			</script>
-			<?php
+		<?php
 
 			$result = $this->custom_authenticate_basgate($auth_settings);
 
@@ -83,16 +83,15 @@ class Authentication extends Singleton
 				}
 				$authenticated_by = $result['authenticated_by'];
 				$openId = $result['open_id'];
-			?>
-				<script>
-					var open_id = '<?php echo esc_attr($openId); ?>'
-					console.log("custom_authenticate() open_id :", open_id)
-				</script>
-		<?php
 			}
 		}
 
-
+		?>
+		<script>
+			var open_id = '<?php echo esc_attr($openId); ?>'
+			console.log("custom_authenticate() open_id :", open_id)
+		</script>
+		<?php
 		// If we don't have an externally authenticated user, either skip to
 		// WordPress authentication (if WordPress logins are enabled), or return
 		// an error (if WordPress logins are disabled and at least one external
@@ -174,12 +173,13 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
+		$test = empty($_GET['external']);
+
 		?>
 		<script>
-			var tstGet = '<?php echo esc_attr($_GET['external']); ?>';
-			var tstReq = '<?php echo esc_attr($_REQUEST['external']); ?>';
+			var tst = '<?php echo esc_attr($test); ?>';
 			console.log("STARTED custom_authenticate_basgate() location.href:", location.href);
-			console.log("custom_authenticate_basgate() tstGet ,tstReq:", tstGet, tstReq);
+			console.log("STARTED custom_authenticate_basgate() tst:", tst);
 		</script>
 		<?php
 
