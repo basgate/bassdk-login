@@ -174,6 +174,7 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
+		$url=esc_url_raw(wp_unslash());
 		?>
 		<script>
 			var tstGet = '<?php echo esc_attr($_GET['external']); ?>';
