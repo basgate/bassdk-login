@@ -145,6 +145,13 @@ class Login_Form extends Singleton
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 		$ajaxurl       = admin_url('admin-ajax.php');
+		$current_path = ! empty($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url();
+		$new_url = $current_path;
+		if (false === strpos($current_path, 'wp-login.php')) {
+			$new_url = wp_login_url($current_path);
+		}
+
+
 		if ('1' === $auth_settings['bas_enabled']) :
 		?>
 			<script>
@@ -170,7 +177,6 @@ class Login_Form extends Singleton
 
 					if (resData.hasOwnProperty('authId')) {
 						// Send the authId to the server
-						// console.log("signInCallback() authId::", resData.authId)
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
 						var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
 						$.post(ajaxurl, {
@@ -183,7 +189,7 @@ class Login_Form extends Singleton
 							console.log("signInCallback() textStatus :", textStatus)
 							console.log("signInCallback() data :", data)
 
-							var newHref = '<?php echo esc_url(Helper::modify_current_url_for_external_login('basgate')); ?>';
+							var newHref = '<?php echo esc_url($new_url); ?>';
 							newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
 							console.log("signInCallback()  newHref: ", newHref)
 

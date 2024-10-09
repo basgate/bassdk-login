@@ -177,19 +177,15 @@ class Authentication extends Singleton
 
 		?>
 		<script>
-			var tstGet = '<?php echo esc_attr($_GET['external']); ?>';
-			var tstReq = '<?php echo esc_attr($_REQUEST['external']); ?>';
 			console.log("STARTED custom_authenticate_basgate() location.href:", location.href);
-			console.log("custom_authenticate_basgate() tstGet ,tstReq:", tstGet, tstReq);
 		</script>
 		<?php
 
 		// Move on if Basgate auth hasn't been requested here.
 		// phpcs:ignore WordPress.Security.NonceVerification
 		// if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
-		if (!array_key_exists('basToken', $_SESSION)) {
-			return null;
-		}
+		// 	return null;
+		// }
 
 		?>
 		<script>
