@@ -554,6 +554,17 @@ class Helper
 	}
 
 
+	public static function get_login_redirect_url()
+	{
+		$current_path = ! empty($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url();
+		$new_url = $current_path;
+		if (false === strpos($current_path, 'wp-login.php')) {
+			$new_url = wp_login_url($current_path);
+		}
+
+		return $new_url;
+	}
+
 	public static function getcURLversion()
 	{
 		if (function_exists('curl_version')) {
