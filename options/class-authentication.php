@@ -39,7 +39,7 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-		?>
+?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
 		</script>
@@ -221,7 +221,7 @@ class Authentication extends Singleton
 			var payload = '<?php echo esc_attr($payload); ?>'
 			console.log("custom_authenticate() $payload :", payload)
 		</script>
-	<?php
+<?php
 
 
 		return array(
@@ -278,11 +278,11 @@ class Authentication extends Singleton
 			$auth_id = isset($_POST['authId']) ? wp_unslash($_POST['authId']) : null;
 		}
 		// Grab plugin settings.
-		// $options       = Options::get_instance();
-		// $auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
+		$options       = Options::get_instance();
+		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
-		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 
 		//TODO: Add basgate backend request for token and userinfo
@@ -294,26 +294,14 @@ class Authentication extends Singleton
 
 		$bas_token = $this->getBasToken($auth_id);
 
-		sprintf(" === token:%s", $bas_token)
-
-		?>
-		<script>
-			var token = '<?php echo esc_attr($bas_token) ?>'
-			console.log("ajax_process_basgate_login() token 111:", token)
-			console.log("ajax_process_basgate_login() token 222:", JSON.stringify(token))
-		</script>
-		<?php
-
 		// Store the token (for verifying later in wp-login).
 		session_start();
-		if (empty($_SESSION['token'])) {
+		if (!empty($bas_token)) {
 			// Store the token in the session for later use.
 			$_SESSION['token'] = $bas_token;
-
 			$response = 'Successfully authenticated. :' . $bas_token;
 		} else {
-			$response = 'Already authenticated. :' . $_SESSION['token'];
-			$_SESSION['token'] = $bas_token;
+			$response = 'ERROR on authentication Token is empty.';
 		}
 
 		die(esc_html($response));
@@ -342,7 +330,7 @@ class Authentication extends Singleton
 		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
 
 		try {
-			//Send Post request to get payment session details
+			//Send Post request to get token details
 			$curl = curl_init();
 			curl_setopt_array($curl, [
 				CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',

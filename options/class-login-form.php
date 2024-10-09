@@ -82,20 +82,18 @@ class Login_Form extends Singleton
 
 		ob_start();
 ?>
-
-
-
 		<script type="text/javascript">
 			try {
 				window.addEventListener("JSBridgeReady", async (event) => {
-					console.log("JSBridgeReady READY Now ");
-
-					// $('#bassdk-login-modal').show();
 					console.log("JSBridgeReady Successfully loaded ");
-					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>', false).then((res) => {
 						if (res) {
-							console.log("getBasAuthCode res.status :", res.status)
-							signInCallback(res.data);
+							// console.log("getBasAuthCode res.status :", res.status)
+							if (res.status == "1") {
+								signInCallback(res.data);
+							} else {
+								console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+							}
 						}
 					}).catch((error) => {
 						console.error("ERROR on catch getBasAuthCode:", error)
@@ -143,7 +141,6 @@ class Login_Form extends Singleton
 	 */
 	public function load_login_footer_js()
 	{
-
 		// Grab plugin settings.
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
@@ -151,9 +148,6 @@ class Login_Form extends Singleton
 		if ('1' === $auth_settings['bas_enabled']) :
 		?>
 			<script>
-				/* global location, window */
-				// Reload login page if reauth querystring param exists,
-				// since reauth interrupts external logins (e.g., google).
 				if (location.search.indexOf('reauth=1') >= 0) {
 					location.href = location.href.replace('reauth=1', '');
 				}
@@ -171,13 +165,12 @@ class Login_Form extends Singleton
 
 				// eslint-disable-next-line
 				function signInCallback(resData) { // jshint ignore:line
-					console.log("STARTED signInCallback()")
 					var $ = jQuery;
 					console.log("signInCallback() resData:", JSON.stringify(resData))
 
 					if (resData.hasOwnProperty('authId')) {
-						// Send the JWT to the server
-						console.log("signInCallback() authId::", resData.authId)
+						// Send the authId to the server
+						// console.log("signInCallback() authId::", resData.authId)
 						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
 						var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
 						$.post(ajaxurl, {
@@ -187,11 +180,9 @@ class Login_Form extends Singleton
 							authId: resData.authId,
 						}, function(data, textStatus) {
 
-							// console.log("inside signInCallback() textStatus :" + textStatus)
 							console.log("signInCallback() textStatus :", textStatus)
 							console.log("signInCallback() data :", data)
 
-							// console.log("inside signInCallback() ajaxurl :" + ajaxurl + "  - nonce :" + nonce)
 							// Reload wp-login.php to continue the authentication process.
 							var newHref = authUpdateQuerystringParam(location.href, 'external', 'basgate');
 
