@@ -111,7 +111,7 @@ class Login_Form extends Singleton
 				<script type="text/javascript">
 					function invokeBasLogin() {
 						try {
-							console.log("===== invokeBasLogin() isJSBridgeReady :", isJSBridgeReady)
+							// console.log("===== invokeBasLogin() isJSBridgeReady :", isJSBridgeReady)
 						} catch (error) {
 							console.error("ERROR on isJSBridgeReady:", error)
 						}
@@ -177,7 +177,7 @@ class Login_Form extends Singleton
 							action: 'process_basgate_login',
 							data: resData,
 							nonce: nonce,
-							authId: resData.authId,
+							// authId: resData.authId,
 						}, function(data, textStatus) {
 
 							console.log("signInCallback() textStatus :", textStatus)
@@ -214,7 +214,7 @@ class Login_Form extends Singleton
 						// console.log('Sign-in state: ' + credentialResponse['error']);
 
 						// If user denies access, reload the login page.
-						if (credentialResponse.error === 'access_denied' || credentialResponse.error === 'user_signed_out') {
+						if (resData.error === 'access_denied' || resData.error === 'user_signed_out') {
 							window.location.reload();
 						}
 					}

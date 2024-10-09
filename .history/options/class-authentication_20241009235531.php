@@ -69,11 +69,18 @@ class Authentication extends Singleton
 		) {
 		?>
 			<script>
-				console.log("custom_authenticate() bas_enabled=true")
+				console.log("inside custom_authenticate() if( $auth_settings['bas_enabled'])")
+			</script>
+			<?php
+			$result = $this->custom_authenticate_basgate($auth_settings);
+
+			?>
+			<script>
+				var result = '<?php echo esc_attr($result); ?>'
+				console.log("custom_authenticate() result 111:", result)
+				console.log("custom_authenticate() result 222:", JSON.stringify(result))
 			</script>
 		<?php
-
-			$result = $this->custom_authenticate_basgate($auth_settings);
 
 			if (! is_null($result) && ! is_wp_error($result)) {
 				if (is_array($result['email'])) {
@@ -173,35 +180,23 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
-		?>
-		<script>
-			console.log("STARTED custom_authenticate_basgate()");
-		</script>
-		<?php
-
 		// Move on if Basgate auth hasn't been requested here.
 		// phpcs:ignore WordPress.Security.NonceVerification
 		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
 			return null;
 		}
 
-		?>
-		<script>
-			console.log("custom_authenticate_basgate() before session_start()");
-		</script>
-		<?php
-
 		// Get one time use token.
 		session_start();
-		$token = array_key_exists('basToken', $_SESSION) ? $_SESSION['basToken'] : null;
+		$token = array_key_exists('token', $_SESSION) ? $_SESSION['token'] : null;
 
 		// No token, so this is not a succesful Basgate login.
 		if (empty($token)) {
 			return null;
 		}
 
-		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 		// Verify this is a successful Basgate authentication.
 		try {
@@ -303,7 +298,7 @@ class Authentication extends Singleton
 		session_start();
 		if (!empty($bas_token)) {
 			// Store the token in the session for later use.
-			$_SESSION['basToken'] = $bas_token;
+			$_SESSION['token'] = $bas_token;
 			$response = 'Successfully authenticated. :' . $bas_token;
 		} else {
 			$response = 'ERROR on authentication Token is empty.';
@@ -358,9 +353,9 @@ class Authentication extends Singleton
 			} else {
 				$response = json_decode($result, true);
 				if (array_key_exists('access_token', $response)) {
-					return $response['access_token'];
-				} else {
-					return null;
+					sprintf("token:%s", $response['access_token']);
+					printf($response['access_token']);
+					echo esc_html($response['access_token']);
 				}
 			}
 		} catch (\Throwable $th) {
@@ -459,8 +454,8 @@ class Authentication extends Singleton
 		if (session_id() === '') {
 			session_start();
 		}
-		if ('google' === self::$authenticated_by && array_key_exists('basToken', $_SESSION)) {
-			$token = $_SESSION['basToken'];
+		if ('google' === self::$authenticated_by && array_key_exists('token', $_SESSION)) {
+			$token = $_SESSION['token'];
 
 			$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
 			$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
@@ -476,7 +471,7 @@ class Authentication extends Singleton
 			// $client->revokeToken($token);
 
 			// Remove the credentials from the user's session.
-			unset($_SESSION['basToken']);
+			unset($_SESSION['token']);
 		}
 	}
 }
