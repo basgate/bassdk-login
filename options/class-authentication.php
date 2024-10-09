@@ -173,9 +173,11 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
+		$test = $_GET['external'];
 		?>
 		<script>
-			console.log("STARTED custom_authenticate_basgate()");
+			var tst = '<?php echo esc_attr($test); ?>';
+			console.log("STARTED custom_authenticate_basgate() tst, location.href:", tst, location.href);
 		</script>
 		<?php
 

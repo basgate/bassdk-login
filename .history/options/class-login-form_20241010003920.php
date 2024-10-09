@@ -86,7 +86,7 @@ class Login_Form extends Singleton
 			try {
 				window.addEventListener("JSBridgeReady", async (event) => {
 					console.log("JSBridgeReady Successfully loaded ");
-					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>', false).then((res) => {
 						if (res) {
 							// console.log("getBasAuthCode res.status :", res.status)
 							if (res.status == "1") {
