@@ -43,7 +43,7 @@ class Authentication extends Singleton
 
 ?>
 		<script>
-			alert("Logined Successfully inside custom_authenticate() ")
+			alert("STARTED custom_authenticate() ")
 		</script>
 		<?php
 		// Pass through if already authenticated.
@@ -71,7 +71,7 @@ class Authentication extends Singleton
 		) {
 		?>
 			<script>
-				alert("inside custom_authenticate() if( $auth_settings['bas_enabled'])")
+				console.log("inside custom_authenticate() if( $auth_settings['bas_enabled'])")
 			</script>
 		<?php
 			$result = $this->custom_authenticate_basgate($auth_settings);
@@ -86,6 +86,12 @@ class Authentication extends Singleton
 			}
 		}
 
+		?>
+		<script>
+			var open_id = '<?php echo esc_attr($openId); ?>'
+			console.log("custom_authenticate() open_id :", open_id)
+		</script>
+		<?php
 		// If we don't have an externally authenticated user, either skip to
 		// WordPress authentication (if WordPress logins are enabled), or return
 		// an error (if WordPress logins are disabled and at least one external
@@ -186,9 +192,11 @@ class Authentication extends Singleton
 		?>
 		<script>
 			var token = '<?php echo esc_attr($token) ?>'
-			alert("custom_authenticate_basgate() :" + token)
+			console.log("custom_authenticate_basgate() token 111:", token)
+			console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
 		</script>
-<?php
+
+		<?php
 
 		// No token, so this is not a succesful Basgate login.
 		if (empty($token)) {
@@ -215,6 +223,13 @@ class Authentication extends Singleton
 		$name     = $payload['name'];
 		$openId     = $payload['open_id'];
 		$phone     = $payload['phone'];
+
+		?>
+		<script>
+			var payload = '<?php echo esc_attr($payload); ?>'
+			console.log("custom_authenticate() $payload :", payload)
+		</script>
+<?php
 
 
 		return array(
