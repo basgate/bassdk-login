@@ -180,11 +180,6 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
-		?>
-		<script>
-			console.log("STARTED custom_authenticate_basgate() ")
-		</script>
-		<?php
 		// Move on if Basgate auth hasn't been requested here.
 		// phpcs:ignore WordPress.Security.NonceVerification
 		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
@@ -194,14 +189,6 @@ class Authentication extends Singleton
 		// Get one time use token.
 		session_start();
 		$token = array_key_exists('token', $_SESSION) ? $_SESSION['token'] : null;
-
-		?>
-		<script>
-			var token = '<?php echo esc_attr($token) ?>'
-			console.log("custom_authenticate_basgate() token 111:", token)
-			console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
-		</script>
-		<?php
 
 		// No token, so this is not a succesful Basgate login.
 		if (empty($token)) {
@@ -234,7 +221,7 @@ class Authentication extends Singleton
 			var payload = '<?php echo esc_attr($payload); ?>'
 			console.log("custom_authenticate() $payload :", payload)
 		</script>
-		<?php
+	<?php
 
 
 		return array(
@@ -378,18 +365,9 @@ class Authentication extends Singleton
 			} else {
 				$response = json_decode($result, true);
 				if (array_key_exists('access_token', $response)) {
-					// if ($response['status'] === '1') {
-					sprintf("token:%s", $response['access_token'])
-		?>
-					<script>
-						var token = '<?php echo esc_attr($response['access_token']) ?>'
-
-						console.log("custom_authenticate_basgate() token 111:", token)
-						console.log("custom_authenticate_basgate() token 222:", JSON.stringify(token))
-					</script>
-<?php
-					return $response['access_token'];
-					// }
+					sprintf("token:%s", $response['access_token']);
+					printf($response['access_token']);
+					echo esc_html($response['access_token']);
 				}
 			}
 		} catch (\Throwable $th) {
