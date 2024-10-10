@@ -24,15 +24,15 @@ class WP_Plugin_Basgate extends Singleton
 	public function __construct()
 	{
 		// Installation and uninstallation hooks.
-		register_activation_hook('authorizer/authorizer.php', array($this, 'activate'));
-		register_deactivation_hook('authorizer/authorizer.php', array($this, 'deactivate'));
+		register_activation_hook('bassdk-wp-login/bassdk-wp-login.php', array($this, 'activate'));
+		register_deactivation_hook('bassdk-wp-login/bassdk-wp-login.php', array($this, 'deactivate'));
 
 		/**
 		 * Register hooks.
 		 */
 
 		// // Custom wp authentication routine using external service.
-		add_filter('authenticate', array(Authentication::get_instance(), 'custom_authenticate'), 1, 3);
+		add_filter('authenticate', array(Authentication::get_instance(), 'custom_authenticate'), 20, 3);
 
 		// // Custom logout action using external service.
 		add_action('clear_auth_cookie', array(Authentication::get_instance(), 'pre_logout'));
@@ -46,7 +46,7 @@ class WP_Plugin_Basgate extends Singleton
 		// add_filter('lostpassword_url', array(Login_Form::get_instance(), 'custom_lostpassword_url'));
 
 		// Modify the log in URL (if applicable options are set).
-		// add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
+		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
 
 		// If we have a custom login error, add the filter to show it.
 		$error = get_option('auth_settings_advanced_login_error');
@@ -148,57 +148,57 @@ class WP_Plugin_Basgate extends Singleton
 	{
 		global $wpdb;
 		$options       = Options::get_instance();
-		// $sync_userdata = Sync_Userdata::get_instance();
+		// // $sync_userdata = Sync_Userdata::get_instance();
 
-		// If we're in a multisite environment, run the plugin activation for each
-		// site when network enabling.
-		// Note: wp-cli does not use nonces, so we skip the nonce check here to
-		// allow the "wp plugin activate basgate" command.
-		// phpcs:ignore WordPress.CSRF.NonceVerification.NoNonceVerification
-		if (is_multisite() && $network_wide) {
+		// // If we're in a multisite environment, run the plugin activation for each
+		// // site when network enabling.
+		// // Note: wp-cli does not use nonces, so we skip the nonce check here to
+		// // allow the "wp plugin activate basgate" command.
+		// // phpcs:ignore WordPress.CSRF.NonceVerification.NoNonceVerification
+		// if (is_multisite() && $network_wide) {
 
-			// Add super admins to the multisite approved list.
-			$auth_multisite_settings_access_users_approved               = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', array());
-			$should_update_auth_multisite_settings_access_users_approved = false;
-			foreach (get_super_admins() as $super_admin) {
-				$user = get_user_by('login', $super_admin);
-				// Skip if user wasn't found (edge case).
-				if (empty($user)) {
-					continue;
-				}
-				// // Add to approved list if not there.
-				// if (! Helper::in_multi_array($user->user_email, $auth_multisite_settings_access_users_approved)) {
-				// 	$approved_user = array(
-				// 		'email'      => Helper::lowercase($user->user_email),
-				// 		'role'       => is_array($user->roles) && count($user->roles) > 0 ? $user->roles[0] : 'administrator',
-				// 		'date_added' => wp_date('M Y', strtotime($user->user_registered)),
-				// 		'local_user' => true,
-				// 	);
-				// 	array_push($auth_multisite_settings_access_users_approved, $approved_user);
-				// 	$should_update_auth_multisite_settings_access_users_approved = true;
-				// }
-			}
-			if ($should_update_auth_multisite_settings_access_users_approved) {
-				update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', $auth_multisite_settings_access_users_approved);
-			}
+		// 	// Add super admins to the multisite approved list.
+		// 	$auth_multisite_settings_access_users_approved               = get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', array());
+		// 	$should_update_auth_multisite_settings_access_users_approved = false;
+		// 	foreach (get_super_admins() as $super_admin) {
+		// 		$user = get_user_by('login', $super_admin);
+		// 		// Skip if user wasn't found (edge case).
+		// 		if (empty($user)) {
+		// 			continue;
+		// 		}
+		// 		// // Add to approved list if not there.
+		// 		// if (! Helper::in_multi_array($user->user_email, $auth_multisite_settings_access_users_approved)) {
+		// 		// 	$approved_user = array(
+		// 		// 		'email'      => Helper::lowercase($user->user_email),
+		// 		// 		'role'       => is_array($user->roles) && count($user->roles) > 0 ? $user->roles[0] : 'administrator',
+		// 		// 		'date_added' => wp_date('M Y', strtotime($user->user_registered)),
+		// 		// 		'local_user' => true,
+		// 		// 	);
+		// 		// 	array_push($auth_multisite_settings_access_users_approved, $approved_user);
+		// 		// 	$should_update_auth_multisite_settings_access_users_approved = true;
+		// 		// }
+		// 	}
+		// 	if ($should_update_auth_multisite_settings_access_users_approved) {
+		// 		update_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings_access_users_approved', $auth_multisite_settings_access_users_approved);
+		// 	}
 
-			// Run plugin activation on each site in the network.
-			$current_blog_id = $wpdb->blogid;
-			// phpcs:ignore WordPress.WP.DeprecatedFunctions.wp_get_sitesFound
-			$sites = function_exists('get_sites') ? get_sites() : wp_get_sites(array('limit' => PHP_INT_MAX));
-			foreach ($sites as $site) {
-				$blog_id = function_exists('get_sites') ? $site->blog_id : $site['blog_id'];
-				switch_to_blog($blog_id);
-				// Set default plugin options and add current users to approved list.
-				$options->set_default_options();
-				// $sync_userdata->add_wp_users_to_approved_list();
-			}
-			switch_to_blog($current_blog_id);
-		} else {
-			// Set default plugin options and add current users to approved list.
-			$options->set_default_options();
-			// $sync_userdata->add_wp_users_to_approved_list();
-		}
+		// 	// Run plugin activation on each site in the network.
+		// 	$current_blog_id = $wpdb->blogid;
+		// 	// phpcs:ignore WordPress.WP.DeprecatedFunctions.wp_get_sitesFound
+		// 	$sites = function_exists('get_sites') ? get_sites() : wp_get_sites(array('limit' => PHP_INT_MAX));
+		// 	foreach ($sites as $site) {
+		// 		$blog_id = function_exists('get_sites') ? $site->blog_id : $site['blog_id'];
+		// 		switch_to_blog($blog_id);
+		// 		// Set default plugin options and add current users to approved list.
+		// 		$options->set_default_options();
+		// 		// $sync_userdata->add_wp_users_to_approved_list();
+		// 	}
+		// 	switch_to_blog($current_blog_id);
+		// } else {
+		//	// Set default plugin options and add current users to approved list.
+		$options->set_default_options();
+		//	// $sync_userdata->add_wp_users_to_approved_list();
+		// }
 	}
 
 

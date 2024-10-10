@@ -39,7 +39,7 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-?>
+		?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
 		</script>
@@ -57,7 +57,7 @@ class Authentication extends Singleton
 
 		// Start external authentication.
 		$externally_authenticated_emails = array();
-		$authenticated_by                = 'basgate';
+		$authenticated_by                = '';
 		$result                          = null;
 
 		// Try Basgate authentication if it's enabled and we don't have a
@@ -67,7 +67,7 @@ class Authentication extends Singleton
 			0 === count($externally_authenticated_emails) &&
 			! is_wp_error($result)
 		) {
-		?>
+			?>
 			<script>
 				console.log("custom_authenticate() bas_enabled=true")
 			</script>
@@ -88,7 +88,7 @@ class Authentication extends Singleton
 					var open_id = '<?php echo esc_attr($openId); ?>'
 					console.log("custom_authenticate() open_id :", open_id)
 				</script>
-		<?php
+			<?php
 			}
 		}
 
