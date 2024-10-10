@@ -391,7 +391,7 @@ class Authentication extends Singleton
 		try {
 			$curl = curl_init();
 			curl_setopt_array($curl, [
-				CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
+				CURLOPT_URL => $bassdk_api . 'api/v1/auth/userinfo',
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => "",
 				CURLOPT_MAXREDIRS => 10,
