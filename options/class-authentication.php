@@ -67,7 +67,7 @@ class Authentication extends Singleton
 			0 === count($externally_authenticated_emails) &&
 			! is_wp_error($result)
 		) {
-			?>
+		?>
 			<script>
 				console.log("custom_authenticate() bas_enabled=true")
 			</script>
@@ -83,19 +83,16 @@ class Authentication extends Singleton
 				}
 				$authenticated_by = $result['authenticated_by'];
 				$openId = $result['open_id'];
+				$bas_attributes = $result['bas_attributes'];
 			?>
 				<script>
 					var open_id = '<?php echo esc_attr($openId); ?>'
 					console.log("custom_authenticate() open_id :", open_id)
 				</script>
-			<?php
+		<?php
 			}
 		}
 
-
-		// Check this external user's access against the access lists
-		// (pending, approved, blocked).
-		//TODO: Commented temperlay
 		$result = $this->check_user_access($user, $result);
 
 		// Fail with message if there was an error creating/adding the user.
@@ -112,12 +109,12 @@ class Authentication extends Singleton
 		if ($user) {
 			update_user_meta($user->ID, 'authenticated_by', $authenticated_by);
 			update_user_meta($user->ID, 'open_id', $openId);
+			update_user_meta($user->ID, 'bas_attributes', $bas_attributes);
 		}
 
 		// If we haven't exited yet, we have a valid/approved user, so authenticate them.
 		return $user;
 	}
-
 
 	/**
 	 * Validate this user's credentials against Basgate.
@@ -138,11 +135,9 @@ class Authentication extends Singleton
 		<?php
 
 		// phpcs:ignore WordPress.Security.NonceVerification
-		if ( empty( $_GET['external'] ) || 'basgate' !== $_GET['external'] ) {
+		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
 			return null;
 		}
-
-
 
 		// Get one time use token.
 		session_start();
@@ -190,7 +185,7 @@ class Authentication extends Singleton
 			var data = '<?php echo esc_attr($data); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
-	<?php
+		<?php
 
 
 		return array(
@@ -255,8 +250,6 @@ class Authentication extends Singleton
 		die(esc_html($response));
 	}
 
-
-
 	//Process Basgate Token
 	public function getBasToken($auth_id)
 	{
@@ -315,7 +308,7 @@ class Authentication extends Singleton
 	public function getBasUserInfo($token)
 	{
 
-	?>
+		?>
 		<script>
 			console.log("===== STARTED getBasUserInfo()");
 		</script>
@@ -375,7 +368,7 @@ class Authentication extends Singleton
 			<script>
 				console.log("getBasUserInfo() curl ERROR");
 			</script>
-<?php
+		<?php
 			throw $th;
 		}
 	}
@@ -386,7 +379,7 @@ class Authentication extends Singleton
 		$options                                    = Options::get_instance();
 		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
-		if(is_null($user_data)){
+		if (is_null($user_data)) {
 			return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
 		}
 
@@ -403,29 +396,21 @@ class Authentication extends Singleton
 			// johndoe/johndoe@example.com), use the full email address
 			// as the username.
 			if (get_user_by('login', $username) !== false) {
-				$username = $user_data['email'];
-			}
-			$result = wp_insert_user(
-				array(
-					'user_login'      => strtolower($username),
-					'user_pass'       => wp_generate_password(), // random password.
-					'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
-					'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
-					'user_email'      => Helper::lowercase($user_data['email']),
-					'user_registered' => wp_date('Y-m-d H:i:s'),
-					'role'            => $user_data['role'],
-				)
-			);
+				$result = get_user_by('login', $username);
+			} else {
+				$result = wp_insert_user(
+					array(
+						'user_login'      => strtolower($username),
+						'user_pass'       => wp_generate_password(), // random password.
+						'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
+						'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
+						'user_email'      => Helper::lowercase($user_data['email']),
+						'user_registered' => wp_date('Y-m-d H:i:s'),
+						'role'            => $user_data['role'],
+					)
+				);
 
-			// Fail with message if error.
-			if (is_wp_error($result) || 0 === $result) {
-				return $result;
-			}
-
-			// Authenticate as new user.
-			$user = new \WP_User($result);
-
-			/**
+							/**
 			 * Fires after an external user is authenticated for the first time
 			 * and a new WordPress account is created for them.
 			 *
@@ -445,12 +430,37 @@ class Authentication extends Singleton
 			 * );
 			 */
 			do_action('basgate_user_register', $user, $user_data);
+
+			}
+
+			// Fail with message if error.
+			if (is_wp_error($result) || 0 === $result) {
+				return $result;
+			}
+
+			// Authenticate as new user.
+			$user = new \WP_User($result);
+
 			return $user;
 		}
 
 		// Sanity check: if we made it here without returning, something has gone wrong.
 		return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
 	}
+
+		/**
+	 * Set auth cookies for WordPress login.
+	 *
+	 * @param WP_User $user WP User object.
+	 *
+	 * @return void
+	 */
+	public function set_auth_cookies( WP_User $user ) {
+		wp_clear_auth_cookie();
+		wp_set_current_user( $user->ID, $user->user_login );
+		wp_set_auth_cookie( $user->ID );
+	}
+
 
 	/**
 	 * Fetch the logging out user's external service (so we can log out of it
