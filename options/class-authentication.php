@@ -181,40 +181,23 @@ class Authentication extends Singleton
 		</script>
 		<?php
 
-		// Move on if Basgate auth hasn't been requested here.
-		// phpcs:ignore WordPress.Security.NonceVerification
-		// if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
-		// 	return null;
-		// }
-
-		?>
-		<script>
-			console.log("custom_authenticate_basgate() before session_start()");
-		</script>
-		<?php
-
 		// Get one time use token.
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
 			$token =  $_SESSION['basToken'];
+		?>
+			<script>
+				var token = <?php echo esc_attr($token); ?>;
+				console.log("custom_authenticate_basgate() $token:", token);
+			</script>
+		<?php
 		} else {
 			// No token, so this is not a succesful Basgate login.
 			return null;
 		}
 
-
-
-
-		?>
-		<script>
-			var token = <?php echo esc_attr($token); ?>;
-			console.log("custom_authenticate_basgate() $token:", token);
-		</script>
-		<?php
-
-
-		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
+		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
+		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 		// Verify this is a successful Basgate authentication.
 		try {
@@ -240,7 +223,7 @@ class Authentication extends Singleton
 			var payload = '<?php echo esc_attr($payload); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(payload))
 		</script>
-<?php
+		<?php
 
 
 		return array(
@@ -416,6 +399,12 @@ class Authentication extends Singleton
 			$err = curl_error($curl);
 			curl_close($curl);
 			if ($err) {
+		?>
+				<script>
+					var payload = '<?php echo esc_attr($err); ?>'
+					console.log("ERROR getUserInfo() $err :", JSON.stringify(payload))
+				</script>
+<?php
 			} else {
 				$response = json_decode($result, true);
 				if (array_key_exists('status', $response)) {
