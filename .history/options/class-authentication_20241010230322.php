@@ -39,7 +39,7 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-		?>
+?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
 		</script>
@@ -111,8 +111,6 @@ class Authentication extends Singleton
 			update_user_meta($user->ID, 'open_id', $openId);
 			update_user_meta($user->ID, 'bas_attributes', $bas_attributes);
 		}
-
-		$this->set_auth_cookies($user);
 
 		// If we haven't exited yet, we have a valid/approved user, so authenticate them.
 		return $user;
@@ -187,7 +185,7 @@ class Authentication extends Singleton
 			var data = '<?php echo esc_attr($data); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
-			<?php
+	<?php
 
 
 		return array(
@@ -310,7 +308,7 @@ class Authentication extends Singleton
 	public function getBasUserInfo($token)
 	{
 
-		?>
+	?>
 		<script>
 			console.log("===== STARTED getBasUserInfo()");
 		</script>
@@ -370,7 +368,7 @@ class Authentication extends Singleton
 			<script>
 				console.log("getBasUserInfo() curl ERROR");
 			</script>
-		<?php
+<?php
 			throw $th;
 		}
 	}
@@ -393,7 +391,10 @@ class Authentication extends Singleton
 				$username = explode('@', $user_data['email']);
 				$username = $username[0];
 			}
-
+			// If there's already a user with this username (e.g.,
+			// johndoe/johndoe@gmail.com exists, and we're trying to add
+			// johndoe/johndoe@example.com), use the full email address
+			// as the username.
 			if (get_user_by('login', $username) !== false) {
 				$user = get_user_by('login', $username);
 				do_action('basgate_user_logged_in', $user, $user_data);
@@ -409,11 +410,6 @@ class Authentication extends Singleton
 						'role'            => $user_data['role'],
 					)
 				);
-
-				// Fail with message if error.
-				if (is_wp_error($result) || 0 === $result) {
-					return $result;
-				}
 
 
 				// Authenticate as new user.
@@ -441,6 +437,12 @@ class Authentication extends Singleton
 				do_action('basgate_user_register', $user, $user_data);
 			}
 
+			// Fail with message if error.
+			if (is_wp_error($result) || 0 === $result) {
+				return $result;
+			}
+
+
 			return $user;
 		}
 
@@ -455,7 +457,7 @@ class Authentication extends Singleton
 	 *
 	 * @return void
 	 */
-	public function set_auth_cookies(\WP_User $user)
+	public function set_auth_cookies(WP_User $user)
 	{
 		wp_clear_auth_cookie();
 		wp_set_current_user($user->ID, $user->user_login);

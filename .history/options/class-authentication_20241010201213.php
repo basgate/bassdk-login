@@ -112,8 +112,6 @@ class Authentication extends Singleton
 			update_user_meta($user->ID, 'bas_attributes', $bas_attributes);
 		}
 
-		$this->set_auth_cookies($user);
-
 		// If we haven't exited yet, we have a valid/approved user, so authenticate them.
 		return $user;
 	}
@@ -187,7 +185,7 @@ class Authentication extends Singleton
 			var data = '<?php echo esc_attr($data); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
-			<?php
+		<?php
 
 
 		return array(
@@ -393,10 +391,12 @@ class Authentication extends Singleton
 				$username = explode('@', $user_data['email']);
 				$username = $username[0];
 			}
-
+			// If there's already a user with this username (e.g.,
+			// johndoe/johndoe@gmail.com exists, and we're trying to add
+			// johndoe/johndoe@example.com), use the full email address
+			// as the username.
 			if (get_user_by('login', $username) !== false) {
-				$user = get_user_by('login', $username);
-				do_action('basgate_user_logged_in', $user, $user_data);
+				$result = get_user_by('login', $username);
 			} else {
 				$result = wp_insert_user(
 					array(
@@ -410,36 +410,36 @@ class Authentication extends Singleton
 					)
 				);
 
-				// Fail with message if error.
-				if (is_wp_error($result) || 0 === $result) {
-					return $result;
-				}
+							/**
+			 * Fires after an external user is authenticated for the first time
+			 * and a new WordPress account is created for them.
+			 *
+			 * @since 2.8.0
+			 *
+			 * @param WP_User $user      User object.
+			 * @param array   $user_data User data from external service.
+			 *
+			 * Example $user_data:
+			 * array(
+			 *   'email'            => 'user@example.edu',
+			 *   'username'         => 'user',
+			 *   'first_name'       => 'First',
+			 *   'last_name'        => 'Last',
+			 *   'authenticated_by' => 'cas',
+			 *   'cas_attributes'   => array( ... ),
+			 * );
+			 */
+			do_action('basgate_user_register', $user, $user_data);
 
-
-				// Authenticate as new user.
-				$user = new \WP_User($result);
-
-				/**
-				 * Fires after an external user is authenticated for the first time
-				 * and a new WordPress account is created for them.
-				 *
-				 * @since 2.8.0
-				 *
-				 * @param WP_User $user      User object.
-				 * @param array   $user_data User data from external service.
-				 *
-				 * Example $user_data:
-				 * array(
-				 *   'email'            => 'user@example.edu',
-				 *   'username'         => 'user',
-				 *   'first_name'       => 'First',
-				 *   'last_name'        => 'Last',
-				 *   'authenticated_by' => 'cas',
-				 *   'cas_attributes'   => array( ... ),
-				 * );
-				 */
-				do_action('basgate_user_register', $user, $user_data);
 			}
+
+			// Fail with message if error.
+			if (is_wp_error($result) || 0 === $result) {
+				return $result;
+			}
+
+			// Authenticate as new user.
+			$user = new \WP_User($result);
 
 			return $user;
 		}
@@ -448,18 +448,17 @@ class Authentication extends Singleton
 		return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
 	}
 
-	/**
+		/**
 	 * Set auth cookies for WordPress login.
 	 *
 	 * @param WP_User $user WP User object.
 	 *
 	 * @return void
 	 */
-	public function set_auth_cookies(\WP_User $user)
-	{
+	public function set_auth_cookies( WP_User $user ) {
 		wp_clear_auth_cookie();
-		wp_set_current_user($user->ID, $user->user_login);
-		wp_set_auth_cookie($user->ID);
+		wp_set_current_user( $user->ID, $user->user_login );
+		wp_set_auth_cookie( $user->ID );
 	}
 
 
