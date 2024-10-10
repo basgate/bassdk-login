@@ -80,7 +80,6 @@ class Login_Form extends Singleton
 			$auth_settings['bas_client_id'] = "no_client_id";
 		}
 		$sdk_path = plugins_url('js/public.js', plugin_root());
-		
 		ob_start();
 		?>
 		<script type="text/javascript">
@@ -216,6 +215,8 @@ class Login_Form extends Singleton
 		endif;
 	}
 
+
+
 	/**
 	 * Ensure that whenever we are on a wp-login.php page for WordPress and there is a log in link, it properly
 	 * generates a wp-login.php URL with the additional "wordpress=external" URL parameter.
@@ -226,36 +227,35 @@ class Login_Form extends Singleton
 	 * @param  string $login_url URL for the log in page.
 	 * @return string            URL for the log in page.
 	 */
-	public function maybe_add_external_wordpress_to_log_in_links($login_url)
-	{
+	public function maybe_add_external_wordpress_to_log_in_links( $login_url ) {
 		// Initial check to make sure that we are on a wp-login.php page.
-		if (isset($GLOBALS['pagenow']) && site_url($GLOBALS['pagenow'], 'login') === $login_url) {
+		if ( isset( $GLOBALS['pagenow'] ) && site_url( $GLOBALS['pagenow'], 'login' ) === $login_url ) {
 			// Do a check in here within the $_REQUEST params to narrow down the scope of where we'll modify the URL
 			// We need to check against the following:  action=lostpassword, checkemail=confirm, action=rp, and action=resetpass.
 			if (
 				(
-					isset($_REQUEST['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					isset( $_REQUEST['action'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					(
 						'lostpassword' === $_REQUEST['action'] || // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						'rp' === $_REQUEST['action'] || // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						'resetpass' === $_REQUEST['action'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					)
 				) || (
-					isset($_REQUEST['checkemail']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					isset( $_REQUEST['checkemail'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					'confirm' === $_REQUEST['checkemail'] // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				)
 			) {
 				// Grab plugins settings.
 				$options       = Options::get_instance();
-				$auth_settings = $options->get_all(HELPER::SINGLE_CONTEXT, 'allow override');
+				$auth_settings = $options->get_all( HELPER::SINGLE_CONTEXT, 'allow override' );
 
 				// Only change the Log in URL if the Hide WordPress Logins option is enabled in Authorizer.
 				if (
-					array_key_exists('advanced_hide_wp_login', $auth_settings) &&
+					array_key_exists( 'advanced_hide_wp_login', $auth_settings ) &&
 					'1' === $auth_settings['advanced_hide_wp_login']
 				) {
 					// Need to determine if existing URL has params already or not, then add the param and value.
-					if (strpos($login_url, '?') === false) {
+					if ( strpos( $login_url, '?' ) === false ) {
 						$login_url = $login_url . '?external=wordpress';
 					} else {
 						$login_url = $login_url . '&external=wordpress';
@@ -283,16 +283,43 @@ class Login_Form extends Singleton
 		return $errors;
 	}
 
-	/**
-	 * Give a personalized message for logged in users and a generic one for anonymous visitors
-	 */
-	public function bas_personal_message_when_logged_in()
+
+	public function createNewUser($user_data)
 	{
-		if (is_user_logged_in()) {
-			$current_user = wp_get_current_user();
-			printf('Personal Message For %s!', esc_html($current_user->user_firstname));
-		} else {
-			echo ('Non-Personalized Message!');
+		if (array_key_exists('username', $user_data)) {
+			$username = $user_data['username'];
+		} else if (array_key_exists('email', $user_data)) {
+			$username = explode('@', $user_data['email']);
+			$username = $username[0];
 		}
+		// // If there's already a user with this username (e.g.,
+		// // johndoe/johndoe@gmail.com exists, and we're trying to add
+		// // johndoe/johndoe@example.com), use the full email address
+		// // as the username.
+		// if (get_user_by('login', $username) !== false) {
+		// 	$username = $user_data['email'];
+		// }
+
+		$result = wp_insert_user(
+			array(
+				'user_login'      => strtolower($username),
+				'user_pass'       => wp_generate_password(), // random password.
+				'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
+				'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
+				'user_email'      => Helper::lowercase($user_data['email']),
+				'user_registered' => wp_date('Y-m-d H:i:s'),
+				'role'            => $user_data['role'],
+			)
+		);
+
+		// Fail with message if error.
+		if (is_wp_error($result) || 0 === $result) {
+			return $result;
+		}
+
+		// Authenticate as new user.
+		$user = new \WP_User($result);
+
+		do_action('authorizer_user_register', $user, $user_data);
 	}
 }

@@ -331,4 +331,52 @@ class Admin_Page extends Singleton
 		);
 		// }
 	}
+
+
+	// /**
+	//  * Load external resources on this plugin's options page.
+	//  *
+	//  * Action: load-settings_page_authorizer
+	//  * Action: load-toplevel_page_authorizer
+	//  * Action: admin_head-index.php
+	//  */
+	// public function load_options_page()
+	// {
+	// 	wp_enqueue_script($this->id, plugins_url('js/basgate.js', \BasgateSDK\plugin_root()), array('jquery-effects-shake'), '3.10.0', true);
+	// 	wp_localize_script(
+	// 		$this->id,
+	// 		'authL10n',
+	// 		array(
+	// 			'baseurl'              => get_bloginfo('url'),
+	// 			'saved'                => esc_html__('Saved', $this->id),
+	// 			'duplicate'            => esc_html__('Duplicate', $this->id),
+	// 			'failed'               => esc_html__('Failed', $this->id),
+	// 			'local_wordpress_user' => esc_html__('Local WordPress user', $this->id),
+	// 			'block_ban_user'       => esc_html__('Block/Ban user', $this->id),
+	// 			'remove_user'          => esc_html__('Remove user', $this->id),
+	// 			'no_users_in'          => esc_html__('No users in', $this->id),
+	// 			'save_changes'         => esc_html__('Save Changes', $this->id),
+	// 			'private_pages'        => esc_html__('Private Pages', $this->id),
+	// 			'public_pages'         => esc_html__('Public Pages', $this->id),
+	// 			'first_page'           => esc_html__('First page'),
+	// 			'previous_page'        => esc_html__('Previous page'),
+	// 			'next_page'            => esc_html__('Next page'),
+	// 			'last_page'            => esc_html__('Last page'),
+	// 			'is_network_admin'     => is_network_admin() ? '1' : '0',
+	// 		)
+	// 	);
+
+	// 	// wp_enqueue_script('jquery-autogrow-textarea', plugins_url('vendor-custom/jquery.autogrow-textarea/jquery.autogrow-textarea.js', \BasgateSDK\plugin_root()), array('jquery'), '3.0.7', true);
+
+	// 	// wp_enqueue_script('jquery.multi-select', plugins_url('vendor-custom/jquery.multi-select/0.9.12/js/jquery.multi-select.js', \BasgateSDK\plugin_root()), array('jquery'), '0.9.12', true);
+
+	// 	wp_register_style('basgate-css', plugins_url('css/basgate.css', \BasgateSDK\plugin_root()), array(), '3.10.0');
+	// 	wp_enqueue_style('basgate-css');
+
+	// 	// wp_register_style('jquery-multi-select-css', plugins_url('vendor-custom/jquery.multi-select/0.9.12/css/multi-select.css', \BasgateSDK\plugin_root()), array(), '0.9.12');
+	// 	// wp_enqueue_style('jquery-multi-select-css');
+
+	// 	add_action('admin_notices', array(self::get_instance(), 'admin_notices')); // Add any notices to the top of the options page.
+	// 	add_action('admin_head', array(self::get_instance(), 'admin_head')); // Add help documentation to the options page.
+	// }
 }

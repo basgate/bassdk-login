@@ -81,9 +81,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
-		//TODO: Added by Ansi to check user is already logged in
-		add_action('loop_start', array(Login_Form::get_instance(), 'bas_personal_message_when_logged_in'));
-
 		// // Prevent access to password reset if WordPress logins are disabled.
 		// add_filter('lost_password_html_link', array(Login_Form::get_instance(), 'maybe_hide_lost_password_link'), PHP_INT_MAX, 1);
 		// add_action('lost_password', array(Login_Form::get_instance(), 'maybe_hide_lost_password_form'), PHP_INT_MAX, 1);
