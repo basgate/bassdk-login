@@ -410,29 +410,30 @@ class Authentication extends Singleton
 			if ($err) {
 		?>
 				<script>
-					var payload = '<?php echo esc_attr($err); ?>'
-					console.log("ERROR getUserInfo() $err :", JSON.stringify(payload))
+					console.log("ERROR getUserInfo() $err")
 				</script>
-		<?php
-			} else {
-				?>
+			<?php
+			}
+			if ($result) {
+			?>
 				<script>
-					console.log("getBasUserInfo() curl Successed");
+					var results = '<?php echo esc_attr($result) ?>';
+					console.log("getBasUserInfo() curl Successed results:", results);
 				</script>
-				<?php
+			<?php
 				$response = json_decode($result, true);
-				if (array_key_exists('status', $response)) {
-					// if ($response['status'] === '1') {
-					return $response;
-					// }
-				}
+				// if (array_key_exists('status', $response)) {
+				// if ($response['status'] === '1') {
+				return $response;
+				// }
+				// }
 			}
 		} catch (\Throwable $th) {
 			?>
 			<script>
 				console.log("getBasUserInfo() curl ERROR");
 			</script>
-			<?php
+<?php
 			throw $th;
 		}
 	}
