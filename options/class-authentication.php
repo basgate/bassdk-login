@@ -386,6 +386,10 @@ class Authentication extends Singleton
 		$options                                    = Options::get_instance();
 		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
+		if(is_null($user_data)){
+			return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
+		}
+
 		// If the approved external user does not have a WordPress account, create it.
 		if (!$user) {
 			if (array_key_exists('username', $user_data)) {
