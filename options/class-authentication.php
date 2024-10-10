@@ -202,6 +202,14 @@ class Authentication extends Singleton
 			return null;
 		}
 
+		?>
+		<script>
+			var token = <?php echo esc_attr($token); ?>;
+			console.log("custom_authenticate_basgate() $token:", token);
+		</script>
+		<?php
+
+
 		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
 		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
@@ -209,24 +217,25 @@ class Authentication extends Singleton
 		try {
 			$payload = $this->getBasUserInfo($token);
 		} catch (\Throwable $th) {
-			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', BasgateConstants::ID));
+			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', BasgateConstants::ID), $th->getMessage());
 		}
 
 		// Invalid ticket, so this in not a successful Basgate login.
-		if (empty($payload['user_name'])) {
+		if (array_key_exists("status", $payload) && "0" === $payload['status']) {
 			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', BasgateConstants::ID));
 		}
 
+		$data = $payload['data'];
 
-		$username     = $payload['user_name'];
-		$name     = $payload['name'];
-		$openId     = $payload['open_id'];
-		$phone     = $payload['phone'];
+		$username     = $data['user_name'];
+		$name     = $data['name'];
+		$openId     = $data['open_id'];
+		$phone     = $data['phone'];
 
 		?>
 		<script>
 			var payload = '<?php echo esc_attr($payload); ?>'
-			console.log("custom_authenticate() $payload :", payload)
+			console.log("custom_authenticate() $payload :", JSON.stringify(payload))
 		</script>
 <?php
 
@@ -407,11 +416,9 @@ class Authentication extends Singleton
 			} else {
 				$response = json_decode($result, true);
 				if (array_key_exists('status', $response)) {
-					if ($response['status'] === '1') {
-						return $response['data'];
-					} else {
-						return $response['messages'];
-					}
+					// if ($response['status'] === '1') {
+					return $response;
+					// }
 				}
 			}
 		} catch (\Throwable $th) {
