@@ -195,15 +195,12 @@ class Authentication extends Singleton
 
 		// Get one time use token.
 		session_start();
-		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
-			$token =  $_SESSION['basToken'];
-		} else {
-			// No token, so this is not a succesful Basgate login.
+		$token = array_key_exists('basToken', $_SESSION) ? $_SESSION['basToken'] : null;
+
+		// No token, so this is not a succesful Basgate login.
+		if (empty($token)) {
 			return null;
 		}
-
-
-
 
 		?>
 		<script>
