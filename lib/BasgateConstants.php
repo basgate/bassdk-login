@@ -17,6 +17,7 @@ class BasgateConstants
     // const BASGATE_SDK_URL_STAGING = "https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/";
     const CHECKOUT_JS_URL = "https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/merchant/v1/public.js";
     const OPTION_DATA_NAME = "auth_settings";
+    const EMAIL_DOMAIN = "@basgate.com";
 
     const SAVE_BASGATE_RESPONSE = true;
     const CHANNEL_ID = "WEB";

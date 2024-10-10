@@ -93,60 +93,10 @@ class Authentication extends Singleton
 		}
 
 
-		// If we don't have an externally authenticated user, either skip to
-		// WordPress authentication (if WordPress logins are enabled), or return
-		// an error (if WordPress logins are disabled and at least one external
-		// service is enabled).
-		if (count(array_filter($externally_authenticated_emails)) < 1) {
-			if (
-				array_key_exists('advanced_disable_wp_login', $auth_settings) &&
-				'1' === $auth_settings['advanced_disable_wp_login'] &&
-				(
-					'1' === $auth_settings['bas_enabled']
-				)
-			) {
-				remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
-				remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
-
-				$error = new \WP_Error();
-
-				if (empty($username)) {
-					$error->add('empty_username', __('<strong>ERROR</strong>: The username field is empty.'));
-				}
-
-				if (empty($password)) {
-					$error->add('empty_password', __('<strong>ERROR</strong>: The password field is empty.'));
-				}
-
-				return $error;
-			}
-
-			return $result;
-		}
-
-		// Remove duplicate and blank emails, if any.
-		$externally_authenticated_emails = array_filter(array_unique($externally_authenticated_emails));
-
-		// Get the external user's WordPress account by email address. This is
-		// the normal behavior (and the most secure).
-		foreach ($externally_authenticated_emails as $externally_authenticated_email) {
-			$user = get_user_by('email', Helper::lowercase($externally_authenticated_email));
-			// Stop trying email addresses once we have found a match.
-			if (false !== $user) {
-				break;
-			}
-		}
-
-		// We'll track how this user was authenticated in user meta.
-		if ($user) {
-			update_user_meta($user->ID, 'authenticated_by', $authenticated_by);
-			update_user_meta($user->ID, 'open_id', $openId);
-		}
-
 		// Check this external user's access against the access lists
 		// (pending, approved, blocked).
 		//TODO: Commented temperlay
-		// $result = Authorization::get_instance()->check_user_access($user, $externally_authenticated_emails, $result);
+		$result = $this->check_user_access($user, $result);
 
 		// Fail with message if there was an error creating/adding the user.
 		if (is_wp_error($result) || 0 === $result) {
@@ -156,6 +106,12 @@ class Authentication extends Singleton
 		// If we have a valid user from check_user_access(), log that user in.
 		if (get_class($result) === 'WP_User') {
 			$user = $result;
+		}
+
+		// We'll track how this user was authenticated in user meta.
+		if ($user) {
+			update_user_meta($user->ID, 'authenticated_by', $authenticated_by);
+			update_user_meta($user->ID, 'open_id', $openId);
 		}
 
 		// If we haven't exited yet, we have a valid/approved user, so authenticate them.
@@ -224,45 +180,23 @@ class Authentication extends Singleton
 
 		?>
 		<script>
-			var payload = '<?php echo esc_attr($payload); ?>'
-			console.log("custom_authenticate() $payload :", JSON.stringify(payload))
+			var data = '<?php echo esc_attr($data); ?>'
+			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
 	<?php
 
 
 		return array(
-			'email'             => $phone,
+			'email'             => $phone . BasgateConstants::EMAIL_DOMAIN,
 			'username'          => $username,
 			'first_name'        => $name,
 			'last_name'         => '',
 			'open_id'         => $openId,
 			'authenticated_by'  => 'basgate',
-			'bas_attributes' => $payload,
+			'bas_attributes' => $data,
 		);
 	}
 
-
-
-	/**
-	 * Verify the Basgate login and set a session token.
-	 *
-	 * Flow: "Sign in with Basgate" button clicked; JS Basgate library
-	 * called; JS function signInCallback() fired with results from Basgate;
-	 * signInCallback() posts code and nonce (via AJAX) to this function;
-	 * This function checks the token using the Basgate PHP library, and
-	 * saves it to a session variable if it's authentic; control passes
-	 * back to signInCallback(), which will reload the current page
-	 * (wp-login.php) on success; wp-login.php reloads; custom_authenticate
-	 * hooked into authenticate action fires again, and
-	 * custom_authenticate_google() runs to verify the token; once verified
-	 * custom_authenticate proceeds as normal with the google email address
-	 * as a successfully authenticated external user.
-	 *
-	 * Action: wp_ajax_process_google_login
-	 * Action: wp_ajax_nopriv_process_google_login
-	 *
-	 * @return void, but die with the value to return to the success() function in AJAX call signInCallback().
-	 */
 	public function ajax_process_basgate_login()
 	{
 		// Nonce check.
@@ -436,6 +370,74 @@ class Authentication extends Singleton
 <?php
 			throw $th;
 		}
+	}
+
+	public function check_user_access($user, $user_data = array())
+	{
+		// Grab plugin settings.
+		$options                                    = Options::get_instance();
+		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
+
+		// If the approved external user does not have a WordPress account, create it.
+		if (!$user) {
+			if (array_key_exists('username', $user_data)) {
+				$username = $user_data['username'];
+			} else {
+				$username = explode('@', $user_data['email']);
+				$username = $username[0];
+			}
+			// If there's already a user with this username (e.g.,
+			// johndoe/johndoe@gmail.com exists, and we're trying to add
+			// johndoe/johndoe@example.com), use the full email address
+			// as the username.
+			if (get_user_by('login', $username) !== false) {
+				$username = $user_data['email'];
+			}
+			$result = wp_insert_user(
+				array(
+					'user_login'      => strtolower($username),
+					'user_pass'       => wp_generate_password(), // random password.
+					'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
+					'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
+					'user_email'      => Helper::lowercase($user_data['email']),
+					'user_registered' => wp_date('Y-m-d H:i:s'),
+					'role'            => $user_data['role'],
+				)
+			);
+
+			// Fail with message if error.
+			if (is_wp_error($result) || 0 === $result) {
+				return $result;
+			}
+
+			// Authenticate as new user.
+			$user = new \WP_User($result);
+
+			/**
+			 * Fires after an external user is authenticated for the first time
+			 * and a new WordPress account is created for them.
+			 *
+			 * @since 2.8.0
+			 *
+			 * @param WP_User $user      User object.
+			 * @param array   $user_data User data from external service.
+			 *
+			 * Example $user_data:
+			 * array(
+			 *   'email'            => 'user@example.edu',
+			 *   'username'         => 'user',
+			 *   'first_name'       => 'First',
+			 *   'last_name'        => 'Last',
+			 *   'authenticated_by' => 'cas',
+			 *   'cas_attributes'   => array( ... ),
+			 * );
+			 */
+			do_action('basgate_user_register', $user, $user_data);
+			return $user;
+		}
+
+		// Sanity check: if we made it here without returning, something has gone wrong.
+		return new \WP_Error('invalid_login', __('Invalid login attempted.', 'authorizer'));
 	}
 
 	/**
