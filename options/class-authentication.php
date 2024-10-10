@@ -137,6 +137,13 @@ class Authentication extends Singleton
 		</script>
 		<?php
 
+		// phpcs:ignore WordPress.Security.NonceVerification
+		if ( empty( $_GET['external'] ) || 'basgate' !== $_GET['external'] ) {
+			return null;
+		}
+
+
+
 		// Get one time use token.
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
