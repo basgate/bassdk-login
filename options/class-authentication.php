@@ -187,12 +187,16 @@ class Authentication extends Singleton
 			$token =  $_SESSION['basToken'];
 		?>
 			<script>
-				var token = <?php echo esc_attr($token); ?>;
-				console.log("custom_authenticate_basgate() $token:", token);
+				console.log("custom_authenticate_basgate() $token exist");
 			</script>
 		<?php
 		} else {
 			// No token, so this is not a succesful Basgate login.
+		?>
+			<script>
+				console.log("custom_authenticate_basgate() ERROR $token not Exists");
+			</script>
+		<?php
 			return null;
 		}
 
@@ -223,7 +227,7 @@ class Authentication extends Singleton
 			var payload = '<?php echo esc_attr($payload); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(payload))
 		</script>
-		<?php
+	<?php
 
 
 		return array(
@@ -369,6 +373,11 @@ class Authentication extends Singleton
 	public function getBasUserInfo($token)
 	{
 
+	?>
+		<script>
+			console.log("===== STARTED getBasUserInfo()");
+		</script>
+		<?php
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
@@ -404,8 +413,13 @@ class Authentication extends Singleton
 					var payload = '<?php echo esc_attr($err); ?>'
 					console.log("ERROR getUserInfo() $err :", JSON.stringify(payload))
 				</script>
-<?php
+		<?php
 			} else {
+				?>
+				<script>
+					console.log("getBasUserInfo() curl Successed");
+				</script>
+				<?php
 				$response = json_decode($result, true);
 				if (array_key_exists('status', $response)) {
 					// if ($response['status'] === '1') {
@@ -414,6 +428,11 @@ class Authentication extends Singleton
 				}
 			}
 		} catch (\Throwable $th) {
+			?>
+			<script>
+				console.log("getBasUserInfo() curl ERROR");
+			</script>
+			<?php
 			throw $th;
 		}
 	}
