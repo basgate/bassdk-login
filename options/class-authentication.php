@@ -153,7 +153,7 @@ class Authentication extends Singleton
 				console.log("custom_authenticate_basgate() ERROR $token not Exists");
 			</script>
 		<?php
-			return null;
+			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', BasgateConstants::ID));
 		}
 
 		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
@@ -191,9 +191,10 @@ class Authentication extends Singleton
 			'username'          => $username,
 			'first_name'        => $name,
 			'last_name'         => '',
-			'open_id'         => $openId,
+			'open_id'         	=> $openId,
+			'role'				=> BasgateConstants::DEFAULT_ROLE,
 			'authenticated_by'  => 'basgate',
-			'bas_attributes' => $data,
+			'bas_attributes' 	=> $data,
 		);
 	}
 
@@ -437,7 +438,7 @@ class Authentication extends Singleton
 		}
 
 		// Sanity check: if we made it here without returning, something has gone wrong.
-		return new \WP_Error('invalid_login', __('Invalid login attempted.', 'authorizer'));
+		return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
 	}
 
 	/**
