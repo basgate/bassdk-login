@@ -57,31 +57,32 @@ class Login_Form extends Singleton
 				console.log("===== STARTED bassdk_login_form javascript")
 				var checkBas = false;
 				var index = 0;
-				while (!checkBas) {
-					setTimeout(() => {
-						console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
-						checkBas = isBasAuthTokenReturned || false;
-						if (isJSBridgeReady) {
-							console.log("JSBridgeReady Successfully loaded ");
-							await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
-								if (res) {
-									// console.log("getBasAuthCode res.status :", res.status)
-									if (res.status == "1") {
-										signInCallback(res.data);
-									} else {
-										console.error("ERROR on getBasAuthCode res.messages:", res.messages)
-									}
+				// while (!checkBas) {
+				setTimeout(function() {
+					index++;
+					console.log("===== bassdk_login_form while index:", index)
+					console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
+					checkBas = isBasAuthTokenReturned || false;
+					if (isJSBridgeReady) {
+						console.log("JSBridgeReady Successfully loaded ");
+						getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+							if (res) {
+								// console.log("getBasAuthCode res.status :", res.status)
+								if (res.status == "1") {
+									signInCallback(res.data);
+								} else {
+									console.error("ERROR on getBasAuthCode res.messages:", res.messages)
 								}
-							}).catch((error) => {
-								console.error("ERROR on catch getBasAuthCode:", error)
-							})
-						}
-						if (index >= 5) {
-							checkBas = true;
-						}
-						index++;
-					}, 2000);
-				}
+							}
+						}).catch((error) => {
+							console.error("ERROR on catch getBasAuthCode:", error)
+						})
+					}
+					if (index >= 5) {
+						checkBas = true;
+					}
+				}, 200);
+				// }
 			} catch (error) {
 				console.error("ERROR on getBasAuthCode:", error)
 			}
