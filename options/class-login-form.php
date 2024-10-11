@@ -51,33 +51,37 @@ class Login_Form extends Singleton
 		}
 
 		ob_start();
-?>
-		<script type="text/javascript">
-			try {
-				console.log("===== STARTED bassdk_login_form javascript")
+		$current_user = wp_get_current_user();
+		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
-				window.addEventListener("JSBridgeReady", async (event) => {
-					console.log("JSBridgeReady Successfully loaded ");
-					// if (isJSBridgeReady) {
-					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
-						if (res) {
-							// console.log("getBasAuthCode res.status :", res.status)
-							if (res.status == "1") {
-								signInCallback(res.data);
-							} else {
-								console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
+		?>
+			<script type="text/javascript">
+				try {
+					console.log("===== STARTED bassdk_login_form javascript")
+					window.addEventListener("JSBridgeReady", async (event) => {
+						console.log("JSBridgeReady Successfully loaded ");
+						// if (isJSBridgeReady) {
+						await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+							if (res) {
+								// console.log("getBasAuthCode res.status :", res.status)
+								if (res.status == "1") {
+									signInCallback(res.data);
+								} else {
+									console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+								}
 							}
-						}
-					}).catch((error) => {
-						console.error("ERROR on catch getBasAuthCode:", error)
-					})
-					// }
-				}, false);
-			} catch (error) {
-				console.error("ERROR on getBasAuthCode:", error)
-			}
-		</script>
+						}).catch((error) => {
+							console.error("ERROR on catch getBasAuthCode:", error)
+						})
+						// }
+					}, false);
+				} catch (error) {
+					console.error("ERROR on getBasAuthCode:", error)
+				}
+			</script>
 		<?php
+		endif;
 		return ob_get_clean();
 	}
 
