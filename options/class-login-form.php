@@ -55,29 +55,28 @@ class Login_Form extends Singleton
 		<script type="text/javascript">
 			try {
 				console.log("===== STARTED bassdk_login_form javascript")
-				setTimeout(function() {
-					console.log("===== bassdk_login_form setTimeout")
-					if ("isBasAuthTokenReturned" in window) {
-						console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
-						checkBas = isBasAuthTokenReturned || false;
-						if (isJSBridgeReady) {
-							console.log("JSBridgeReady Successfully loaded ");
-							getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
-								if (res) {
-									// console.log("getBasAuthCode res.status :", res.status)
-									if (res.status == "1") {
-										signInCallback(res.data);
-									} else {
-										console.error("ERROR on getBasAuthCode res.messages:", res.messages)
-									}
-								}
-							}).catch((error) => {
-								console.error("ERROR on catch getBasAuthCode:", error)
-							})
-						}
-					}
 
-				}, 2000);
+				window.addEventListener("JSBridgeReady", async (event) => {
+					console.log("JSBridgeReady Successfully loaded ");
+					// if ("isBasAuthTokenReturned" in window) {
+					console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
+					checkBas = isBasAuthTokenReturned || false;
+					if (isJSBridgeReady) {
+						await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+							if (res) {
+								// console.log("getBasAuthCode res.status :", res.status)
+								if (res.status == "1") {
+									signInCallback(res.data);
+								} else {
+									console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+								}
+							}
+						}).catch((error) => {
+							console.error("ERROR on catch getBasAuthCode:", error)
+						})
+					}
+					// }
+				}, false);
 			} catch (error) {
 				console.error("ERROR on getBasAuthCode:", error)
 			}
