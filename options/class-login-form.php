@@ -58,9 +58,6 @@ class Login_Form extends Singleton
 
 				window.addEventListener("JSBridgeReady", async (event) => {
 					console.log("JSBridgeReady Successfully loaded ");
-					// if ("isBasAuthTokenReturned" in window) {
-					console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
-					checkBas = isBasAuthTokenReturned || false;
 					if (isJSBridgeReady) {
 						await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
 							if (res) {
@@ -75,7 +72,6 @@ class Login_Form extends Singleton
 							console.error("ERROR on catch getBasAuthCode:", error)
 						})
 					}
-					// }
 				}, false);
 			} catch (error) {
 				console.error("ERROR on getBasAuthCode:", error)
