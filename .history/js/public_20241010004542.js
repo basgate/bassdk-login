@@ -4,7 +4,6 @@
 //#region BAS SDK Client Side 
 var isJSBridgeReady = false
 var isBasInDebug = false
-var isBasAuthTokenReturned = false
 console.log("Start Basgate-ClientSDK Script");
 
 function initBas() {
@@ -15,6 +14,8 @@ function initBas() {
         await getBasConfig();
     }, false);
 }
+
+
 
 const isBasSupperApp = () => {
     return isJSBridgeReady;
@@ -40,7 +41,7 @@ const getBasConfig = async () => {
             }
 
             if ("envType" in result) {
-                isBasInDebug = result.envType == "stage"
+                isBasInDebug = result.envType
             }
             return result;
         } else {
@@ -73,7 +74,6 @@ const getBasAuthCode = async (clientId) => {
                 // alert(JSON.stringify(result))
                 if (isBasInDebug) console.log("BasSDK getBasAuthCode result:", JSON.stringify(result))
                 if (result) {
-                    isBasAuthTokenReturned = true;
                     return result;
                 } else {
                     return null

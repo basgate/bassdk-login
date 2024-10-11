@@ -20,6 +20,34 @@ class Login_Form extends Singleton
 {
 
 	/**
+	 * Load script to display message to anonymous users browing a site (only
+	 * enqueue if configured to only allow logged in users to view the site and
+	 * show a warning to anonymous users).
+	 *
+	 * Action: wp_enqueue_scripts
+	 */
+	public function auth_public_scripts()
+	{
+		// Load (and localize) public scripts.
+		$options = Options::get_instance();
+		if (
+			'logged_in_users' === $options->get('access_who_can_view') &&
+			'warning' === $options->get('access_public_warning') &&
+			get_option('auth_settings_advanced_public_notice')
+		) {
+			$current_path = ! empty($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : home_url();
+			wp_enqueue_script('auth_public_scripts', plugins_url('/js/authorizer-public.js', plugin_root()), array('jquery'), '3.2.2', false);
+			$auth_localized = array(
+				'wpLoginUrl'      => wp_login_url($current_path),
+				'anonymousNotice' => $options->get('access_redirect_to_message'),
+				'logIn'           => esc_html__('Log In', 'authorizer'),
+			);
+			wp_localize_script('auth_public_scripts', 'auth', $auth_localized);
+		}
+	}
+
+
+	/**
 	 * Enqueue JS scripts and CSS styles appearing on wp-login.php.
 	 *
 	 * Action: login_enqueue_scripts
@@ -28,10 +56,12 @@ class Login_Form extends Singleton
 	 */
 	public function bassdk_enqueue_scripts()
 	{
-		// wp_enqueue_style('bassdk-login-styles', plugins_url('css/styles.css', plugin_root()), array(), '1.0');
-		// wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
-		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0', true);
+		wp_enqueue_style('bassdk-login-styles', plugins_url('css/styles.css', plugin_root()), array(), '1.0');
+		//TODO: Replace this script with cdn url
+		wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
+		//TODO: Add Admin options part
+		// $this->auth_public_scripts();
 	}
 
 	public function bassdk_add_modal()
@@ -49,43 +79,57 @@ class Login_Form extends Singleton
 		if (!array_key_exists('bas_client_id', $auth_settings)) {
 			$auth_settings['bas_client_id'] = "no_client_id";
 		}
-
+		$sdk_path = plugins_url('js/public.js', plugin_root());
+		
 		ob_start();
-?>
+		?>
 		<script type="text/javascript">
 			try {
-				console.log("===== STARTED bassdk_login_form javascript")
-				var checkBas = false;
-				var index = 0;
-				while (!checkBas) {
-					setTimeout(() => {
-						console.log("==== isBasAuthTokenReturned:", isBasAuthTokenReturned || false)
-						checkBas = isBasAuthTokenReturned || false;
-						if (isJSBridgeReady) {
-							console.log("JSBridgeReady Successfully loaded ");
-							await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
-								if (res) {
-									// console.log("getBasAuthCode res.status :", res.status)
-									if (res.status == "1") {
-										signInCallback(res.data);
-									} else {
-										console.error("ERROR on getBasAuthCode res.messages:", res.messages)
-									}
-								}
-							}).catch((error) => {
-								console.error("ERROR on catch getBasAuthCode:", error)
-							})
+				window.addEventListener("JSBridgeReady", async (event) => {
+					console.log("JSBridgeReady Successfully loaded ");
+					await getBasAuthCode('<?php echo esc_attr(trim($auth_settings['bas_client_id'])); ?>').then((res) => {
+						if (res) {
+							// console.log("getBasAuthCode res.status :", res.status)
+							if (res.status == "1") {
+								signInCallback(res.data);
+							} else {
+								console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+							}
 						}
-						if (index >= 5) {
-							checkBas = true;
-						}
-						index++;
-					}, 2000);
-				}
+					}).catch((error) => {
+						console.error("ERROR on catch getBasAuthCode:", error)
+					})
+				}, false);
 			} catch (error) {
 				console.error("ERROR on getBasAuthCode:", error)
 			}
 		</script>
+
+		<div id="bassdk-login-modal" class="bassdk-modal">
+			<div class="bassdk-modal-content" style="text-align: center;">
+				<span class="bassdk-close">&times;</span>
+				<h2>BAS Login</h2>
+				<script type="text/javascript">
+					function invokeBasLogin() {
+						try {
+							// console.log("===== invokeBasLogin() isJSBridgeReady :", isJSBridgeReady)
+						} catch (error) {
+							console.error("ERROR on isJSBridgeReady:", error)
+						}
+					}
+				</script>
+				<form method="post" action="<?php echo esc_url(site_url('wp-login.php', 'login_post')); ?>">
+					<label for="username">Username:</label>
+					<input type="text" name="log" id="username" required>
+
+					<label for="password">Password:</label>
+					<input type="password" name="pwd" id="password" required>
+
+					<input type="submit" value="Login By BAS">
+				</form>
+			</div>
+		</div>
+		<script type="application/javascript" crossorigin="anonymous" src="<?php echo esc_attr($sdk_path); ?>" onload="invokeBasLogin();"></script>
 		<?php
 		return ob_get_clean();
 	}
@@ -154,6 +198,13 @@ class Login_Form extends Singleton
 							}
 						});
 					} else {
+						// Update the app to reflect a signed out user
+						// Possible error values:
+						//   "user_signed_out" - User is signed-out
+						//   "access_denied" - User denied access to your app
+						//   "immediate_failed" - Could not automatically log in the user
+						// console.log('Sign-in state: ' + credentialResponse['error']);
+
 						// If user denies access, reload the login page.
 						if (resData.error === 'access_denied' || resData.error === 'user_signed_out') {
 							window.location.reload();
@@ -161,7 +212,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-<?php
+		<?php
 		endif;
 	}
 
