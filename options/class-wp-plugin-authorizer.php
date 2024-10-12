@@ -48,11 +48,11 @@ class WP_Plugin_Basgate extends Singleton
 		// Modify the log in URL (if applicable options are set).
 		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
 
-		// If we have a custom login error, add the filter to show it.
-		$error = get_option('auth_settings_advanced_login_error');
-		if ($error && strlen($error) > 0) {
-			add_filter('login_errors', array(Login_Form::get_instance(), 'show_advanced_login_error'));
-		}
+		// // If we have a custom login error, add the filter to show it.
+		// $error = get_option('auth_settings_advanced_login_error');
+		// if ($error && strlen($error) > 0) {
+		// 	add_filter('login_errors', array(Login_Form::get_instance(), 'show_advanced_login_error'));
+		// }
 
 		// // Enable localization. Translation files stored in /languages.
 		add_action('plugins_loaded', array($this, 'load_textdomain'));
@@ -115,13 +115,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// add_action('wp_ajax_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 		add_action('wp_ajax_nopriv_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
-
-		// If we have a custom admin message, add the action to show it.
-		// $notice = get_option('auth_settings_advanced_admin_notice');
-		// if ($notice && strlen($notice) > 0) {
-		// 	add_action('admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
-		// 	// 	add_action('network_admin_notices', array(Admin_Page::get_instance(), 'show_advanced_admin_notice'));
-		// }
 
 		// // Load custom javascript for the main site (e.g., for displaying alerts).
 		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));

@@ -42,11 +42,8 @@ class Login_Access extends Singleton
 
 		// Print option elements.
 	?>
-		<textarea rows="3" cols="20" type="textarea"
-			id="auth_settings_<?php echo esc_attr($option); ?>"
-			name="auth_settings[<?php echo esc_attr($option); ?>]"
-			style="width:100%">
-		<?php echo esc_html_e(trim($auth_settings_option), $this->id); ?>
+		<textarea rows="3" id="auth_settings_<?php echo esc_attr($option); ?>" name="auth_settings[<?php echo esc_attr($option); ?>]" placeholder='<?php echo esc_html_e(BasgateConstants::DESCRIPTION, $this->id); ?>' style="width:100%">
+			<?php esc_html_e($auth_settings_option, $this->id) ?>
 		</textarea>
 		<br />
 		<small>
@@ -164,7 +161,7 @@ class Login_Access extends Singleton
 			name="auth_settings[<?php echo esc_attr($option); ?>]"
 			value="1" <?php checked(1 === intval($auth_settings_option)); ?> />
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
-			<?php esc_html_e('Enable Basgate Login/Payments.', $this->id); ?>
+			<?php esc_html_e('Enable Basgate Payments.', $this->id); ?>
 		</label>
 	<?php
 	}
@@ -185,6 +182,6 @@ class Login_Access extends Singleton
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
 			<?php esc_html_e('Disable Default Wordpress login when user open store inside Bas platform.', $this->id); ?>
 		</label>
-<?php
+	<?php
 	}
 }

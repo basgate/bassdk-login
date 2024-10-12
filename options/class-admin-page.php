@@ -105,31 +105,6 @@ class Admin_Page extends Singleton
 
 
 	/**
-	 * Show custom admin notice.
-	 *
-	 * Note: currently unused, but if anywhere we:
-	 *   add_option( 'auth_settings_advanced_admin_notice, 'Your message.' );
-	 * It will display and then delete that message on the admin dashboard.
-	 *
-	 * Filter: admin_notices
-	 * filter: network_admin_notices
-	 */
-	public function show_advanced_admin_notice()
-	{
-		$notice = get_option('auth_settings_advanced_admin_notice');
-		delete_option('auth_settings_advanced_admin_notice');
-
-		if ($notice && strlen($notice) > 0) {
-?>
-			<div class="error">
-				<p><?php echo wp_kses($notice, Helper::$allowed_html); ?></p>
-			</div>
-		<?php
-		}
-	}
-
-
-	/**
 	 * Add a link to this plugin's settings page from the WordPress Plugins page.
 	 * Called from "plugin_action_links" filter in __construct() above.
 	 *
@@ -173,7 +148,7 @@ class Admin_Page extends Singleton
 	public function page_init()
 	{
 		register_setting(
-			'auth_settings_group',
+			'basgate_settings_group',
 			BasgateConstants::OPTION_DATA_NAME,
 			array(Options::get_instance(), 'sanitize_options')
 		);
@@ -242,13 +217,13 @@ class Admin_Page extends Singleton
 			$this->id,
 			'auth_settings_basgate_config'
 		);
-		add_settings_field(
-			'advanced_disable_wp_login',
-			__('Disable Default login',  $this->id),
-			array(Login_Access::get_instance(), 'print_checkbox_disable_wp_login'),
-			$this->id,
-			'auth_settings_basgate_config'
-		);
+		// add_settings_field(
+		// 	'advanced_disable_wp_login',
+		// 	__('Disable Default login',  $this->id),
+		// 	array(Login_Access::get_instance(), 'print_checkbox_disable_wp_login'),
+		// 	$this->id,
+		// 	'auth_settings_basgate_config'
+		// );
 	}
 
 
@@ -263,7 +238,7 @@ class Admin_Page extends Singleton
 			<form method="post" action="options.php" autocomplete="off">
 				<?php
 				// This prints out all hidden settings fields.
-				settings_fields('auth_settings_group');
+				settings_fields('basgate_settings_group');
 				// This prints out all the sections.
 				do_settings_sections($this->id);
 				submit_button();
