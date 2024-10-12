@@ -176,7 +176,7 @@ class Login_Access extends Singleton
 		<input type="checkbox"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
-			value="yes" <?php checked('yes' === $auth_settings_option); ?> />
+			value="1" <?php checked(1 === intval($auth_settings_option)); ?> />
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
 			<?php esc_html_e('Enable Basgate Login/Payments.', $this->id); ?>
 		</label>

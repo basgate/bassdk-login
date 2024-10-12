@@ -98,7 +98,7 @@ class Login_Form extends Singleton
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 		$ajaxurl       = admin_url('admin-ajax.php');
 
-		if ('yes' === $auth_settings['enabled']) :
+		if ('1' === $auth_settings['enabled']) :
 		?>
 			<script>
 				if (location.search.indexOf('reauth=1') >= 0) {

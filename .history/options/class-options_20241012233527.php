@@ -183,7 +183,7 @@ class Options extends Singleton
 			$auth_settings['bas_client_secret'] = '';
 		}
 		if (! array_key_exists('enabled', $auth_settings)) {
-			$auth_settings['enabled'] = 'yes';
+			$auth_settings['enabled'] = '1';
 		}
 		if (! array_key_exists('advanced_disable_wp_login', $auth_settings)) {
 			$auth_settings['advanced_disable_wp_login'] = '0';
@@ -229,7 +229,7 @@ class Options extends Singleton
 	{
 
 		// Sanitize Enable enabled Logins (checkbox: value can only be '1' or empty string).
-		$auth_settings['enabled'] = array_key_exists('enabled', $auth_settings) && $auth_settings['enabled'] === 'yes'  ? 'yes' : 'no';
+		$auth_settings['enabled'] = array_key_exists('enabled', $auth_settings) && strlen($auth_settings['enabled']) > 0 ? '1' : '';
 
 
 		// // Sanitize Disable WordPress logins (checkbox: value can only be '1' or empty string).

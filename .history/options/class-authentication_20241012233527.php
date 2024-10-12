@@ -63,13 +63,13 @@ class Authentication extends Singleton
 		// Try Basgate authentication if it's enabled and we don't have a
 		// successful login yet.
 		if (
-			'yes' === $auth_settings['enabled'] &&
+			'1' === $auth_settings['enabled'] &&
 			0 === count($externally_authenticated_emails) &&
 			! is_wp_error($result)
 		) {
 		?>
 			<script>
-				console.log("custom_authenticate() enabled=yes")
+				console.log("custom_authenticate() enabled=true")
 			</script>
 			<?php
 
