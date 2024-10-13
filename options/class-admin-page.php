@@ -217,6 +217,7 @@ class Admin_Page extends Singleton
 			$this->id,
 			'auth_settings_basgate_config'
 		);
+		
 		// add_settings_field(
 		// 	'advanced_disable_wp_login',
 		// 	__('Disable Default login',  $this->id),
