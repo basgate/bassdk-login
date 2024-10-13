@@ -118,12 +118,7 @@ class Options extends Singleton
 		// Grab plugin settings (skip if in Helper::NETWORK_CONTEXT mode).
 		// $auth_settings = 'multisite_admin' === $admin_mode ? array() : get_option(BasgateConstants::OPTION_DATA_NAME);
 		$auth_settings =  get_option(BasgateConstants::OPTION_DATA_NAME);
-		?>
-		<script>
-			var bas_client_id = '<?php echo esc_attr($auth_settings['bas_client_id']); ?>';
-			console.log("====== get_all bas_client_id:", bas_client_id)
-		</script>
-		<?php
+
 		// Initialize to default values if the plugin option doesn't exist.
 		if (false === $auth_settings) {
 			$auth_settings = $this->set_default_options();
