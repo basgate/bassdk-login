@@ -43,25 +43,24 @@ class Login_Form extends Singleton
 	function bassdk_login_form()
 	{
 		$options       = Options::get_instance();
-		$option               = 'bas_client_id';
-		$bas_client_id = $options->get($option);
+		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
-		// if (!array_key_exists('bas_client_id', $auth_settings)) {
-		// 	// return;
-		// 	$auth_settings['bas_client_id'] = "no_client_id";
-		// }
+		if (!array_key_exists('bas_client_id', $auth_settings)) {
+			// return;
+			$auth_settings['bas_client_id'] = "no_client_id";
+		}
 
 		ob_start();
 		$current_user = wp_get_current_user();
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-		?>
+?>
 			<script type="text/javascript">
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
 					window.addEventListener("JSBridgeReady", async (event) => {
-						var clientId = '<?php echo esc_attr($bas_client_id); ?>';
+						var clientId = '<?php echo esc_attr($auth_settings['bas_client_id']); ?>';
 						console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 						// if (isJSBridgeReady) {
 						await getBasAuthCode(clientId).then((res) => {
@@ -158,7 +157,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-		<?php
+<?php
 		endif;
 	}
 
