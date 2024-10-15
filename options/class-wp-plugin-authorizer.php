@@ -127,10 +127,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 	}
-
-
-
-
 	/**
 	 * Plugin activation hook.
 	 * Will also activate the plugin for all sites/blogs if this is a "Network enable."

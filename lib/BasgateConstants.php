@@ -39,10 +39,10 @@ class BasgateConstants
 
     const ID = "basgate";
     const METHOD_TITLE = "Basgate Payments";
-    const METHOD_DESCRIPTION = "The best payment gateway provider in Yemen for e-payment through most of wallets and banks";
+    const METHOD_DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="https://ykbsocial.com/basgate/reportlogo.png" height="24px;" />';
 
     const TITLE = "Pay via Basgate Payment";
-    const DESCRIPTION = "The best payment gateway provider in Yemen for e-payment through most of wallets and banks";
+    const DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="https://ykbsocial.com/basgate/reportlogo.png" height="24px;" />';
 
     const FRONT_MESSAGE = "Thank you for your order, please click the button below to pay with basgate.";
     const NOT_FOUND_TXN_URL = "Something went wrong. Kindly contact with us.";

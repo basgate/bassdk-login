@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Bassdk WP Login
  * Plugin URI: https://github.com/Basgate/bassdk-wp-login
- * Description: A popup login dialog that appears when the user opens the website.
+ * Description: هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ المالية والبنوك المختلفة
  * Version: 0.1.71
  * Requires at least: 5.0.1
  * Tested up to: 6.6.2
