@@ -112,10 +112,11 @@ class WP_Plugin_Basgate extends Singleton
 		// Add [authorizer_login_form] shortcode to render the login form.
 		// add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
 		add_shortcode('bassdk_login', array(Login_Form::get_instance(), 'bassdk_login_form'));
+		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
 
 		add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
-		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
+		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 	}
 	/**
 	 * Plugin activation hook.
