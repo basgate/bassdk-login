@@ -40,10 +40,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // Create settings link on Plugins page.
 		add_filter('plugin_action_links_' . plugin_basename(plugin_root()), array(Admin_Page::get_instance(), 'plugin_settings_link'));
-		// add_filter('network_admin_plugin_action_links_' . plugin_basename(plugin_root()), array(Admin_Page::get_instance(), 'network_admin_plugin_settings_link'));
-
-		// // Modify login page with a custom password url (if option is set).
-		// add_filter('lostpassword_url', array(Login_Form::get_instance(), 'custom_lostpassword_url'));
 
 		// Modify the log in URL (if applicable options are set).
 		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
@@ -56,12 +52,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // Enable localization. Translation files stored in /languages.
 		add_action('plugins_loaded', array($this, 'load_textdomain'));
-
-		// // Update the user meta with this user's failed login attempt.
-		// add_action('wp_login_failed', array(Login_Form::get_instance(), 'update_login_failed_count'));
-
-		// // Add users who successfully login to the approved list.
-		// add_action('wp_login', array(Sync_Userdata::get_instance(), 'ensure_wordpress_user_in_approved_list_on_login'), 10, 2);
 
 		// Create menu item in Settings.
 		add_action('admin_menu', array(Admin_Page::get_instance(), 'add_plugin_page'));
