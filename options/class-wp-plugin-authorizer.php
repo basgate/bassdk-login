@@ -114,7 +114,7 @@ class WP_Plugin_Basgate extends Singleton
 		add_shortcode('bassdk_login', array(Login_Form::get_instance(), 'bassdk_login_form'));
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
 
-		add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
+		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
 		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 	}
