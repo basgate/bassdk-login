@@ -56,7 +56,7 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-		?>
+?>
 			<script type="text/javascript">
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
@@ -137,7 +137,7 @@ class Login_Form extends Singleton
 							console.log("signInCallback() textStatus :", textStatus)
 							console.log("signInCallback() data :", data)
 
-							var newHref = '<?php echo Helper::get_login_redirect_url(); ?>';
+							var newHref = '<?php echo esc_attr(Helper::get_login_redirect_url()); ?>';
 							console.log("signInCallback() before newHref: ", newHref)
 							newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
 							console.log("signInCallback() after newHref: ", newHref)
@@ -158,7 +158,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-		<?php
+<?php
 		endif;
 	}
 

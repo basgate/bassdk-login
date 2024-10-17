@@ -81,7 +81,7 @@ class Options extends Singleton
 ?>
 			<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
 				<span class="overlay-note">
-					<?php esc_html_e('This setting is overridden by a', 'basgate'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'basgate'); ?></a>.
+					<?php esc_html_e('This setting is overridden by a', BasgateConstants::ID); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', BasgateConstants::ID); ?></a>.
 				</span>
 			</div>
 		<?php
@@ -320,11 +320,11 @@ class Options extends Singleton
 		if ('multisite_admin' === $this->get_context($args)) :
 		?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'basgate'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', BasgateConstants::ID); ?></a>
 			</h2>
 		<?php else : ?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'basgate'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', BasgateConstants::ID); ?></a>
 			</h2>
 <?php
 		endif;
