@@ -264,11 +264,11 @@ class Admin_Page extends Singleton
 		$wooVersion = defined("WOOCOMMERCE_VERSION") ? WOOCOMMERCE_VERSION : "N/A";
 
 		$footer_text = '<div style="text-align: center;"><hr/>';
-		$footer_text .= '<strong>' . __('PHP Version') . '</strong> ' . PHP_VERSION . ' | ';
-		$footer_text .= '<strong>' . __('cURL Version') . '</strong> ' . $curl_version . ' | ';
-		$footer_text .= '<strong>' . __('Wordpress Version') . '</strong> ' . get_bloginfo('version') . ' | ';
-		$footer_text .= '<strong>' . __('WooCommerce Version') . '</strong> ' . $wooVersion . ' | ';
-		$footer_text .= '<strong>' . __('SDK Version') . '</strong> ' . $last_updated . ' | ';
+		$footer_text .= '<strong>' . __('PHP Version', 'bassdk-wp-login') . '</strong> ' . PHP_VERSION . ' | ';
+		$footer_text .= '<strong>' . __('cURL Version', 'bassdk-wp-login') . '</strong> ' . $curl_version . ' | ';
+		$footer_text .= '<strong>' . __('Wordpress Version', 'bassdk-wp-login') . '</strong> ' . get_bloginfo('version') . ' | ';
+		$footer_text .= '<strong>' . __('WooCommerce Version', 'bassdk-wp-login') . '</strong> ' . $wooVersion . ' | ';
+		$footer_text .= '<strong>' . __('SDK Version', 'bassdk-wp-login') . '</strong> ' . $last_updated . ' | ';
 		$footer_text .= '<a href="' . esc_url(BasgateConstants::PLUGIN_DOC_URL) . '" target="_blank">Developer Docs</a>';
 
 		$footer_text .= '</div>';
