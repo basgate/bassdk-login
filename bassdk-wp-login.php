@@ -31,5 +31,6 @@ function plugin_root()
     return __FILE__;
 }
 
+
 // Instantiate the plugin class.
 WP_Plugin_Basgate::get_instance();

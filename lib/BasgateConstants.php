@@ -26,6 +26,7 @@ class BasgateConstants
     const ORDER_PREFIX = "";
     const X_REQUEST_ID = "PLUGIN_WOOCOMMERCE_";
     const PLUGIN_DOC_URL = "https://basgate.github.io/pages.html";
+    const PLUGIN_LOGO_URL = "https://ykbsocial.com/basgate/reportlogo.png";
 
     const MAX_RETRY_COUNT = 3;
     const CONNECT_TIMEOUT = 10;
@@ -36,13 +37,12 @@ class BasgateConstants
 
     const CUSTOM_CALLBACK_URL = "";
 
-
     const ID = "basgate";
     const METHOD_TITLE = "Basgate Payments";
-    const METHOD_DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="' . plugins_url('images/reportlogo.png', \BasgateSDK\plugin_root()) . '" height="24px;" />';
+    const METHOD_DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="' . self::PLUGIN_LOGO_URL . '" height="24px;" />';
 
     const TITLE = "Pay via Basgate Payment";
-    const DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="' . plugins_url('images/reportlogo.png', \BasgateSDK\plugin_root()) . '" height="24px;" />';
+    const DESCRIPTION = 'The best payment gateway provider in Yemen for e-payment through most of wallets and banks <img src="' . self::PLUGIN_LOGO_URL . '" height="24px;" />';
 
     const FRONT_MESSAGE = "Thank you for your order, please click the button below to pay with basgate.";
     const NOT_FOUND_TXN_URL = "Something went wrong. Kindly contact with us.";
