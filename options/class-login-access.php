@@ -18,7 +18,7 @@ use BasgateSDK\Helper;
 class Login_Access extends Singleton
 {
 
-	protected $id = BasgateConstants::ID;
+	protected $id = 'bassdk-wp-login';
 
 
 	public function print_section_info_basgate_config($args = '')
@@ -26,7 +26,7 @@ class Login_Access extends Singleton
 		?>
 			<div id="section_info_access_login" class="section_info">
 				<?php wp_nonce_field('save_auth_settings', 'nonce_save_auth_settings'); ?>
-				<p><?php esc_html_e('Online payment solutions for all your transactions by Basgate.', $this->id); ?></p>
+				<p><?php esc_html_e('Online payment solutions for all your transactions by Basgate.', 'bassdk-wp-login'); ?></p>
 			</div>
 		<?php
 	}
@@ -44,11 +44,11 @@ class Login_Access extends Singleton
 				id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 				name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
 				style="width:100%">
-			<?php echo esc_html_e(trim($auth_settings_option), $this->id); ?>
+			<?php echo esc_html_e(trim($auth_settings_option), 'bassdk-wp-login'); ?>
 			</textarea>
 			<br />
 			<small>
-				<?php echo wp_kses(__('This controls the description which the user sees during checkout.', $this->id), Helper::$allowed_html); ?>
+				<?php echo wp_kses(__('This controls the description which the user sees during checkout.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 			</small>
 
 		<?php
@@ -66,12 +66,12 @@ class Login_Access extends Singleton
 		<select
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>">
-			<option value="0" <?php selected($auth_settings_option); ?>><?php esc_html_e("Test/Staging", $this->id); ?></option>
-			<option value="1" <?php selected($auth_settings_option); ?>><?php esc_html_e("Production", $this->id); ?></option>
+			<option value="0" <?php selected($auth_settings_option); ?>><?php esc_html_e("Test/Staging", 'bassdk-wp-login'); ?></option>
+			<option value="1" <?php selected($auth_settings_option); ?>><?php esc_html_e("Production", 'bassdk-wp-login'); ?></option>
 		</select>
 		<br />
 		<small>
-			<?php echo wp_kses(__('Select "Test/Staging" to setup test transactions & "Production" once you are ready to go live', $this->id), Helper::$allowed_html); ?>
+			<?php echo wp_kses(__('Select "Test/Staging" to setup test transactions & "Production" once you are ready to go live', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
 	<?php
 	}
@@ -91,7 +91,7 @@ class Login_Access extends Singleton
 			value="<?php echo esc_attr($auth_settings_option); ?>" placeholder='' style="width:400px;" />
 		<br />
 		<small>
-			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the relevant Application ID for test or production environment you received on email.', $this->id), Helper::$allowed_html); ?>
+			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the relevant Application ID for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
 		<?php
 	}
@@ -111,7 +111,7 @@ class Login_Access extends Singleton
 			value="<?php echo esc_attr($auth_settings_option); ?>" placeholder='' style="width:400px;" />
 		<br />
 		<small>
-			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Merchant Key for test or production environment you received on email.', $this->id), Helper::$allowed_html); ?>
+			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Merchant Key for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
 		<?php
 	}
@@ -131,7 +131,7 @@ class Login_Access extends Singleton
 			value="<?php echo esc_attr($auth_settings_option); ?>" placeholder='' style="width:400px;" />
 		<br />
 		<small>
-			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Id for test or production environment you received on email.', $this->id), Helper::$allowed_html); ?>
+			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Id for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
 		<?php
 	}
@@ -151,7 +151,7 @@ class Login_Access extends Singleton
 			value="<?php echo esc_attr($auth_settings_option); ?>" placeholder='' style="width:400px;" />
 		<br />
 		<small>
-			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Secret for test or production environment you received on email.', $this->id), Helper::$allowed_html); ?>
+			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Secret for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
 		<?php
 	}
@@ -170,7 +170,7 @@ class Login_Access extends Singleton
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
 			value="yes" <?php checked('yes' === $auth_settings_option); ?> />
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
-			<?php esc_html_e('Enable Basgate Login/Payments.', $this->id); ?>
+			<?php esc_html_e('Enable Basgate Login/Payments.', 'bassdk-wp-login'); ?>
 		</label>
 		<?php
 	}
@@ -189,7 +189,7 @@ class Login_Access extends Singleton
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
 			value="1" <?php checked(1 === intval($auth_settings_option)); ?> />
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
-			<?php esc_html_e('Disable Default Wordpress login when user open store inside Bas platform.', $this->id); ?>
+			<?php esc_html_e('Disable Default Wordpress login when user open store inside Bas platform.', 'bassdk-wp-login'); ?>
 		</label>
 		<?php
 	}

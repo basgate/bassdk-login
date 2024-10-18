@@ -39,7 +39,7 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-		?>
+?>
 		<script>
 			console.log("STARTED custom_authenticate() ")
 		</script>
@@ -157,7 +157,7 @@ class Authentication extends Singleton
 				console.log("custom_authenticate_basgate() ERROR $token not Exists");
 			</script>
 		<?php
-			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', BasgateConstants::ID));
+			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', 'bassdk-wp-login'));
 		}
 
 		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
@@ -167,12 +167,12 @@ class Authentication extends Singleton
 		try {
 			$payload = $this->getBasUserInfo($token);
 		} catch (\Throwable $th) {
-			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', BasgateConstants::ID), $th->getMessage());
+			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', 'bassdk-wp-login'), $th->getMessage());
 		}
 
 		// Invalid ticket, so this in not a successful Basgate login.
 		if (array_key_exists("status", $payload) && "0" === $payload['status']) {
-			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', BasgateConstants::ID));
+			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', 'bassdk-wp-login'));
 		}
 
 		$data = $payload['data'];
@@ -187,7 +187,7 @@ class Authentication extends Singleton
 			var data = '<?php echo esc_attr($data); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
-			<?php
+	<?php
 
 
 		return array(
@@ -310,7 +310,7 @@ class Authentication extends Singleton
 	public function getBasUserInfo($token)
 	{
 
-		?>
+	?>
 		<script>
 			console.log("===== STARTED getBasUserInfo()");
 		</script>
@@ -370,7 +370,7 @@ class Authentication extends Singleton
 			<script>
 				console.log("getBasUserInfo() curl ERROR");
 			</script>
-		<?php
+<?php
 			throw $th;
 		}
 	}
@@ -382,7 +382,7 @@ class Authentication extends Singleton
 		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		if (is_null($user_data)) {
-			return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
+			return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-wp-login'));
 		}
 
 		// If the approved external user does not have a WordPress account, create it.
@@ -445,7 +445,7 @@ class Authentication extends Singleton
 		}
 
 		// Sanity check: if we made it here without returning, something has gone wrong.
-		return new \WP_Error('invalid_login', __('Invalid login attempted.', BasgateConstants::ID));
+		return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-wp-login'));
 	}
 
 	/**
@@ -480,7 +480,7 @@ class Authentication extends Singleton
 		// include "external=?" since they don't have a WP_User to attach the
 		// "authenticated_by" usermeta to).
 		if (empty(self::$authenticated_by) && ! empty($_REQUEST['external'])) {
-			self::$authenticated_by = $_REQUEST['external'];
+			self::$authenticated_by = wp_unslash($_REQUEST['external']);
 		}
 	}
 

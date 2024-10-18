@@ -63,7 +63,7 @@ class Admin_Page extends Singleton
 	{
 		$screen = get_current_screen();
 
-		print("===== admin_head => screen->id :" . $screen->id);
+		print("===== admin_head => screen->id :" . esc_attr($screen->id));
 		// Don't print any help items if not on the Basgate Settings page.
 		if (empty($screen->id) || ! in_array($screen->id, array('toplevel_page_authorizer-network', 'toplevel_page_authorizer', 'settings_page_authorizer'), true)) {
 			return;
@@ -71,15 +71,15 @@ class Admin_Page extends Singleton
 
 		// Add help tab for Access Lists Settings.
 		$help_auth_settings_access_lists_content = '
-			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.",'bassdk-wp-login') . '</p>
-			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.','bassdk-wp-login') . '</p>
-			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.','bassdk-wp-login') . '</p>
-			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.','bassdk-wp-login') . '</p>
+			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", 'bassdk-wp-login') . '</p>
+			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', 'bassdk-wp-login') . '</p>
+			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', 'bassdk-wp-login') . '</p>
+			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', 'bassdk-wp-login') . '</p>
 		';
 		$screen->add_help_tab(
 			array(
 				'id'      => 'help_auth_settings_access_lists_content',
-				'title'   => __('Authentication','bassdk-wp-login'),
+				'title'   => __('Authentication', 'bassdk-wp-login'),
 				'content' => wp_kses_post($help_auth_settings_access_lists_content),
 			)
 		);
@@ -118,7 +118,7 @@ class Admin_Page extends Singleton
 		$options      = Options::get_instance();
 		$admin_menu   = $options->get('advanced_admin_menu');
 		$settings_url = 'settings' === $admin_menu ? admin_url('options-general.php?page=basgate') : admin_url('admin.php?page=basgate');
-		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings','bassdk-wp-login') . '</a>');
+		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', 'bassdk-wp-login') . '</a>');
 		return $links;
 	}
 
@@ -177,7 +177,7 @@ class Admin_Page extends Singleton
 		);
 		add_settings_field(
 			'bas_environment',
-			__('Environment Mode','bassdk-wp-login'),
+			__('Environment Mode', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_select_environment_mode'),
 			$this->id,
 			'auth_settings_basgate_config'
@@ -233,9 +233,9 @@ class Admin_Page extends Singleton
 	 */
 	public function create_admin_page()
 	{
-		?>
+?>
 		<div class="wrap">
-			<h2><?php esc_html_e('Basgate Settings','bassdk-wp-login'); ?></h2>
+			<h2><?php esc_html_e('Basgate Settings', 'bassdk-wp-login'); ?></h2>
 			<form method="post" action="options.php" autocomplete="off">
 				<?php
 				// This prints out all hidden settings fields.
@@ -251,7 +251,7 @@ class Admin_Page extends Singleton
 			$this->bassdk_admin_footer();
 			?>
 		</div>
-		<?php
+<?php
 	}
 
 	public function bassdk_admin_footer()
@@ -264,11 +264,11 @@ class Admin_Page extends Singleton
 		$wooVersion = defined("WOOCOMMERCE_VERSION") ? WOOCOMMERCE_VERSION : "N/A";
 
 		$footer_text = '<div style="text-align: center;"><hr/>';
-		$footer_text .= '<strong>' . __('PHP Version') . '</strong> ' . PHP_VERSION . ' | ';
-		$footer_text .= '<strong>' . __('cURL Version') . '</strong> ' . $curl_version . ' | ';
-		$footer_text .= '<strong>' . __('Wordpress Version') . '</strong> ' . get_bloginfo('version') . ' | ';
-		$footer_text .= '<strong>' . __('WooCommerce Version') . '</strong> ' . $wooVersion . ' | ';
-		$footer_text .= '<strong>' . __('SDK Version') . '</strong> ' . $last_updated . ' | ';
+		$footer_text .= '<strong>' . __('PHP Version', 'default') . '</strong> ' . PHP_VERSION . ' | ';
+		$footer_text .= '<strong>' . __('cURL Version', 'default') . '</strong> ' . $curl_version . ' | ';
+		$footer_text .= '<strong>' . __('Wordpress Version', 'default') . '</strong> ' . get_bloginfo('version') . ' | ';
+		$footer_text .= '<strong>' . __('WooCommerce Version', 'default') . '</strong> ' . $wooVersion . ' | ';
+		$footer_text .= '<strong>' . __('SDK Version', 'default') . '</strong> ' . $last_updated . ' | ';
 		$footer_text .= '<a href="' . esc_url(BasgateConstants::PLUGIN_DOC_URL) . '" target="_blank">Developer Docs</a>';
 
 		$footer_text .= '</div>';

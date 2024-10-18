@@ -296,7 +296,7 @@ class Helper
 		$is_selected = strlen($selected_role) === 0 || ! array_key_exists($selected_role, $roles);
 		$is_disabled = strlen($selected_role) > 0 && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
 		?>
-		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', BasgateConstants::ID); ?></option>
+		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', 'bassdk-wp-login'); ?></option>
 <?php
 	}
 
