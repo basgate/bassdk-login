@@ -71,15 +71,15 @@ class Admin_Page extends Singleton
 
 		// Add help tab for Access Lists Settings.
 		$help_auth_settings_access_lists_content = '
-			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", $this->id) . '</p>
-			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', $this->id) . '</p>
-			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', $this->id) . '</p>
-			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', $this->id) . '</p>
+			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.",'bassdk-wp-login') . '</p>
+			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.','bassdk-wp-login') . '</p>
+			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.','bassdk-wp-login') . '</p>
+			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.','bassdk-wp-login') . '</p>
 		';
 		$screen->add_help_tab(
 			array(
 				'id'      => 'help_auth_settings_access_lists_content',
-				'title'   => __('Authentication', $this->id),
+				'title'   => __('Authentication','bassdk-wp-login'),
 				'content' => wp_kses_post($help_auth_settings_access_lists_content),
 			)
 		);
@@ -118,7 +118,7 @@ class Admin_Page extends Singleton
 		$options      = Options::get_instance();
 		$admin_menu   = $options->get('advanced_admin_menu');
 		$settings_url = 'settings' === $admin_menu ? admin_url('options-general.php?page=basgate') : admin_url('admin.php?page=basgate');
-		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', $this->id) . '</a>');
+		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings','bassdk-wp-login') . '</a>');
 		return $links;
 	}
 
@@ -134,7 +134,7 @@ class Admin_Page extends Singleton
 	 */
 	// public function network_admin_plugin_settings_link($links)
 	// {
-	// 	$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings', $this->id) . '</a>';
+	// 	$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings','bassdk-wp-login') . '</a>';
 	// 	array_unshift($links, $settings_link);
 	// 	return $links;
 	// }
@@ -170,49 +170,49 @@ class Admin_Page extends Singleton
 
 		add_settings_field(
 			'bas_description',
-			__('Description',  $this->id),
+			__('Description', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_text_description'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_environment',
-			__('Environment Mode', $this->id),
+			__('Environment Mode','bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_select_environment_mode'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_application_id',
-			__('Application Id',  $this->id),
+			__('Application Id', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_text_application_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_merchant_key',
-			__('Merchant Key',  $this->id),
+			__('Merchant Key', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_text_merchant_key'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_client_id',
-			__('Client Id',  $this->id),
+			__('Client Id', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_text_client_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_client_secret',
-			__('Client Secret',  $this->id),
+			__('Client Secret', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_text_client_secret'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'enabled',
-			__('Enable/Disable',  $this->id),
+			__('Enable/Disable', 'bassdk-wp-login'),
 			array(Login_Access::get_instance(), 'print_checkbox_enabled'),
 			$this->id,
 			'auth_settings_basgate_config'
@@ -220,7 +220,7 @@ class Admin_Page extends Singleton
 
 		// add_settings_field(
 		// 	'advanced_disable_wp_login',
-		// 	__('Disable Default login',  $this->id),
+		// 	__('Disable Default login', 'bassdk-wp-login'),
 		// 	array(Login_Access::get_instance(), 'print_checkbox_disable_wp_login'),
 		// 	$this->id,
 		// 	'auth_settings_basgate_config'
@@ -235,7 +235,7 @@ class Admin_Page extends Singleton
 	{
 		?>
 		<div class="wrap">
-			<h2><?php esc_html_e('Basgate Settings', $this->id); ?></h2>
+			<h2><?php esc_html_e('Basgate Settings','bassdk-wp-login'); ?></h2>
 			<form method="post" action="options.php" autocomplete="off">
 				<?php
 				// This prints out all hidden settings fields.
