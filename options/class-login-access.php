@@ -44,7 +44,7 @@ class Login_Access extends Singleton
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
 			style="width:100%">
-			<?php echo esc_html_e($auth_settings_option, 'bassdk-wp-login'); ?>
+			<?php echo esc_attr($auth_settings_option); ?>
 			</textarea>
 		<br />
 		<small>
