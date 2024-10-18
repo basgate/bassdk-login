@@ -23,12 +23,12 @@ class Login_Access extends Singleton
 
 	public function print_section_info_basgate_config($args = '')
 	{
-		?>
-			<div id="section_info_access_login" class="section_info">
-				<?php wp_nonce_field('save_auth_settings', 'nonce_save_auth_settings'); ?>
-				<p><?php esc_html_e('Online payment solutions for all your transactions by Basgate.', 'bassdk-wp-login'); ?></p>
-			</div>
-		<?php
+?>
+		<div id="section_info_access_login" class="section_info">
+			<?php wp_nonce_field('save_auth_settings', 'nonce_save_auth_settings'); ?>
+			<p><?php esc_html_e('Online payment solutions for all your transactions by Basgate.', 'bassdk-wp-login'); ?></p>
+		</div>
+	<?php
 	}
 
 	public function print_text_description($args = '')
@@ -39,19 +39,19 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
-			<textarea rows="3" cols="20" type="textarea"
-				id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
-				name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
-				style="width:100%">
-			<?php echo esc_html_e(trim($auth_settings_option), 'bassdk-wp-login'); ?>
+	?>
+		<textarea rows="3" cols="20" type="textarea"
+			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
+			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
+			style="width:100%">
+			<?php echo esc_html_e($auth_settings_option, 'bassdk-wp-login'); ?>
 			</textarea>
-			<br />
-			<small>
-				<?php echo wp_kses(__('This controls the description which the user sees during checkout.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
-			</small>
+		<br />
+		<small>
+			<?php echo wp_kses(__('This controls the description which the user sees during checkout.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
+		</small>
 
-		<?php
+	<?php
 	}
 
 	public function print_select_environment_mode($args = '')
@@ -62,7 +62,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<select
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>">
@@ -84,7 +84,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="text"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -93,7 +93,7 @@ class Login_Access extends Singleton
 		<small>
 			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the relevant Application ID for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
-		<?php
+	<?php
 	}
 
 	public function print_text_merchant_key($args = '')
@@ -104,7 +104,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="text"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -113,7 +113,7 @@ class Login_Access extends Singleton
 		<small>
 			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Merchant Key for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
-		<?php
+	<?php
 	}
 
 	public function print_text_client_id($args = '')
@@ -124,7 +124,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="text"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -133,7 +133,7 @@ class Login_Access extends Singleton
 		<small>
 			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Id for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
-		<?php
+	<?php
 	}
 
 	public function print_text_client_secret($args = '')
@@ -144,7 +144,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="text"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -153,7 +153,7 @@ class Login_Access extends Singleton
 		<small>
 			<?php echo wp_kses(__('Based on the selected Environment Mode, copy the Client Secret for test or production environment you received on email.', 'bassdk-wp-login'), Helper::$allowed_html); ?>
 		</small>
-		<?php
+	<?php
 	}
 
 	public function print_checkbox_enabled($args = '')
@@ -164,7 +164,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="checkbox"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -172,7 +172,7 @@ class Login_Access extends Singleton
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
 			<?php esc_html_e('Enable Basgate Login/Payments.', 'bassdk-wp-login'); ?>
 		</label>
-		<?php
+	<?php
 	}
 
 	public function print_checkbox_disable_wp_login($args = '')
@@ -183,7 +183,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-		?>
+	?>
 		<input type="checkbox"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -191,6 +191,6 @@ class Login_Access extends Singleton
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
 			<?php esc_html_e('Disable Default Wordpress login when user open store inside Bas platform.', 'bassdk-wp-login'); ?>
 		</label>
-		<?php
+<?php
 	}
 }
