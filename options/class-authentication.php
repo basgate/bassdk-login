@@ -255,7 +255,7 @@ class Authentication extends Singleton
 	//Process Basgate Token
 	public function getBasToken($auth_id)
 	{
-
+		Helper::basgate_log("===== STARTED getBasToken");
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 

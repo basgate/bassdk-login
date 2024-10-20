@@ -642,6 +642,7 @@ class Helper
 
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
+		Helper::basgate_log("===== STARTED executecUrl");
 		// 'Accept: text/plain'
 		$headers = array("Accept" => "*");
 		if (!empty($extraHeaders)) {
@@ -700,6 +701,7 @@ class Helper
 
 	public static function errorResponse($msg)
 	{
+		self::basgate_log("ERROR errorResponse msg: " . $msg);
 		if (!empty($msg)) {
 			return array('success' => false, 'error' => $msg);
 		} else {
