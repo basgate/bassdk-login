@@ -642,7 +642,7 @@ class Helper
 
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
-		Helper::basgate_log("===== STARTED executecUrl");
+		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
 		// 'Accept: text/plain'
 		$headers = array("Accept" => "*");
 		if (!empty($extraHeaders)) {
@@ -688,13 +688,13 @@ class Helper
 			error_log($msg);
 
 			return self::errorResponse($msg);
-			// throw new Exception(__('Could not retrieve the access token, please try again.', BasgateConstants::ID));
-
 		} else {
 			$data = json_decode($response_body, true); // Decode JSON response
 			if (json_last_error() !== JSON_ERROR_NONE) {
 				return self::errorResponse('Error decoding JSON: ' . json_last_error_msg());
 			}
+			self::basgate_log("===== executecUrl Success: " . json_encode($data));
+
 			return self::successResponse($data);
 		}
 	}
@@ -724,8 +724,6 @@ class Helper
 		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
 			return; // Only log if WP_DEBUG is enabled
 		}
-
-
 
 		$log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
 		// $log_file = plugins_url('bassdk-wp-login.log', plugin_root()); // Specify the log file path
