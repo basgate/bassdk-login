@@ -712,9 +712,9 @@ class Helper
 	public static function successResponse($data)
 	{
 		if (!empty($data)) {
-			return array('success' => true, 'data' => $data);
+			return array('success' => true, 'body' => $data);
 		} else {
-			return array('success' => true, 'data' => array());
+			return array('success' => true, 'body' => array());
 		}
 	}
 

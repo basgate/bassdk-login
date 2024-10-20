@@ -129,12 +129,7 @@ class Authentication extends Singleton
 	 */
 	protected function custom_authenticate_basgate($auth_settings)
 	{
-
-		?>
-		<script>
-			console.log("STARTED custom_authenticate_basgate() location.href:", location.href);
-		</script>
-		<?php
+		Helper::basgate_log("===== STARTED custom_authenticate_basgate():");
 
 		// phpcs:ignore WordPress.Security.NonceVerification
 		if (empty($_GET['external']) || 'basgate' !== $_GET['external']) {
@@ -145,33 +140,24 @@ class Authentication extends Singleton
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
 			$token =  $_SESSION['basToken'];
-		?>
-			<script>
-				console.log("custom_authenticate_basgate() $token exist");
-			</script>
-		<?php
+			Helper::basgate_log('custom_authenticate_basgate() exist $token:' . $token);
 		} else {
 			// No token, so this is not a succesful Basgate login.
-		?>
-			<script>
-				console.log("custom_authenticate_basgate() ERROR $token not Exists");
-			</script>
-		<?php
+			Helper::basgate_log('custom_authenticate_basgate() ERROR $token not Exists');
 			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', 'bassdk-wp-login'));
 		}
-
-		// $auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
-		// $auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 		// Verify this is a successful Basgate authentication.
 		try {
 			$payload = $this->getBasUserInfo($token);
 		} catch (\Throwable $th) {
+			Helper::basgate_log('ERROR custom_authenticate_basgate :Error on getting userinfo from Basgate API.' . $th->getMessage());
 			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', 'bassdk-wp-login'), $th->getMessage());
 		}
 
 		// Invalid ticket, so this in not a successful Basgate login.
 		if (array_key_exists("status", $payload) && "0" === $payload['status']) {
+			Helper::basgate_log('custom_authenticate_basgate Invalid Basgate credentials provided.');
 			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', 'bassdk-wp-login'));
 		}
 
@@ -187,7 +173,7 @@ class Authentication extends Singleton
 			var data = '<?php echo esc_attr($data); ?>'
 			console.log("custom_authenticate() $payload :", JSON.stringify(data))
 		</script>
-	<?php
+<?php
 
 
 		return array(
@@ -255,7 +241,7 @@ class Authentication extends Singleton
 	//Process Basgate Token
 	public function getBasToken($auth_id)
 	{
-		Helper::basgate_log("===== STARTED getBasToken");
+		Helper::basgate_log("===== STARTED getBasToken $auth_id:" . $auth_id);
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
@@ -272,80 +258,45 @@ class Authentication extends Singleton
 		$code = $auth_id;
 		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
 
-		// try {
-		// 	//Send Post request to get token details
-		// 	$curl = curl_init();
-		// 	curl_setopt_array($curl, [
-		// 		CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
-		// 		CURLOPT_RETURNTRANSFER => true,
-		// 		CURLOPT_ENCODING => "",
-		// 		CURLOPT_MAXREDIRS => 10,
-		// 		CURLOPT_TIMEOUT => 30,
-		// 		CURLOPT_FOLLOWLOCATION => true,
-		// 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-		// 		CURLOPT_CUSTOMREQUEST => "POST",
-		// 		CURLOPT_POSTFIELDS => 'grant_type=' . $grant_type . '&client_id=' . $client_id . '&client_secret=' . $client_secret . '&code=' . $code . '&redirect_uri=' . $redirect_uri,
-		// 		CURLOPT_HTTPHEADER => [
-		// 			"Content-Type: application/x-www-form-urlencoded"
-		// 		],
-		// 	]);
-		// 	$result = curl_exec($curl);
-		// 	$err = curl_error($curl);
-		// 	curl_close($curl);
-		// 	if ($err) {
-		// 	} else {
-		// 		$response = json_decode($result, true);
-		// 		if (array_key_exists('access_token', $response)) {
-		// 			return $response['access_token'];
-		// 		} else {
-		// 			return null;
-		// 		}
-		// 	}
-		// } catch (\Throwable $th) {
-		// 	throw $th;
-		// }
+		try {
+			//Send Post request to get token details
+			$reqBody = [
+				'grant_type' => $grant_type,
+				'client_id' => $client_id,
+				'client_secret' => $client_secret,
+				'code' => $code,
+				'redirect_uri' => $redirect_uri
+			];
 
-		$reqBody = [
-			'grant_type' => $grant_type,
-			'client_id' => $client_id,
-			'client_secret' => $client_secret,
-			'code' => $code,
-			'redirect_uri' => $redirect_uri
-		];
+			$header = array("Content-type" => "application/x-www-form-urlencoded");
 
-		$header = array("Content-type" => "application/x-www-form-urlencoded");
+			$retry = 1;
+			do {
+				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+				$retry++;
+			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 
-		$retry = 1;
-		do {
-			$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
-			$retry++;
-		} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
-
-		if (array_key_exists('success', $response) && $response['success'] == true) {
-			if (array_key_exists('data', $response)) {
-				$data = $response['data'];
-				return  array_key_exists('access_token', $data) ? $data['access_token'] : null;
+			if (array_key_exists('success', $response) && $response['success'] == true) {
+				if (array_key_exists('body', $response)) {
+					$data = $response['body'];
+					return  array_key_exists('access_token', $data) ? $data['access_token'] : null;
+				} else {
+					return null;
+				}
 			} else {
 				return null;
 			}
-		} else {
-			return null;
+		} catch (\Throwable $th) {
+			throw $th;
 		}
 	}
 
 	//Process Basgate get UserInfo
 	public function getBasUserInfo($token)
 	{
-
-	?>
-		<script>
-			console.log("===== STARTED getBasUserInfo()");
-		</script>
-		<?php
+		Helper::basgate_log('===== STARTED getBasUserInfo() $token: ' . $token);
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
-
-		//access BASSuperApp  settings
 		if (array_key_exists('bas_environment', $auth_settings) && $auth_settings["bas_environment"] === "1") {
 			$bassdk_api =  BasgateConstants::PRODUCTION_HOST;
 		} else {
@@ -353,62 +304,44 @@ class Authentication extends Singleton
 		}
 
 		try {
-			$curl = curl_init();
-			curl_setopt_array($curl, [
-				CURLOPT_URL => $bassdk_api . 'api/v1/auth/userinfo',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "GET",
-				CURLOPT_HTTPHEADER => [
-					"Content-Type: application/json",
-					"Authorization: Bearer " . $token
-				],
-			]);
-			$result = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
-			if ($err) {
-		?>
-				<script>
-					console.log("ERROR getUserInfo() $err")
-				</script>
-			<?php
-			}
-			if ($result) {
-			?>
-				<script>
-					var results = '<?php echo esc_attr($result) ?>';
-					console.log("getBasUserInfo() curl Successed results:", results);
-				</script>
-			<?php
-				$response = json_decode($result, true);
-				// if (array_key_exists('status', $response)) {
-				// if ($response['status'] === '1') {
-				return $response;
-				// }
-				// }
+			$header = array("Content-type" => "application/json", "Authorization" => "Bearer " . $token);
+			$retry = 1;
+			do {
+				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/userinfo', array(), "GET", $header);
+				$retry++;
+			} while (!$response['data'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
+
+			if (array_key_exists('success', $response) && $response['success'] == true) {
+				if (array_key_exists('body', $response)) {
+					$body = $response['body'];
+					if (array_key_exists('data', $body)) {
+						return $body['data'];
+					} else {
+						return null;
+					}
+				} else {
+					return null;
+				}
+			} else {
+				return null;
 			}
 		} catch (\Throwable $th) {
-			?>
-			<script>
-				console.log("getBasUserInfo() curl ERROR");
-			</script>
-<?php
+			$msg = "ERROR getBasUserInfo():" . $th->getMessage();
+			Helper::basgate_log($msg);
+			error_log($msg);
 			throw $th;
 		}
 	}
 
 	public function check_user_access($user, $user_data = array())
 	{
+		Helper::basgate_log('===== STARTED check_user_access()');
 		// Grab plugin settings.
 		$options                                    = Options::get_instance();
 		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		if (is_null($user_data)) {
+			Helper::basgate_log('check_user_access is_null($user_data)==true Invalid login attempted.');
 			return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-wp-login'));
 		}
 
