@@ -22,7 +22,6 @@ class Helper
 	const NETWORK_CONTEXT = 'multisite_admin';
 	const SINGLE_CONTEXT  = 'single_admin';
 
-
 	/**
 	 * HTML allowed when rendering translatable strings in the Authorizer UI.
 	 * This is passed to wp_kses() when sanitizing HMTL strings.
@@ -85,7 +84,6 @@ class Helper
 	 */
 	protected static $iv = 'R_O2D]jPn]1[fhJl!-P1.oe';
 
-
 	/**
 	 * Grabs the admin context (single site or multisite) from the passed
 	 * arguments.
@@ -106,7 +104,6 @@ class Helper
 		}
 	}
 
-
 	/**
 	 * Helper function to generate an HTML class name for an option (used in
 	 * Authorizer Settings in the Approved User list).
@@ -119,7 +116,6 @@ class Helper
 	{
 		return $is_multisite_user ? "auth-$suffix auth-multisite-$suffix" : "auth-$suffix";
 	}
-
 
 	/**
 	 * Basic encryption using a public (not secret!) key. Used for general
@@ -163,7 +159,6 @@ class Helper
 		return $result;
 	}
 
-
 	/**
 	 * Basic decryption using a public (not secret!) key. Used for general
 	 * database obfuscation of passwords.
@@ -204,7 +199,6 @@ class Helper
 
 		return $result;
 	}
-
 
 	/**
 	 * In a multisite environment, returns true if the current user is logged
@@ -300,7 +294,6 @@ class Helper
 <?php
 	}
 
-
 	/**
 	 * Helper function to search a multidimensional array for a value.
 	 *
@@ -329,7 +322,6 @@ class Helper
 		return false;
 	}
 
-
 	/**
 	 * Helper function to discover the email addresses in a value in a
 	 * multidimensional array.
@@ -351,7 +343,6 @@ class Helper
 		return $emails;
 	}
 
-
 	/**
 	 * Helper function to determine if an URL is accessible.
 	 *
@@ -367,7 +358,6 @@ class Helper
 		// Return true if the document has loaded successfully without any redirection or error.
 		return $response_code >= 200 && $response_code < 400;
 	}
-
 
 	/**
 	 * Helper function to reconstruct a URL split using parse_url().
@@ -390,7 +380,6 @@ class Helper
 			(isset($parts['fragment']) ? "#{$parts['fragment']}" : '')
 		);
 	}
-
 
 	/**
 	 * Helper function to get a single user info array from one of the access
@@ -426,7 +415,6 @@ class Helper
 	{
 		return function_exists('mb_strtolower') ? mb_strtolower($str) : strtolower($str);
 	}
-
 
 	/**
 	 * Helper function to convert seconds to human readable text.
@@ -465,7 +453,6 @@ class Helper
 		return substr($s, 0, -2);
 	}
 
-
 	/**
 	 * Helper function to show a number as an ordinal (e.g., 5 as 5th).
 	 *
@@ -483,7 +470,6 @@ class Helper
 			return $number . $ends[$number % 10];
 		}
 	}
-
 
 	/**
 	 * Generate Basgate authentication URL (wp-login.php URL with reauth=1 removed
@@ -531,7 +517,6 @@ class Helper
 		return self::unparse_url($parsed_url);
 	}
 
-
 	/**
 	 * Reconstruct a URL after it has been deconstructed with parse_url().
 	 *
@@ -552,7 +537,6 @@ class Helper
 
 		return "$scheme$user$pass$host$port$path$query$fragment";
 	}
-
 
 	public static function get_login_redirect_url()
 	{
@@ -576,7 +560,6 @@ class Helper
 		return false;
 	}
 
-
 	public static function get_plugin_data()
 	{
 		return get_file_data(plugin_root(), [
@@ -584,5 +567,169 @@ class Helper
 			'slug' => 'Text Domain',
 			'version' => "Version"
 		], 'plugin');
+	}
+
+	// public static function executeStreamUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
+	// {
+	// 	$url = $apiURL;
+
+	// 	$data = $requestParamList;
+	// 	// $headers = array("Content-Type" => "application/json");
+	// 	$headers = array("Content-type" => "application/x-www-form-urlencoded");
+
+	// 	if (!empty($extraHeaders)) {
+	// 		$headers = array_merge($headers, $extraHeaders);
+	// 	}
+
+	// 	$options = array(
+	// 		'http' => array(
+	// 			'header'  => $headers,
+	// 			'method'  => $method,
+	// 			'content' => http_build_query($data)
+	// 		)
+	// 	);
+
+	// 	$context  = stream_context_create($options);
+	// 	$resp = file_get_contents($url, false, $context);
+	// 	$response_code = http_response_code();
+
+	// 	if ($resp === FALSE) {
+	// 		error_log(
+	// 			sprintf(
+	// 				/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
+	// 				'executeStreamUrl error$resp === FALSE for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
+	// 				$apiURL,
+	// 				$response_code,
+	// 				json_encode($data),
+	// 				$resp
+	// 			)
+	// 		);
+	// 		return array('success' => false, 'error' => 'Request failed');
+	// 	}
+
+	// 	if (200 !==  $response_code) {
+
+	// 		error_log(
+	// 			sprintf(
+	// 				/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
+	// 				'executeStreamUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
+	// 				$apiURL,
+	// 				$response_code,
+	// 				json_encode($data),
+	// 				$resp
+	// 			)
+	// 		);
+	// 		return array('success' => false, 'error' => 'Invalid JSON response');
+	// 	} else {
+	// 		$response_data = json_decode($resp, true);
+	// 		if (json_last_error() !== JSON_ERROR_NONE) {
+	// 			error_log(
+	// 				sprintf(
+	// 					/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
+	// 					'executeStreamUrl error json_last_error() !== JSON_ERROR_NONE for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
+	// 					$apiURL,
+	// 					$response_code,
+	// 					json_encode($data),
+	// 					$resp
+	// 				)
+	// 			);
+	// 			return array('success' => false, 'error' => 'Invalid JSON response');
+	// 		}
+
+	// 		return array('success' => true, 'data' => $response_data);
+	// 	}
+	// }
+
+	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
+	{
+		// 'Accept: text/plain'
+		$headers = array("Accept" => "*");
+		if (!empty($extraHeaders)) {
+			$headers = array_merge($headers, $extraHeaders);
+		}
+		$args = array(
+			'headers' => $headers,
+			'body'      => $requestParamList,
+			'method'    => $method,
+		);
+
+		$result =  wp_remote_request($apiURL, $args);
+		$response_code = wp_remote_retrieve_response_code($result);
+		$error = wp_remote_retrieve_response_message($result);
+
+		if (is_wp_error($result)) {
+			$msg = sprintf(
+				/* translators: 1: Url, 2: Error code, 3: Error message, 4: Event data. */
+				__('executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s'),
+				$apiURL,
+				$result->get_error_code(),
+				$result->get_error_message(),
+				wp_json_encode($args)
+			);
+			error_log($msg);
+
+			return self::errorResponse($msg);
+			// throw new Exception(__('Could not retrieve the access token, please try again!!!.', BasgateConstants::ID));
+		}
+
+		$response_body = wp_remote_retrieve_body($result);
+
+		if (200 !==  $response_code) {
+			$msg = sprintf(
+				/* translators: 1: Url, 2: Response code, 3: Event data, 4: ErrorMsg ,5:Response Body. */
+				__('executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , ErrorMsg: %4$s, Response Body:%5$s'),
+				$apiURL,
+				$response_code,
+				wp_json_encode($args),
+				$error,
+				$response_body
+			);
+			error_log($msg);
+
+			return self::errorResponse($msg);
+			// throw new Exception(__('Could not retrieve the access token, please try again.', BasgateConstants::ID));
+
+		} else {
+			$data = json_decode($response_body, true); // Decode JSON response
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				return self::errorResponse('Error decoding JSON: ' . json_last_error_msg());
+			}
+			return self::successResponse($data);
+		}
+	}
+
+	public static function errorResponse($msg)
+	{
+		if (!empty($msg)) {
+			return array('success' => false, 'error' => $msg);
+		} else {
+			return array('success' => false, 'error' => 'Something went wrong');
+		}
+	}
+
+	public static function successResponse($data)
+	{
+		if (!empty($data)) {
+			return array('success' => true, 'data' => $data);
+		} else {
+			return array('success' => true, 'data' => array());
+		}
+	}
+
+
+	static function basgate_log($message)
+	{
+		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
+			return; // Only log if WP_DEBUG is enabled
+		}
+
+
+
+		// $log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
+		$log_file = plugins_url('bassdk-wp-login.log', plugin_root()); // Specify the log file path
+		$timestamp = current_time('Y-m-d H:i:s');
+		$log_entry = "[$timestamp] $message\n";
+
+		file_put_contents($log_file, $log_entry, FILE_APPEND);
 	}
 }

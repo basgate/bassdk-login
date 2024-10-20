@@ -272,37 +272,64 @@ class Authentication extends Singleton
 		$code = $auth_id;
 		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
 
-		try {
-			//Send Post request to get token details
-			$curl = curl_init();
-			curl_setopt_array($curl, [
-				CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => 'grant_type=' . $grant_type . '&client_id=' . $client_id . '&client_secret=' . $client_secret . '&code=' . $code . '&redirect_uri=' . $redirect_uri,
-				CURLOPT_HTTPHEADER => [
-					"Content-Type: application/x-www-form-urlencoded"
-				],
-			]);
-			$result = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
-			if ($err) {
+		// try {
+		// 	//Send Post request to get token details
+		// 	$curl = curl_init();
+		// 	curl_setopt_array($curl, [
+		// 		CURLOPT_URL => $bassdk_api . 'api/v1/auth/token',
+		// 		CURLOPT_RETURNTRANSFER => true,
+		// 		CURLOPT_ENCODING => "",
+		// 		CURLOPT_MAXREDIRS => 10,
+		// 		CURLOPT_TIMEOUT => 30,
+		// 		CURLOPT_FOLLOWLOCATION => true,
+		// 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		// 		CURLOPT_CUSTOMREQUEST => "POST",
+		// 		CURLOPT_POSTFIELDS => 'grant_type=' . $grant_type . '&client_id=' . $client_id . '&client_secret=' . $client_secret . '&code=' . $code . '&redirect_uri=' . $redirect_uri,
+		// 		CURLOPT_HTTPHEADER => [
+		// 			"Content-Type: application/x-www-form-urlencoded"
+		// 		],
+		// 	]);
+		// 	$result = curl_exec($curl);
+		// 	$err = curl_error($curl);
+		// 	curl_close($curl);
+		// 	if ($err) {
+		// 	} else {
+		// 		$response = json_decode($result, true);
+		// 		if (array_key_exists('access_token', $response)) {
+		// 			return $response['access_token'];
+		// 		} else {
+		// 			return null;
+		// 		}
+		// 	}
+		// } catch (\Throwable $th) {
+		// 	throw $th;
+		// }
+
+		$reqBody = [
+			'grant_type' => $grant_type,
+			'client_id' => $client_id,
+			'client_secret' => $client_secret,
+			'code' => $code,
+			'redirect_uri' => $redirect_uri
+		];
+
+		$header = array("Content-type" => "application/x-www-form-urlencoded");
+
+		$retry = 1;
+		do {
+			$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), $header);
+			$retry++;
+		} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
+
+		if (array_key_exists('success', $response) && $response['success'] == true) {
+			if (array_key_exists('data', $response)) {
+				$data = $response['data'];
+				return  array_key_exists('access_token', $data) ? $data['access_token'] : null;
 			} else {
-				$response = json_decode($result, true);
-				if (array_key_exists('access_token', $response)) {
-					return $response['access_token'];
-				} else {
-					return null;
-				}
+				return null;
 			}
-		} catch (\Throwable $th) {
-			throw $th;
+		} else {
+			return null;
 		}
 	}
 
