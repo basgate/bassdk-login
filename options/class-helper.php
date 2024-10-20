@@ -727,8 +727,8 @@ class Helper
 
 
 
-		// $log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
-		$log_file = plugins_url('bassdk-wp-login.log', plugin_root()); // Specify the log file path
+		$log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
+		// $log_file = plugins_url('bassdk-wp-login.log', plugin_root()); // Specify the log file path
 		$timestamp = current_time('Y-m-d H:i:s');
 		$log_entry = "[$timestamp] $message\n";
 
