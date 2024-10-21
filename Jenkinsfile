@@ -29,9 +29,9 @@ node () {
       }
     }
     stage('Delete .hidden files'){
-      dir("""${iisApplicationPath}""") {
+      dir("""${WORKSPACE}""") {
             bat """
-            del .gitignore
+            del "${iisApplicationPath}"\\.gitignore
             """
       }
     }
