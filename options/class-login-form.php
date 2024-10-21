@@ -30,11 +30,8 @@ class Login_Form extends Singleton
 	{
 		// wp_enqueue_style('bassdk-login-styles', plugins_url('css/styles.css', plugin_root()), array(), '1.0');
 		// wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
-		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0',  array(
-			'strategy'  => 'defer',
-			'in_footer' => false, // Note: This is the default value.
-		));
-		
+		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0',  true);
+
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
 
@@ -62,6 +59,25 @@ class Login_Form extends Singleton
 					window.addEventListener("JSBridgeReady", async (event) => {
 						var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 						console.log("JSBridgeReady Successfully loaded clientId:", clientId);
+
+						<?php
+						echo '			
+						<style type="text/css">
+							body.login-action-login form {
+								padding-bottom: 8px;
+							}
+							body.login-action-login form p > label,
+							body.login-action-login form #user_login,
+							body.login-action-login form .user-pass-wrap,
+							body.login-action-login form .forgetmenot,
+							body.login-action-login form .submit,
+							body.login-action-login #nav { /* csslint allow: ids */
+								display: none;
+							}
+						</style>';
+						remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
+						remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
+						?>
 						// if (isJSBridgeReady) {
 						await getBasAuthCode(clientId).then((res) => {
 							if (res) {
