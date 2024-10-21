@@ -33,6 +33,9 @@ class Login_Form extends Singleton
 			'strategy'  => 'async',
 			'in_footer' => true,
 		));
+		
+		wp_enqueue_style( 'bassdk-loading-style', plugins_url( 'css/basgate-payments.css', plugin_root()), array(), time(), '' )
+
 		wp_add_inline_style(
 			'bassdk-sdk-style',
 			'	body.login-action-login form {
@@ -55,13 +58,37 @@ class Login_Form extends Singleton
 
 		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
 			$this->bassdk_enqueue_scripts();
+			$this->loading(true);
 			$this->bassdk_add_modal();
 		}
+	}
+
+	public function loading($start = true)
+	{
+		Helper::basgate_log('===== STARTED loading() ' . $start);
+		if ($start === true) {
+			$wait_msg = '<div id="basgate-pg-spinner" class="basgate-woopg-loader">
+				<div class="bounce1"></div>
+				<div class="bounce2"></div>
+				<div class="bounce3"></div>
+				<div class="bounce4"></div>
+				<div class="bounce5">
+				</div>
+					<p class="loading-basgate">Loading Basgate</p>
+				</div>
+				<div class="basgate-overlay basgate-woopg-loader"></div>
+			';
+		} else {
+			$wait_msg = '';
+		}
+
+		echo $wait_msg;
 	}
 
 	public function bassdk_add_modal()
 	{
 		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
+		$this->loading(true);
 		$this->load_login_footer_js();
 		echo do_shortcode('[bassdk_login]');
 	}
