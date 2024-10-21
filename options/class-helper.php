@@ -667,8 +667,8 @@ class Helper
 				$result->get_error_message(),
 				wp_json_encode($args)
 			);
-			error_log($msg);
-
+			// error_log($msg);
+			Helper::basgate_log($msg);
 			return self::errorResponse($msg);
 			// throw new Exception(__('Could not retrieve the access token, please try again!!!.', BasgateConstants::ID));
 		}
@@ -685,7 +685,7 @@ class Helper
 				$error,
 				$response_body
 			);
-			error_log($msg);
+			Helper::basgate_log($msg);
 
 			return self::errorResponse($msg);
 		} else {
@@ -725,11 +725,36 @@ class Helper
 			return; // Only log if WP_DEBUG is enabled
 		}
 
+		if (! function_exists('get_filesystem_method')) {
+			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		}
+
 		$log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
-		// $log_file = plugins_url('bassdk-wp-login.log', plugin_root()); // Specify the log file path
 		$timestamp = current_time('Y-m-d H:i:s');
 		$log_entry = "[$timestamp] $message\n";
 
-		file_put_contents($log_file, $log_entry, FILE_APPEND);
+		// Initialize the filesystem
+		WP_Filesystem();
+
+		global $wp_filesystem;
+
+		// Check if the file exists
+		if ($wp_filesystem->exists($log_file)) {
+			// Read existing contents
+			$existing_contents = $wp_filesystem->get_contents($log_file);
+			// Append new data
+			$new_contents = $existing_contents . PHP_EOL . $log_entry;
+		} else {
+			// If the file doesn't exist, just use the new data
+			$new_contents = $log_entry;
+		}
+
+
+		// WP_Filesystem($log_file, $log_entry, FILE_APPEND);
+		$wp_filesystem->put_contents(
+			$log_file,
+			$new_contents,
+			FS_CHMOD_FILE // predefined mode settings for WP files
+		);
 	}
 }

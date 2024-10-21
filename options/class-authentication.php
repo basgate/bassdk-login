@@ -139,7 +139,7 @@ class Authentication extends Singleton
 		// Get one time use token.
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
-			$token =  $_SESSION['basToken'];
+			$token =  sanitize_text_field($_SESSION['basToken']);
 			Helper::basgate_log('custom_authenticate_basgate() exist $token:' . $token);
 		} else {
 			// No token, so this is not a succesful Basgate login.
@@ -207,7 +207,7 @@ class Authentication extends Singleton
 		}
 
 		if (empty($auth_id)) {
-			$auth_id = isset($_POST['authId']) ? wp_unslash($_POST['authId']) : null;
+			$auth_id = isset($_POST['authId']) ? sanitize_text_field(wp_unslash($_POST['authId'])) : null;
 		}
 		// Grab plugin settings.
 		$options       = Options::get_instance();
@@ -441,9 +441,9 @@ class Authentication extends Singleton
 		// pending user facing the "no access" message, their logout link will
 		// include "external=?" since they don't have a WP_User to attach the
 		// "authenticated_by" usermeta to).
-		if (empty(self::$authenticated_by) && ! empty($_REQUEST['external'])) {
-			self::$authenticated_by = wp_unslash($_REQUEST['external']);
-		}
+		// if (empty(self::$authenticated_by) && ! empty($_REQUEST['external'])) {
+		// 	self::$authenticated_by = sanitize_text_field(wp_unslash($_REQUEST['external']));
+		// }
 	}
 
 	/**
@@ -468,22 +468,11 @@ class Authentication extends Singleton
 			session_start();
 		}
 		if ('google' === self::$authenticated_by && array_key_exists('basToken', $_SESSION)) {
-			$token = $_SESSION['basToken'];
+			$token = sanitize_text_field($_SESSION['basToken']);
 
 			$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
 			$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
-			// Build the Basgate Client.
-			// $client = new \Google_Client();
-			// $client->setApplicationName('WordPress');
-			// $client->setClientId(trim($auth_settings['bas_client_id']));
-			// $client->setClientSecret(trim($auth_settings['bas_client_secret']));
-			// $client->setRedirectUri('postmessage');
-
-			// // Revoke the token.
-			// $client->revokeToken($token);
-
-			// Remove the credentials from the user's session.
 			unset($_SESSION['basToken']);
 		}
 	}
