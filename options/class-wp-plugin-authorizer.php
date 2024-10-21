@@ -71,7 +71,7 @@ class WP_Plugin_Basgate extends Singleton
 		
 		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
-		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
+		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
 		//TODO: Added by Ansi to check user is already logged in
 		// add_action('loop_start', array(Login_Form::get_instance(), 'bas_personal_message_when_logged_in'));

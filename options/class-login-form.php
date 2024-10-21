@@ -41,6 +41,7 @@ class Login_Form extends Singleton
 	public function bassdk_add_modal()
 	{
 		echo do_shortcode('[bassdk_login]');
+		$this->bassdk_enqueue_scripts();
 		$this->load_login_footer_js();
 	}
 
