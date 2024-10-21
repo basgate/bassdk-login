@@ -49,10 +49,14 @@ class Login_Form extends Singleton
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
 
-	// public function check_login()
-	// {
-	// 	Helper::basgate_log('===== STARTED check_login() ');
-	// }
+	public function check_login()
+	{
+		Helper::basgate_log('===== STARTED check_login() ');
+
+		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
+			$this->bassdk_enqueue_scripts();
+		}
+	}
 
 	public function bassdk_add_modal()
 	{
@@ -74,7 +78,7 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-		?>
+?>
 			<script type="text/javascript">
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
@@ -200,7 +204,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-		<?php
+<?php
 		endif;
 	}
 

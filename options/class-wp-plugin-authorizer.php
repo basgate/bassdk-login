@@ -60,6 +60,7 @@ class WP_Plugin_Basgate extends Singleton
 		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
 		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
+		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'check_login'));
 
 		add_action('wp_ajax_nopriv_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 
