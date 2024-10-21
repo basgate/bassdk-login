@@ -43,15 +43,14 @@ class Login_Form extends Singleton
 	public function check_login()
 	{
 		Helper::basgate_log('===== STARTED check_login() ');
-
-		$this->bassdk_enqueue_scripts();
-		$this->load_login_footer_js();
 	}
 
 	public function bassdk_add_modal()
 	{
-		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
 
+		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
+		$this->bassdk_enqueue_scripts();
+		$this->load_login_footer_js();
 		echo do_shortcode('[bassdk_login]');
 	}
 
@@ -76,25 +75,28 @@ class Login_Form extends Singleton
 						var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 						console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 
-						<?php
-						echo '			
-						<style type="text/css">
-							body.login-action-login form {
-								padding-bottom: 8px;
-							}
-							body.login-action-login form p > label,
-							body.login-action-login form #user_login,
-							body.login-action-login form .user-pass-wrap,
-							body.login-action-login form .forgetmenot,
-							body.login-action-login form .submit,
-							body.login-action-login #nav { /* csslint allow: ids */
-								display: none;
-							}
-						</style>';
-						remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
-						remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
-						?>
-						// if (isJSBridgeReady) {
+						/*
+						// <?php
+							// echo '			
+							// <style type="text/css">
+							// 	body.login-action-login form {
+							// 		padding-bottom: 8px;
+							// 	}
+							// 	body.login-action-login form p > label,
+							// 	body.login-action-login form #user_login,
+							// 	body.login-action-login form .user-pass-wrap,
+							// 	body.login-action-login form .forgetmenot,
+							// 	body.login-action-login form .submit,
+							// 	body.login-action-login #nav { /* csslint allow: ids */
+							// 		display: none;
+							// 	}
+							// </style>';
+							// remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
+							// remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
+							// 
+							?>
+						*/
+
 						await getBasAuthCode(clientId).then((res) => {
 							if (res) {
 								// console.log("getBasAuthCode res.status :", res.status)

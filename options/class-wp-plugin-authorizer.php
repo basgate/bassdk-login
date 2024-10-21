@@ -45,12 +45,6 @@ class WP_Plugin_Basgate extends Singleton
 		// Modify the log in URL (if applicable options are set).
 		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
 
-		// // If we have a custom login error, add the filter to show it.
-		// $error = get_option('auth_settings_advanced_login_error');
-		// if ($error && strlen($error) > 0) {
-		// 	add_filter('login_errors', array(Login_Form::get_instance(), 'show_advanced_login_error'));
-		// }
-
 		// // Enable localization. Translation files stored in /languages.
 		add_action('plugins_loaded', array($this, 'load_textdomain'));
 
@@ -60,13 +54,6 @@ class WP_Plugin_Basgate extends Singleton
 		// Create options page.
 		add_action('admin_init', array(Admin_Page::get_instance(), 'page_init'));
 
-		// // Update user role in approved list if it's changed via bulk action on the
-		// // WordPress list users page (and anywhere else WP_User::set_role() is called).
-		// add_action('set_user_role', array(Sync_Userdata::get_instance(), 'set_user_role_sync_role'), 10, 3);
-
-		// // Update user email in approved list if it's changed in the WordPress edit user page.
-		// add_filter('send_email_change_email', array(Sync_Userdata::get_instance(), 'edit_user_profile_update_email'), 10, 3);
-
 		// // // Add custom css and js to wp-login.php.
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
 
@@ -74,46 +61,8 @@ class WP_Plugin_Basgate extends Singleton
 
 		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
-		//TODO: Added by Ansi to check user is already logged in
-		// add_action('loop_start', array(Login_Form::get_instance(), 'bas_personal_message_when_logged_in'));
-
-		// // Prevent access to password reset if WordPress logins are disabled.
-		// add_filter('lost_password_html_link', array(Login_Form::get_instance(), 'maybe_hide_lost_password_link'), PHP_INT_MAX, 1);
-		// add_action('lost_password', array(Login_Form::get_instance(), 'maybe_hide_lost_password_form'), PHP_INT_MAX, 1);
-		// add_filter('lostpassword_errors', array(Login_Form::get_instance(), 'maybe_prevent_password_reset'), PHP_INT_MAX, 1);
-
-		// // Verify current user has access to page they are visiting.
-		// add_action('parse_request', array(Authorization::get_instance(), 'restrict_access'), 9);
-		// add_action('init', array(Sync_Userdata::get_instance(), 'init__maybe_add_network_approved_user'));
-
-		// // Hide private pages in search and archives for anonymous users if "only
-		// // logged in users can see the site" is enabled.
-		// add_action('pre_get_posts', array(Authorization::get_instance(), 'remove_private_pages_from_search_and_archives'), 10, 1);
-		// add_action('pre_get_posts', array(Login_Form::get_instance(), 'load_login_footer_js'), 10, 1);
-
-		// // Prevent REST API access if user isn't authenticated and "only logged in
-		// // users can see the site" is enabled.
-		// add_action('rest_authentication_errors', array(Authorization::get_instance(), 'restrict_rest_api'), 10, 1);
-
-		// // AJAX: Save options from dashboard widget.
-		// add_action('wp_ajax_update_auth_user', array(Ajax_Endpoints::get_instance(), 'ajax_update_auth_user'));
-
-		// // AJAX: Save options from multisite options page.
-		// add_action('wp_ajax_save_auth_multisite_settings', array(Ajax_Endpoints::get_instance(), 'ajax_save_auth_multisite_settings'));
-
-		// // AJAX: Save usermeta from options page.
-		// add_action('wp_ajax_update_auth_usermeta', array(Ajax_Endpoints::get_instance(), 'ajax_update_auth_usermeta'));
-
-		// // AJAX: Verify basgate login.
-
-		// add_action('wp_ajax_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 		add_action('wp_ajax_nopriv_process_basgate_login', array(Authentication::get_instance(), 'ajax_process_basgate_login'));
 
-		// // Load custom javascript for the main site (e.g., for displaying alerts).
-		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
-
-		// Add [authorizer_login_form] shortcode to render the login form.
-		// add_shortcode('authorizer_login_form', array(Login_Form::get_instance(), 'shortcode_authorizer_login_form'));
 		add_shortcode('bassdk_login', array(Login_Form::get_instance(), 'bassdk_login_form'));
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
 
