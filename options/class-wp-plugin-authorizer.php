@@ -33,6 +33,7 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // Custom wp authentication routine using external service.
 		add_filter('authenticate', array(Authentication::get_instance(), 'custom_authenticate'), 20, 3);
+		add_filter('wp_authenticate_user', array(Login_Form::get_instance(), 'check_login'), 9, 1);
 
 		// // Custom logout action using external service.
 		add_action('clear_auth_cookie', array(Authentication::get_instance(), 'pre_logout'));
@@ -68,7 +69,7 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // // Add custom css and js to wp-login.php.
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
-		
+
 		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
 		// add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
