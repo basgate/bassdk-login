@@ -661,7 +661,7 @@ class Helper
 		if (is_wp_error($result)) {
 			$msg = sprintf(
 				/* translators: 1: Url, 2: Error code, 3: Error message, 4: Event data. */
-				__('executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s'),
+				__('executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s', 'bassdk-wp-login'),
 				$apiURL,
 				$result->get_error_code(),
 				$result->get_error_message(),
@@ -678,7 +678,7 @@ class Helper
 		if (200 !==  $response_code) {
 			$msg = sprintf(
 				/* translators: 1: Url, 2: Response code, 3: Event data, 4: ErrorMsg ,5:Response Body. */
-				__('executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , ErrorMsg: %4$s, Response Body:%5$s'),
+				__('executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , ErrorMsg: %4$s, Response Body:%5$s', 'bassdk-wp-login'),
 				$apiURL,
 				$response_code,
 				wp_json_encode($args),

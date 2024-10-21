@@ -150,7 +150,7 @@ class Authentication extends Singleton
 		// Verify this is a successful Basgate authentication.
 		try {
 			$payload = $this->getBasUserInfo($token);
-			Helper::basgate_log('custom_authenticate_basgate() $payload:' . json_encode($payload));
+			Helper::basgate_log('custom_authenticate_basgate() $payload:' . wp_json_encode($payload));
 		} catch (\Throwable $th) {
 			Helper::basgate_log('ERROR custom_authenticate_basgate :Error on getting userinfo from Basgate API.' . $th->getMessage());
 			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', 'bassdk-wp-login'), $th->getMessage());
@@ -310,7 +310,7 @@ class Authentication extends Singleton
 			do {
 				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/userinfo', array(), "GET", $header);
 				$retry++;
-				Helper::basgate_log('===== getBasUserInfo() $response: ' . json_encode($response));
+				Helper::basgate_log('===== getBasUserInfo() $response: ' . wp_json_encode($response));
 			} while (!$response['body'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 
 			if (array_key_exists('success', $response) && $response['success'] == true) {
