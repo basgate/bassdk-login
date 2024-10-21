@@ -173,6 +173,8 @@ class Login_Form extends Singleton
 	 */
 	public function maybe_add_external_wordpress_to_log_in_links($login_url)
 	{
+		Helper::basgate_log('===== STARTED maybe_add_external_wordpress_to_log_in_links() $login_url: ' . $login_url);
+
 		// Initial check to make sure that we are on a wp-login.php page.
 		if (isset($GLOBALS['pagenow']) && site_url($GLOBALS['pagenow'], 'login') === $login_url) {
 			// Do a check in here within the $_REQUEST params to narrow down the scope of where we'll modify the URL

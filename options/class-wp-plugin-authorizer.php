@@ -68,6 +68,8 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // // Add custom css and js to wp-login.php.
 		// add_action('login_footer', array(Login_Form::get_instance(), 'load_login_footer_js'));
+		
+		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
 		add_action('wp_enqueue_scripts', array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 
@@ -116,7 +118,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// add_action('wp_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 
-		add_action('login_footer', array(Login_Form::get_instance(), 'bassdk_add_modal'));
 	}
 	/**
 	 * Plugin activation hook.
