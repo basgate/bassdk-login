@@ -330,7 +330,7 @@ class Authentication extends Singleton
 		} catch (\Throwable $th) {
 			$msg = "ERROR getBasUserInfo():" . $th->getMessage();
 			Helper::basgate_log($msg);
-			error_log($msg);
+			// error_log($msg);
 			throw $th;
 		}
 	}
