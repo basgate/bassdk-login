@@ -45,6 +45,7 @@ class Login_Form extends Singleton
 		Helper::basgate_log('===== STARTED check_login() ');
 
 		if (Helper::is_user_already_logged_in()) {
+			Helper::basgate_log('===== check_login() user already logged-in');
 			return;
 		}
 
