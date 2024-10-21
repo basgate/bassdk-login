@@ -311,13 +311,13 @@ class Authentication extends Singleton
 				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/userinfo', array(), "GET", $header);
 				$retry++;
 				Helper::basgate_log('===== getBasUserInfo() $response: ' . json_encode($response));
-			} while (!$response['data'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
+			} while (!$response['body'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 
 			if (array_key_exists('success', $response) && $response['success'] == true) {
 				if (array_key_exists('body', $response)) {
 					$body = $response['body'];
 					if (array_key_exists('data', $body)) {
-						return $body['data'];
+						return $body;
 					} else {
 						return null;
 					}
