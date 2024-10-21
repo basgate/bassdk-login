@@ -693,7 +693,7 @@ class Helper
 			if (json_last_error() !== JSON_ERROR_NONE) {
 				return self::errorResponse('Error decoding JSON: ' . json_last_error_msg());
 			}
-			self::basgate_log("===== executecUrl Success: " . json_encode($data));
+			self::basgate_log("===== executecUrl Success: " . wp_json_encode($data));
 
 			return self::successResponse($data);
 		}
