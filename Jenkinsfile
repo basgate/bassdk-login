@@ -28,10 +28,12 @@ node () {
             """
       }
     }
-    // stage('Folder Security') {
-    //         bat """
-    //         icacls "${iisApplicationPath}" /grant ${userName}:(OI)(CI)F /T
-    //         """
-    // }
+    stage('Delete .hidden files'){
+      dir("""${iisApplicationPath}""") {
+            bat """
+            del .gitignore
+            """
+      }
+    }
 }
 
