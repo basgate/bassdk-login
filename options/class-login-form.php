@@ -29,27 +29,34 @@ class Login_Form extends Singleton
 	public function bassdk_enqueue_scripts()
 	{
 		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
-
-		// wp_enqueue_style('bassdk-login-styles', plugins_url('css/styles.css', plugin_root()), array(), '1.0');
-		// wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
-		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0',   array(
+		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array(), null,   array(
 			'strategy'  => 'async',
 			'in_footer' => true,
 		));
+		wp_add_inline_style(
+			'bassdk-sdk-style',
+			'	body.login-action-login form {
+					padding-bottom: 8px;
+				}
+				body.login-action-login form p > label,
+				body.login-action-login form #user_login,
+				body.login-action-login form .user-pass-wrap,
+				body.login-action-login form .forgetmenot,
+				body.login-action-login form .submit,
+				body.login-action-login #nav {display: none;}'
+		);
 
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
 
-	public function check_login()
-	{
-		Helper::basgate_log('===== STARTED check_login() ');
-	}
+	// public function check_login()
+	// {
+	// 	Helper::basgate_log('===== STARTED check_login() ');
+	// }
 
 	public function bassdk_add_modal()
 	{
-
 		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
-		$this->bassdk_enqueue_scripts();
 		$this->load_login_footer_js();
 		echo do_shortcode('[bassdk_login]');
 	}
@@ -67,7 +74,7 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-?>
+		?>
 			<script type="text/javascript">
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
@@ -79,17 +86,17 @@ class Login_Form extends Singleton
 						// <?php
 							// echo '			
 							// <style type="text/css">
-							// 	body.login-action-login form {
-							// 		padding-bottom: 8px;
-							// 	}
-							// 	body.login-action-login form p > label,
-							// 	body.login-action-login form #user_login,
-							// 	body.login-action-login form .user-pass-wrap,
-							// 	body.login-action-login form .forgetmenot,
-							// 	body.login-action-login form .submit,
-							// 	body.login-action-login #nav { /* csslint allow: ids */
-							// 		display: none;
-							// 	}
+							// body.login-action-login form {
+							// 	padding-bottom: 8px;
+							// }
+							// body.login-action-login form p > label,
+							// body.login-action-login form #user_login,
+							// body.login-action-login form .user-pass-wrap,
+							// body.login-action-login form .forgetmenot,
+							// body.login-action-login form .submit,
+							// body.login-action-login #nav { /* csslint allow: ids */
+							// 	display: none;
+							// }
 							// </style>';
 							// remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
 							// remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
@@ -193,7 +200,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-<?php
+		<?php
 		endif;
 	}
 

@@ -125,6 +125,9 @@ class Authentication extends Singleton
 			return null;
 		}
 
+		//TODO: Add BasScript Loading here
+		
+
 		// Get one time use token.
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {

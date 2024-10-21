@@ -33,7 +33,6 @@ class WP_Plugin_Basgate extends Singleton
 
 		// // Custom wp authentication routine using external service.
 		add_filter('authenticate', array(Authentication::get_instance(), 'custom_authenticate'), 20, 3);
-		add_filter('wp_authenticate_user', array(Login_Form::get_instance(), 'check_login'), 9, 1);
 
 		// // Custom logout action using external service.
 		add_action('clear_auth_cookie', array(Authentication::get_instance(), 'pre_logout'));
@@ -42,6 +41,7 @@ class WP_Plugin_Basgate extends Singleton
 		// // Create settings link on Plugins page.
 		add_filter('plugin_action_links_' . plugin_basename(plugin_root()), array(Admin_Page::get_instance(), 'plugin_settings_link'));
 
+		add_action('login_enqueue_scripts',  array(Login_Form::get_instance(), 'bassdk_enqueue_scripts'));
 		// Modify the log in URL (if applicable options are set).
 		add_filter('login_url', array(Login_Form::get_instance(), 'maybe_add_external_wordpress_to_log_in_links'));
 
