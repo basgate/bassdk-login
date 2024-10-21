@@ -54,9 +54,8 @@ class Login_Form extends Singleton
 		Helper::basgate_log('===== STARTED check_login() ');
 
 		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
-			// $this->bassdk_enqueue_scripts();
-			$this->load_login_footer_js();
-			echo do_shortcode('[bassdk_login]');
+			$this->bassdk_enqueue_scripts();
+			$this->bassdk_add_modal();
 		}
 	}
 
