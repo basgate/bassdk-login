@@ -9,6 +9,8 @@
  * Requires PHP: 7.4
  * Author: Basgate Super APP  
  * Author URI: https://basgate.com/
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Tags: Basgate, BasSDK Super App, PayWithBasgate, Basgate WooCommerce, BasSDK Plugin, BasSDK Payment Gateway
  */
 
