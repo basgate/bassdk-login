@@ -32,7 +32,7 @@ class Login_Form extends Singleton
 		// wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
 		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0',   array(
 			'strategy'  => 'async',
-			'in_footer' => false, // Note: This is the default value.
+			'in_footer' => true,
 		));
 
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
