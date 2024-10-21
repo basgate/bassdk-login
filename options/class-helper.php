@@ -757,4 +757,15 @@ class Helper
 			FS_CHMOD_FILE // predefined mode settings for WP files
 		);
 	}
+
+	public static function is_user_already_logged_in()
+	{
+		$current_user = wp_get_current_user();
+		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
+
+		if (is_user_logged_in() && $authenticated_by === 'basgate') {
+			return true;
+		}
+		return false;
+	}
 }
