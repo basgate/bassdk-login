@@ -39,11 +39,8 @@ class Authentication extends Singleton
 	 */
 	public function custom_authenticate($user, $username, $password)
 	{
-?>
-		<script>
-			console.log("STARTED custom_authenticate() ")
-		</script>
-		<?php
+		Helper::basgate_log('===== STARTED () custom_authenticate');
+
 		// Pass through if already authenticated.
 		if (is_a($user, 'WP_User')) {
 			return $user;
@@ -67,11 +64,8 @@ class Authentication extends Singleton
 			0 === count($externally_authenticated_emails) &&
 			! is_wp_error($result)
 		) {
-		?>
-			<script>
-				console.log("custom_authenticate() enabled=yes")
-			</script>
-			<?php
+
+			Helper::basgate_log('===== custom_authenticate() enabled=yes');
 
 			$result = $this->custom_authenticate_basgate($auth_settings);
 
@@ -84,12 +78,7 @@ class Authentication extends Singleton
 				$authenticated_by = $result['authenticated_by'];
 				$openId = $result['open_id'];
 				$bas_attributes = $result['bas_attributes'];
-			?>
-				<script>
-					var open_id = '<?php echo esc_attr($openId); ?>'
-					console.log("custom_authenticate() open_id :", open_id)
-				</script>
-		<?php
+				Helper::basgate_log('===== custom_authenticate() open_id :' . $openId);
 			}
 		}
 
@@ -169,13 +158,7 @@ class Authentication extends Singleton
 		$openId     = $data['open_id'];
 		$phone     = $data['phone'];
 
-		?>
-		<script>
-			var data = '<?php echo esc_attr($data); ?>'
-			console.log("custom_authenticate() $payload :", JSON.stringify(data))
-		</script>
-<?php
-
+		Helper::basgate_log('===== custom_authenticate() $data: ' . json_encode($data));
 
 		return array(
 			'email'             => $phone . BasgateConstants::EMAIL_DOMAIN,
@@ -191,6 +174,8 @@ class Authentication extends Singleton
 
 	public function ajax_process_basgate_login()
 	{
+		Helper::basgate_log('===== STARTED ajax_process_basgate_login() ');
+
 		// Nonce check.
 		if (
 			! isset($_POST['nonce']) ||
@@ -419,6 +404,8 @@ class Authentication extends Singleton
 	 */
 	public function set_auth_cookies(\WP_User $user)
 	{
+		Helper::basgate_log('===== STARTED set_auth_cookies() ');
+
 		wp_clear_auth_cookie();
 		wp_set_current_user($user->ID, $user->user_login);
 		wp_set_auth_cookie($user->ID);

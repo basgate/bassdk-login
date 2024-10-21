@@ -28,6 +28,8 @@ class Login_Form extends Singleton
 	 */
 	public function bassdk_enqueue_scripts()
 	{
+		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
+
 		// wp_enqueue_style('bassdk-login-styles', plugins_url('css/styles.css', plugin_root()), array(), '1.0');
 		// wp_enqueue_script('bassdk-login-script', plugins_url('js/script.js', plugin_root()), array('jquery'), '1.0', true);
 		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), '1.0',   array(
@@ -40,6 +42,8 @@ class Login_Form extends Singleton
 
 	public function bassdk_add_modal()
 	{
+		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
+
 		echo do_shortcode('[bassdk_login]');
 		$this->bassdk_enqueue_scripts();
 		$this->load_login_footer_js();
@@ -47,6 +51,8 @@ class Login_Form extends Singleton
 
 	function bassdk_login_form()
 	{
+		Helper::basgate_log('===== STARTED bassdk_login_form() ');
+
 		$options       = Options::get_instance();
 		$option               = 'bas_client_id';
 		$bas_client_id = $options->get($option);
@@ -56,7 +62,7 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-?>
+		?>
 			<script type="text/javascript">
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
@@ -114,6 +120,8 @@ class Login_Form extends Singleton
 	 */
 	public function load_login_footer_js()
 	{
+		Helper::basgate_log('===== STARTED load_login_footer_js() ');
+
 		// Grab plugin settings.
 		$options       = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
@@ -177,7 +185,7 @@ class Login_Form extends Singleton
 					}
 				}
 			</script>
-<?php
+		<?php
 		endif;
 	}
 
