@@ -33,21 +33,9 @@ class Login_Form extends Singleton
 			'strategy'  => 'async',
 			'in_footer' => true,
 		));
-		
-		wp_enqueue_style( 'bassdk-loading-style', plugins_url( 'css/basgate-payments.css', plugin_root()), array(), time(), '' )
 
-		wp_add_inline_style(
-			'bassdk-sdk-style',
-			'	body.login-action-login form {
-					padding-bottom: 8px;
-				}
-				body.login-action-login form p > label,
-				body.login-action-login form #user_login,
-				body.login-action-login form .user-pass-wrap,
-				body.login-action-login form .forgetmenot,
-				body.login-action-login form .submit,
-				body.login-action-login #nav {display: none;}'
-		);
+		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-payments.css', plugin_root()), array(), time(), '');
+		wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
 
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
