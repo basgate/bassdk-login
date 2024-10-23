@@ -37,7 +37,6 @@ class Login_Form extends Singleton
 		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-payments.css', plugin_root()), array(), time(), '');
 		// wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
 
-		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
 
 	public function check_login()
@@ -100,19 +99,14 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-?>
+			?>
 			<div>
 				<script type="text/javascript">
 					try {
-						
 						console.log("===== STARTED bassdk_login_form javascript")
-						// jQuery(".loading-basgate").hide();
-						// jQuery(".basgate-woopg-loader").hide();
-						// jQuery(".basgate-overlay").hide();
 						window.addEventListener("JSBridgeReady", async (event) => {
-							// jQuery(".loading-basgate").show();
-							// jQuery(".basgate-woopg-loader").show();
-							// jQuery(".basgate-overlay").show();
+							//TODO: Start Loading Here
+							
 							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 							await getBasAuthCode(clientId).then((res) => {
@@ -126,7 +120,6 @@ class Login_Form extends Singleton
 							}).catch((error) => {
 								console.error("ERROR on catch getBasAuthCode:", error)
 							})
-							// }
 						}, false);
 					} catch (error) {
 						console.error("ERROR on getBasAuthCode:", error)
@@ -142,7 +135,7 @@ class Login_Form extends Singleton
 				</div>
 				<div class="basgate-overlay basgate-woopg-loader"></div>
 			</div>
-		<?php
+			<?php
 		endif;
 		return ob_get_clean();
 	}
