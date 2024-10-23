@@ -51,16 +51,14 @@ class Login_Form extends Singleton
 
 		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
 			$this->bassdk_enqueue_scripts();
-			// $this->loading(true);
+			$this->loading();
 			$this->bassdk_add_modal();
 		}
 	}
 
-	public function loading($start = true)
+	public function loading()
 	{
-		Helper::basgate_log('===== STARTED loading() ' . $start);
-		if ($start === true) {
-			$wait_msg = '<div id="basgate-pg-spinner" class="basgate-woopg-loader">
+		return '<div id="basgate-pg-spinner" class="basgate-woopg-loader">
 				<div class="bounce1"></div>
 				<div class="bounce2"></div>
 				<div class="bounce3"></div>
@@ -71,11 +69,16 @@ class Login_Form extends Singleton
 				</div>
 				<div class="basgate-overlay basgate-woopg-loader"></div>
 			';
-		} else {
-			$wait_msg = '';
-		}
+	}
 
-		echo $wait_msg;
+	public function unloading()
+	{
+
+		return '
+				jQuery(".loading-basgate").hide();
+                jQuery(".basgate-woopg-loader").hide();
+                jQuery(".basgate-overlay").hide();
+			';
 	}
 
 	public function bassdk_add_modal()
@@ -99,54 +102,47 @@ class Login_Form extends Singleton
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
 ?>
-			<script type="text/javascript">
-				try {
-					console.log("===== STARTED bassdk_login_form javascript")
-					window.addEventListener("JSBridgeReady", async (event) => {
-						<?php echo $this->loading(true);	?>
-						var clientId = '<?php echo esc_attr($bas_client_id); ?>';
-						console.log("JSBridgeReady Successfully loaded clientId:", clientId);
-
-						/*
-						// <?php
-							// echo '			
-							// <style type="text/css">
-							// body.login-action-login form {
-							// 	padding-bottom: 8px;
-							// }
-							// body.login-action-login form p > label,
-							// body.login-action-login form #user_login,
-							// body.login-action-login form .user-pass-wrap,
-							// body.login-action-login form .forgetmenot,
-							// body.login-action-login form .submit,
-							// body.login-action-login #nav { /* csslint allow: ids */
-							// 	display: none;
-							// }
-							// </style>';
-							// remove_filter('authenticate', 'wp_authenticate_username_password', 20, 3);
-							// remove_filter('authenticate', 'wp_authenticate_email_password', 20, 3);
-							// 
-							?>
-						*/
-
-						await getBasAuthCode(clientId).then((res) => {
-							if (res) {
-								// console.log("getBasAuthCode res.status :", res.status)
-								if (res.status == "1") {
-									signInCallback(res.data);
-								} else {
-									console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+			<div>
+				<script type="text/javascript">
+					try {
+						jQuery(".loading-basgate").hide();
+						jQuery(".basgate-woopg-loader").hide();
+						jQuery(".basgate-overlay").hide();
+						console.log("===== STARTED bassdk_login_form javascript")
+						window.addEventListener("JSBridgeReady", async (event) => {
+							jQuery(".loading-basgate").show();
+							jQuery(".basgate-woopg-loader").show();
+							jQuery(".basgate-overlay").show();
+							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
+							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
+							await getBasAuthCode(clientId).then((res) => {
+								if (res) {
+									// console.log("getBasAuthCode res.status :", res.status)
+									if (res.status == "1") {
+										signInCallback(res.data);
+									} else {
+										console.error("ERROR on getBasAuthCode res.messages:", res.messages)
+									}
 								}
-							}
-						}).catch((error) => {
-							console.error("ERROR on catch getBasAuthCode:", error)
-						})
-						// }
-					}, false);
-				} catch (error) {
-					console.error("ERROR on getBasAuthCode:", error)
-				}
-			</script>
+							}).catch((error) => {
+								console.error("ERROR on catch getBasAuthCode:", error)
+							})
+							// }
+						}, false);
+					} catch (error) {
+						console.error("ERROR on getBasAuthCode:", error)
+					}
+				</script>
+				<div id="basgate-pg-spinner" class="basgate-woopg-loader">
+					<div class="bounce1"></div>
+					<div class="bounce2"></div>
+					<div class="bounce3"></div>
+					<div class="bounce4"></div>
+					<div class="bounce5"></div>
+					<p class="loading-basgate">Loading Basgate...</p>
+				</div>
+				<div class="basgate-overlay basgate-woopg-loader"></div>
+			</div>
 		<?php
 		endif;
 		return ob_get_clean();
