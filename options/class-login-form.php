@@ -104,19 +104,19 @@ class Login_Form extends Singleton
 			<div>
 				<script type="text/javascript">
 					try {
-						jQuery(".loading-basgate").hide();
-						jQuery(".basgate-woopg-loader").hide();
-						jQuery(".basgate-overlay").hide();
+						var $ = jQuery;
 						console.log("===== STARTED bassdk_login_form javascript")
+						$(".loading-basgate").hide();
+						$(".basgate-woopg-loader").hide();
+						$(".basgate-overlay").hide();
 						window.addEventListener("JSBridgeReady", async (event) => {
-							jQuery(".loading-basgate").show();
-							jQuery(".basgate-woopg-loader").show();
-							jQuery(".basgate-overlay").show();
+							$(".loading-basgate").show();
+							$(".basgate-woopg-loader").show();
+							$(".basgate-overlay").show();
 							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 							await getBasAuthCode(clientId).then((res) => {
 								if (res) {
-									// console.log("getBasAuthCode res.status :", res.status)
 									if (res.status == "1") {
 										signInCallback(res.data);
 									} else {
