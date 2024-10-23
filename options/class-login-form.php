@@ -34,7 +34,7 @@ class Login_Form extends Singleton
 			'in_footer' => true,
 		));
 
-		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-payments.css', plugin_root()), array(), time(), '');
+		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-login.css', plugin_root()), array(), time(), '');
 		// wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
 
 	}
@@ -99,14 +99,16 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-			?>
+?>
 			<div>
 				<script type="text/javascript">
 					try {
 						console.log("===== STARTED bassdk_login_form javascript")
 						window.addEventListener("JSBridgeReady", async (event) => {
 							//TODO: Start Loading Here
-							
+							document.getElementById('basgate-pg-spinner').removeAttribute('hidden');
+							document.querySelector('.basgate-overlay').removeAttribute('hidden');
+
 							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 							await getBasAuthCode(clientId).then((res) => {
@@ -125,7 +127,7 @@ class Login_Form extends Singleton
 						console.error("ERROR on getBasAuthCode:", error)
 					}
 				</script>
-				<div id="basgate-pg-spinner" class="basgate-woopg-loader">
+				<div id="basgate-pg-spinner" class="basgate-woopg-loader" hidden>
 					<div class="bounce1"></div>
 					<div class="bounce2"></div>
 					<div class="bounce3"></div>
@@ -133,9 +135,9 @@ class Login_Form extends Singleton
 					<div class="bounce5"></div>
 					<p class="loading-basgate">Loading Basgate...</p>
 				</div>
-				<div class="basgate-overlay basgate-woopg-loader"></div>
+				<div class="basgate-overlay basgate-woopg-loader" hidden></div>
 			</div>
-			<?php
+		<?php
 		endif;
 		return ob_get_clean();
 	}
