@@ -126,7 +126,7 @@ class Authentication extends Singleton
 		}
 
 		//TODO: Add BasScript Loading here
-		
+
 
 		// Get one time use token.
 		session_start();
@@ -161,7 +161,7 @@ class Authentication extends Singleton
 		$openId     = $data['open_id'];
 		$phone     = $data['phone'];
 
-		Helper::basgate_log('===== custom_authenticate() $data: ' . json_encode($data));
+		Helper::basgate_log('===== custom_authenticate() $data: ' . wp_json_encode($data));
 
 		return array(
 			'email'             => $phone . BasgateConstants::EMAIL_DOMAIN,

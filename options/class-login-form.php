@@ -29,7 +29,7 @@ class Login_Form extends Singleton
 	public function bassdk_enqueue_scripts()
 	{
 		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
-		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array(), null,   array(
+		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array(), time(),   array(
 			'strategy'  => 'async',
 			'in_footer' => true,
 		));
@@ -48,7 +48,11 @@ class Login_Form extends Singleton
 			return;
 		}
 
-		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
+		if (
+			is_page('my-account') ||
+			isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		) {
 			$this->bassdk_enqueue_scripts();
 			// $this->loading();
 			$this->bassdk_add_modal();
@@ -105,7 +109,6 @@ class Login_Form extends Singleton
 					try {
 						console.log("===== STARTED bassdk_login_form javascript")
 						window.addEventListener("JSBridgeReady", async (event) => {
-							//TODO: Start Loading Here
 							document.getElementById('basgate-pg-spinner').removeAttribute('hidden');
 							document.querySelector('.basgate-overlay').removeAttribute('hidden');
 
