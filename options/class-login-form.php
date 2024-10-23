@@ -51,7 +51,7 @@ class Login_Form extends Singleton
 
 		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
 			$this->bassdk_enqueue_scripts();
-			$this->loading();
+			// $this->loading();
 			$this->bassdk_add_modal();
 		}
 	}
@@ -73,7 +73,6 @@ class Login_Form extends Singleton
 
 	public function unloading()
 	{
-
 		return '
 				jQuery(".loading-basgate").hide();
                 jQuery(".basgate-woopg-loader").hide();
