@@ -35,7 +35,7 @@ class Login_Form extends Singleton
 		));
 
 		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-payments.css', plugin_root()), array(), time(), '');
-		wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
+		// wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
 
 		// wp_enqueue_script('bassdk-login-cdn-script', esc_url('https://pub-8bba29ca4a7a4024b100dca57bc15664.r2.dev/sdk/stage/v1/public.js'),  array('jquery'), '1.0', true);
 	}
@@ -51,7 +51,7 @@ class Login_Form extends Singleton
 
 		if (is_page('my-account') || isset($_GET['action']) && $_GET['action'] === 'login') {
 			$this->bassdk_enqueue_scripts();
-			$this->loading(true);
+			// $this->loading(true);
 			$this->bassdk_add_modal();
 		}
 	}
@@ -81,7 +81,6 @@ class Login_Form extends Singleton
 	public function bassdk_add_modal()
 	{
 		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
-		$this->loading(true);
 		$this->load_login_footer_js();
 		echo do_shortcode('[bassdk_login]');
 	}
@@ -104,6 +103,7 @@ class Login_Form extends Singleton
 				try {
 					console.log("===== STARTED bassdk_login_form javascript")
 					window.addEventListener("JSBridgeReady", async (event) => {
+						<?php echo $this->loading(true);	?>
 						var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 						console.log("JSBridgeReady Successfully loaded clientId:", clientId);
 
