@@ -281,7 +281,7 @@ class Helper
 
 			// Don't let a user change their own role (but network admins always can).
 			$is_disabled = $selected_role !== $name && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
-?>
+		?>
 			<option value="<?php echo esc_attr($name); ?>" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php echo esc_html($role['name']); ?></option>
 		<?php
 		}
@@ -291,7 +291,7 @@ class Helper
 		$is_disabled = strlen($selected_role) > 0 && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
 		?>
 		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', 'bassdk-wp-login'); ?></option>
-<?php
+		<?php
 	}
 
 	/**
@@ -740,17 +740,12 @@ class Helper
 
 		// Check if the file exists
 		if ($wp_filesystem->exists($log_file)) {
-			// Read existing contents
 			$existing_contents = $wp_filesystem->get_contents($log_file);
-			// Append new data
 			$new_contents = $existing_contents . PHP_EOL . $log_entry;
 		} else {
-			// If the file doesn't exist, just use the new data
 			$new_contents = $log_entry;
 		}
 
-
-		// WP_Filesystem($log_file, $log_entry, FILE_APPEND);
 		$wp_filesystem->put_contents(
 			$log_file,
 			$new_contents,
