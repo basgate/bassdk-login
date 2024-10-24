@@ -4,7 +4,7 @@
 String githubUrl = "https://github.com/ansiabdo/bassdk-wp-login.git"
 String projectName = "bassdk-wp-login"
 String userName = "basgate-_979mf9lyuyh"
-String iisApplicationPath = "C:\\inetpub\\vhosts\\basgate-sandbox.com\\wp-plugin.basgate-sandbox.com\\wp-content\\plugins\\bassdk-wp-login"
+String iisApplicationPath = "C:\\inetpub\\vhosts\\basgate-sandbox.com\\wp-plugin.basgate-sandbox.com\\wp-content\\plugins\\bassdk-wp-login\\"
 
 node () {
     stage('Clean Workspace'){
