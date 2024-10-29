@@ -650,11 +650,14 @@ class Helper
 		if (!empty($extraHeaders)) {
 			$headers = array_merge($headers, $extraHeaders);
 		}
+
 		$args = array(
 			'headers' => $headers,
-			'body'      => $requestParamList,
 			'method'    => $method,
 		);
+		if (!empty($requestParamList) && !is_null($requestParamList)) {
+			$args['body'] = $requestParamList;
+		}
 
 		$result =  wp_remote_request($apiURL, $args);
 		$response_code = wp_remote_retrieve_response_code($result);

@@ -254,7 +254,7 @@ class Authentication extends Singleton
 			$retry = 1;
 			do {
 				// $response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
-				$response = Helper::executecUrl($bassdk_api . '.well-known/openid-configuration', null, "GET", $header);
+				$response = Helper::executecUrl($bassdk_api . '.well-known/openid-configuration', null, "GET");
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 
