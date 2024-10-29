@@ -59,16 +59,9 @@ class Authentication extends Singleton
 
 		// Try Basgate authentication if it's enabled and we don't have a
 		// successful login yet.
-		if (
-			'yes' === $auth_settings['enabled'] &&
-			0 === count($externally_authenticated_emails) &&
-			! is_wp_error($result)
-		) {
-
+		if ('yes' === $auth_settings['enabled'] && ! is_wp_error($result)) {
 			Helper::basgate_log('===== custom_authenticate() enabled=yes');
-
 			$result = $this->custom_authenticate_basgate($auth_settings);
-
 			if (! is_null($result) && ! is_wp_error($result)) {
 				if (is_array($result['email'])) {
 					$externally_authenticated_emails = $result['email'];
@@ -79,10 +72,9 @@ class Authentication extends Singleton
 				$openId = $result['open_id'];
 				$bas_attributes = $result['bas_attributes'];
 				Helper::basgate_log('===== custom_authenticate() open_id :' . $openId);
+				$result = $this->check_user_access($user, $result);
 			}
 		}
-
-		$result = $this->check_user_access($user, $result);
 
 		// Fail with message if there was an error creating/adding the user.
 		if (is_wp_error($result) || 0 === $result) {
@@ -261,7 +253,8 @@ class Authentication extends Singleton
 
 			$retry = 1;
 			do {
-				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+				// $response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+				$response = Helper::executecUrl($bassdk_api . '.well-known/openid-configuration', null, "GET", $header);
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 
@@ -336,7 +329,7 @@ class Authentication extends Singleton
 		}
 
 		// If the approved external user does not have a WordPress account, create it.
-		if (!$user) {
+		if (!$user && !is_wp_error($user_data)) {
 			if (array_key_exists('username', $user_data)) {
 				$username = $user_data['username'];
 			} else {
@@ -392,6 +385,8 @@ class Authentication extends Singleton
 			}
 
 			return $user;
+		} else if (is_wp_error($user_data)) {
+			return $user_data;
 		}
 
 		// Sanity check: if we made it here without returning, something has gone wrong.

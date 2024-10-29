@@ -10,6 +10,8 @@
 
 namespace BasgateSDK;
 
+use Exception;
+
 /**
  * Static class of helper methods.
  */
@@ -281,7 +283,7 @@ class Helper
 
 			// Don't let a user change their own role (but network admins always can).
 			$is_disabled = $selected_role !== $name && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
-		?>
+?>
 			<option value="<?php echo esc_attr($name); ?>" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php echo esc_html($role['name']); ?></option>
 		<?php
 		}
@@ -291,7 +293,7 @@ class Helper
 		$is_disabled = strlen($selected_role) > 0 && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
 		?>
 		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', 'bassdk-wp-login'); ?></option>
-		<?php
+<?php
 	}
 
 	/**
@@ -644,7 +646,7 @@ class Helper
 	{
 		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
 		// 'Accept: text/plain'
-		$headers = array("Accept" => "*");
+		$headers = array("Accept" => "text/plain");
 		if (!empty($extraHeaders)) {
 			$headers = array_merge($headers, $extraHeaders);
 		}
@@ -721,9 +723,12 @@ class Helper
 
 	static function basgate_log($message)
 	{
+		error_log($message);
+
 		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
 			return; // Only log if WP_DEBUG is enabled
 		}
+
 
 		if (! function_exists('get_filesystem_method')) {
 			require_once(ABSPATH . 'wp-admin/includes/file.php');

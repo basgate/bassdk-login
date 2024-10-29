@@ -3,7 +3,7 @@
  * Plugin Name: Bassdk WP Login
  * Plugin URI: https://github.com/Basgate/bassdk-wp-login
  * Description: هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ المالية والبنوك المختلفة
- * Version: 0.2.00
+ * Version: 0.2.2
  * Requires at least: 5.0.1
  * Tested up to: 6.6.2
  * Requires PHP: 7.4
