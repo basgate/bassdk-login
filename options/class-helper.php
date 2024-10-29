@@ -645,7 +645,7 @@ class Helper
 	static function httpPost($url, $data, $header)
 	{
 		self::basgate_log("===== STARTED httpPost url:" . $url);
-		$url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
+		// $url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
