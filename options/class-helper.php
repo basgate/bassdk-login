@@ -675,7 +675,8 @@ class Helper
 				)
 			);
 			curl_close($curl);
-			return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
+			return null;
+			// return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
 		} else {
 			curl_close($curl);
 			self::basgate_log("executecUrl Success response:$response");
