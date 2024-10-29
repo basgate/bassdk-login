@@ -642,6 +642,40 @@ class Helper
 	// 	}
 	// }
 
+	static function httpPost($url, $data, $header)
+	{
+		self::basgate_log("===== STARTED executecUrl url:" . $url);
+		$url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
+		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+		$response = curl_exec($curl);
+		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		$error = curl_error($curl);
+
+		if ($httpCode != 200) {
+			$msg = "Return httpCode is {$httpCode} \n" . curl_error($curl) . "URL: " . $url;
+
+			self::basgate_log(
+				sprintf(
+					/* translators: 1: Url, 2: Response code, 3: ErrorMsg. */
+					__('executecUrl error status!=200 for url: %1$s, Response code: %2$s, ErrorMsg: %3$s', 'bassdk-woocommerce-payments'),
+					$url,
+					$httpCode,
+					$error
+				)
+			);
+			curl_close($curl);
+			return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
+		} else {
+			curl_close($curl);
+			self::basgate_log("executecUrl Success response:$response");
+			return json_decode($response, true);
+		}
+	}
+
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
 		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
