@@ -252,12 +252,12 @@ class Authentication extends Singleton
 			$header = array("Content-type" => "application/x-www-form-urlencoded");
 
 			$retry = 1;
-			// do {
-			// $response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
-			$response = Helper::httpPost($bassdk_api . '.well-known/openid-configuration', null, "GET");
-			$response = Helper::httpPost('https://basgate-sandbox.com/swagger/v1/swagger.json', null, "GET");
-			$retry++;
-			// } while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
+			do {
+				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+				// $response = Helper::httpPost($bassdk_api . '.well-known/openid-configuration', null, "GET");
+				// $response = Helper::httpPost('https://basgate-sandbox.com/swagger/v1/swagger.json', null, "GET");
+				$retry++;
+			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 			Helper::basgate_log("getBasToken response:$response");
 			if (array_key_exists('success', $response) && $response['success'] == true) {
 				if (array_key_exists('body', $response)) {

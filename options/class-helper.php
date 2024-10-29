@@ -642,47 +642,47 @@ class Helper
 	// 	}
 	// }
 
-	static function httpPost($url, $data, $header)
-	{
-		self::basgate_log("===== STARTED httpPost url:" . $url);
-		// $url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
-		$curl = curl_init($url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);
-		curl_setopt($curl, CURLOPT_VERBOSE, true);
+	// static function httpPost($url, $data, $header)
+	// {
+	// 	self::basgate_log("===== STARTED httpPost url:" . $url);
+	// 	// $url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
+	// 	$curl = curl_init($url);
+	// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	// 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+	// 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+	// 	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);
+	// 	curl_setopt($curl, CURLOPT_VERBOSE, true);
 
-		$response = curl_exec($curl);
-		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$primaryIp = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
-		$localIp = curl_getinfo($curl, CURLINFO_LOCAL_IP);
-		$nameLookupTime = curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME);
-		$error = curl_error($curl);
+	// 	$response = curl_exec($curl);
+	// 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	// 	$primaryIp = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
+	// 	$localIp = curl_getinfo($curl, CURLINFO_LOCAL_IP);
+	// 	$nameLookupTime = curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME);
+	// 	$error = curl_error($curl);
 
-		self::basgate_log("httpPost primaryIp:$primaryIp , localIp:$localIp , nameLookupTime:$nameLookupTime");
+	// 	self::basgate_log("httpPost primaryIp:$primaryIp , localIp:$localIp , nameLookupTime:$nameLookupTime");
 
-		if ($httpCode != 200) {
-			$msg = "Return httpCode is {$httpCode} \n" . curl_error($curl) . "URL: " . $url;
+	// 	if ($httpCode != 200) {
+	// 		$msg = "Return httpCode is {$httpCode} \n" . curl_error($curl) . "URL: " . $url;
 
-			self::basgate_log(
-				sprintf(
-					/* translators: 1: Url, 2: Response code, 3: ErrorMsg. */
-					__('httpPost error status!=200 for url: %1$s, Response code: %2$s, ErrorMsg: %3$s', 'bassdk-woocommerce-payments'),
-					$url,
-					$httpCode,
-					$error
-				)
-			);
-			curl_close($curl);
-			return null;
-			// return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
-		} else {
-			curl_close($curl);
-			self::basgate_log("executecUrl Success response:$response");
-			return json_decode($response, true);
-		}
-	}
+	// 		self::basgate_log(
+	// 			sprintf(
+	// 				/* translators: 1: Url, 2: Response code, 3: ErrorMsg. */
+	// 				__('httpPost error status!=200 for url: %1$s, Response code: %2$s, ErrorMsg: %3$s', 'bassdk-woocommerce-payments'),
+	// 				$url,
+	// 				$httpCode,
+	// 				$error
+	// 			)
+	// 		);
+	// 		curl_close($curl);
+	// 		return null;
+	// 		// return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
+	// 	} else {
+	// 		curl_close($curl);
+	// 		self::basgate_log("executecUrl Success response:$response");
+	// 		return json_decode($response, true);
+	// 	}
+	// }
 
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
