@@ -7,8 +7,8 @@ class BasgateConstants
     const TRANSACTION_STATUS_URL_PRODUCTION = "https://api.basgate.com:4950/api/v1/merchant/secure/transaction/status";
     const TRANSACTION_STATUS_URL_STAGING = "https://api-tst.basgate.com:4951/api/v1/merchant/secure/transaction/status";
 
-    const PRODUCTION_HOST = "https://82.114.165.182:4950/";
-    const STAGING_HOST = "https://82.114.165.182:4951/";
+    const PRODUCTION_HOST = "https://api.basgate.com:4950/";
+    const STAGING_HOST = "https://api-tst.basgate.com:4951/";
 
     // CONST ORDER_PROCESS_URL= "api/v1/merchant/secure/transaction/initiate";
     const ORDER_STATUS_URL = "api/v1/merchant/secure/transaction/status";
