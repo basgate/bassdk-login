@@ -255,7 +255,6 @@ class Authentication extends Singleton
 			do {
 				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
 				// $response = Helper::httpPost($bassdk_api . '.well-known/openid-configuration', null, "GET");
-				// $response = Helper::httpPost('https://basgate-sandbox.com/swagger/v1/swagger.json', null, "GET");
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
 			Helper::basgate_log("getBasToken response:$response");
