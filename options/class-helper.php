@@ -768,7 +768,7 @@ class Helper
 
 	static function basgate_log($message)
 	{
-		error_log($message);
+		// error_log($message);
 
 		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
 			return; // Only log if WP_DEBUG is enabled
