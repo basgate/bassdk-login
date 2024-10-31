@@ -684,6 +684,30 @@ class Helper
 	// 	}
 	// }
 
+	public static function traceDomain($domain)
+	{
+		try {
+			self::basgate_log("======= STARTED traceDomain ===========");
+			// Command to perform traceroute (Linux: traceroute, Windows: tracert)
+			$command = "traceroute " . escapeshellarg($domain);  // For Linux or macOS
+			// $command = "tracert " . escapeshellarg($domain);   // For Windows
+			self::basgate_log("traceDomain command:$command");
+
+			// Execute the traceroute command
+			$output = shell_exec($command);
+
+			self::basgate_log("traceDomain output:$output");
+
+			// Return the output
+			return $output;
+		} catch (Exception $e) {
+			self::basgate_log("traceDomain error: " . $e->getMessage());
+			return false;
+		}
+	}
+
+
+
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
 		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
