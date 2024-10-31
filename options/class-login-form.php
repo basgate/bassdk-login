@@ -114,8 +114,12 @@ class Login_Form extends Singleton
 
 							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
 							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
-							if ('getBasAuthCode' in window) {
+							if (!('getBasAuthCode' in window)) {
+								console.log("JSBridgeReady waiting to load getBasAuthCode...");
+							}
+							try {
 								await getBasAuthCode(clientId).then((res) => {
+									console.log("getBasAuthCode 111 res:", res)
 									if (res) {
 										if (res.status == "1") {
 											signInCallback(res.data);
@@ -126,10 +130,25 @@ class Login_Form extends Singleton
 								}).catch((error) => {
 									console.error("ERROR on catch getBasAuthCode:", error)
 								})
-							} else {
-								console.log("JSBridgeReady waiting to load getBasAuthCode...");
+							} catch (error) {
+								console.error("ERROR getBasAuthCode 111:", error)
+								try {
+									await getBasAuthCode(clientId).then((res) => {
+										console.log("getBasAuthCode 222 res:", res)
+										if (res) {
+											if (res.status == "1") {
+												signInCallback(res.data);
+											} else {
+												console.error("ERROR on getBasAuthCode res:", res)
+											}
+										}
+									}).catch((error) => {
+										console.error("ERROR on catch getBasAuthCode:", error)
+									})
+								} catch (error) {
+									console.error("ERROR getBasAuthCode 222:", error)
+								}
 							}
-
 						}, false);
 					} catch (error) {
 						console.error("ERROR on getBasAuthCode:", error)
