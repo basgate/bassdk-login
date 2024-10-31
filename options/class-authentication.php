@@ -77,7 +77,7 @@ class Authentication extends Singleton
 		}
 
 		// Fail with message if there was an error creating/adding the user.
-		if (is_wp_error($result) || 0 === $result) {
+		if (is_wp_error($result) || 0 === $result || is_null($result)) {
 			return $result;
 		}
 
