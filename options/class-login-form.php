@@ -119,12 +119,12 @@ class Login_Form extends Singleton
 							}
 							try {
 								await getBasAuthCode(clientId).then((res) => {
-									console.log("getBasAuthCode 111 res:", res)
+									console.log("getBasAuthCode 111 res:", JSON.stringify(res))
 									if (res) {
 										if (res.status == "1") {
 											signInCallback(res.data);
 										} else {
-											console.error("ERROR on getBasAuthCode res:", res)
+											console.error("ERROR on getBasAuthCode res:", JSON.stringify(res))
 										}
 									}
 								}).catch((error) => {
