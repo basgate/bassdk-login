@@ -687,7 +687,7 @@ class Helper
 	public static function traceDomain($domain)
 	{
 		try {
-			self::basgate_log("======= STARTED traceDomain ===========");
+			self::basgate_log("======= STARTED traceDomain domain:$domain");
 			// Command to perform traceroute (Linux: traceroute, Windows: tracert)
 			$command = "traceroute " . escapeshellarg($domain);  // For Linux or macOS
 			// $command = "tracert " . escapeshellarg($domain);   // For Windows
@@ -706,7 +706,58 @@ class Helper
 		}
 	}
 
+	public static function traceDomainFs($domain, $port = 80, $timeout = 10)
+	{
+		try {
+			self::basgate_log("===== STARTED traceDomainWithCurl domain:$domain");
+			// Try to open a socket connection to the domain on the specified port
+			$connection = @fsockopen($domain, $port, $errno, $errstr, $timeout);
+			self::basgate_log("traceDomainWithCurl errno:$errno , errstr:$errstr");
 
+			// If connection is successful
+			if ($connection) {
+				self::basgate_log("traceDomainWithCurl Connection to {$domain} on port {$port} succeeded!\n");
+				fclose($connection);
+			} else {
+				// Error message if unable to connect
+				self::basgate_log("traceDomainWithCurl Failed to connect to {$domain} on port {$port}. Error: {$errstr} ({$errno})\n");
+			}
+		} catch (Exception $e) {
+			self::basgate_log("traceDomainWithCurl error: " . $e->getMessage());
+		}
+	}
+
+	public static function traceDomainWithCurl($url)
+	{
+		try {
+			self::basgate_log("===== STARTED traceDomainWithCurl url:$url");
+
+			$ch = curl_init();
+
+			// Set the URL and other options
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+			// Execute the request
+			$output = curl_exec($ch);
+			self::basgate_log('traceDomainWithCurl output: ' . $output);
+			// Check for errors
+			if (curl_errno($ch)) {
+				self::basgate_log('traceDomainWithCurl cURL Error: ' . curl_error($ch));
+			} else {
+				// Get the HTTP status code and other information
+				$info = curl_getinfo($ch);
+				self::basgate_log("traceDomainWithCurl Response Time: " . $info['total_time'] . " seconds\n");
+				self::basgate_log("traceDomainWithCurl HTTP Status Code: " . $info['http_code'] . "\n");
+			}
+
+			// Close the cURL session
+			curl_close($ch);
+		} catch (Exception $e) {
+			self::basgate_log("traceDomainWithCurl error: " . $e->getMessage());
+		}
+	}
 
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
