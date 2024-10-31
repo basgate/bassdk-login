@@ -253,11 +253,8 @@ class Authentication extends Singleton
 
 			$retry = 1;
 			do {
-				$response = Helper::traceDomain('api-tst.basgate.com');
-				$response = Helper::traceDomain('api.basgate.com');
-				$response = Helper::traceDomain('82.114.165.182');
-				$response = Helper::traceDomain('82.114.179.2');
-				// $response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+
+				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
 				// $response = Helper::httpPost($bassdk_api . '.well-known/openid-configuration', null, "GET");
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
