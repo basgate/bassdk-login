@@ -655,12 +655,20 @@ class Helper
 
 	static function basgate_log($message)
 	{
-		error_log($message);
 
-		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
+		$options      = Options::get_instance();
+		$is_debug   = $options->get('debug');
+
+		$is_debug = isset($is_debug) ? $is_debug : 'yes';
+
+		if ((! defined('WP_DEBUG') || ! WP_DEBUG) && $is_debug == 'no') {
 			return; // Only log if WP_DEBUG is enabled
 		}
 
+
+		if ($is_debug == 'yes') {
+			error_log($message);
+		}
 
 		if (! function_exists('get_filesystem_method')) {
 			require_once(ABSPATH . 'wp-admin/includes/file.php');

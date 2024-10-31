@@ -217,6 +217,13 @@ class Admin_Page extends Singleton
 			$this->id,
 			'auth_settings_basgate_config'
 		);
+		add_settings_field(
+			'debug',
+			__('Enable Debug', 'bassdk-wp-login'),
+			array(Login_Access::get_instance(), 'print_checkbox_debug'),
+			$this->id,
+			'auth_settings_basgate_config'
+		);
 
 		// add_settings_field(
 		// 	'advanced_disable_wp_login',

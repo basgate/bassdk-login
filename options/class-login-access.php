@@ -164,7 +164,7 @@ class Login_Access extends Singleton
 		$auth_settings_option = $options->get($option);
 
 		// Print option elements.
-	?>
+		?>
 		<input type="checkbox"
 			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
 			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
@@ -172,7 +172,26 @@ class Login_Access extends Singleton
 		<label for="auth_settings_<?php echo esc_attr($option); ?>">
 			<?php esc_html_e('Enable Basgate Login/Payments.', 'bassdk-wp-login'); ?>
 		</label>
-	<?php
+		<?php
+	}
+
+	public function print_checkbox_debug($args = '')
+	{
+		// Get plugin option.
+		$options              = Options::get_instance();
+		$option               = 'debug';
+		$auth_settings_option = $options->get($option);
+
+		// Print option elements.
+		?>
+		<input type="checkbox"
+			id="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '_' . esc_attr($option); ?>"
+			name="<?php echo esc_attr(BasgateConstants::OPTION_DATA_NAME) . '[' . esc_attr($option) . ']'; ?>"
+			value="yes" <?php checked('yes' === $auth_settings_option); ?> />
+		<label for="auth_settings_<?php echo esc_attr($option); ?>">
+			<?php esc_html_e('Enable debug mode to log all oprations.', 'bassdk-wp-login'); ?>
+		</label>
+		<?php
 	}
 
 	public function print_checkbox_disable_wp_login($args = '')
