@@ -196,13 +196,11 @@ class Authentication extends Singleton
 		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
 		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
-
 		//TODO: Add basgate backend request for token and userinfo
 		if (empty($auth_id)) {
 			die('');
 			return null;
 		}
-
 
 		$bas_token = $this->getBasToken($auth_id);
 
@@ -267,6 +265,9 @@ class Authentication extends Singleton
 				// $response = Helper::traceDomainFs('82.114.179.2',4951);
 
 				// $response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
+				$header = array("Content-type" => "application/json");
+
+				$response = Helper::executecUrl('https://api.shebayemen.com/api/app/attributes-data', null, "GET", $header);
 				$response = Helper::httpPost('https://api.shebayemen.com/api/app/attributes-data', null, "GET");
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
