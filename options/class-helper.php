@@ -709,21 +709,21 @@ class Helper
 	public static function traceDomainFs($domain, $port = 80, $timeout = 10)
 	{
 		try {
-			self::basgate_log("===== STARTED traceDomainWithCurl domain:$domain");
+			self::basgate_log("===== STARTED traceDomainFs domain:$domain");
 			// Try to open a socket connection to the domain on the specified port
 			$connection = @fsockopen($domain, $port, $errno, $errstr, $timeout);
-			self::basgate_log("traceDomainWithCurl errno:$errno , errstr:$errstr");
+			self::basgate_log("traceDomainFs errno:$errno , errstr:$errstr");
 
 			// If connection is successful
 			if ($connection) {
-				self::basgate_log("traceDomainWithCurl Connection to {$domain} on port {$port} succeeded!\n");
+				self::basgate_log("traceDomainFs Connection to {$domain} on port {$port} succeeded!\n");
 				fclose($connection);
 			} else {
 				// Error message if unable to connect
-				self::basgate_log("traceDomainWithCurl Failed to connect to {$domain} on port {$port}. Error: {$errstr} ({$errno})\n");
+				self::basgate_log("traceDomainFs Failed to connect to {$domain} on port {$port}. Error: {$errstr} ({$errno})\n");
 			}
 		} catch (Exception $e) {
-			self::basgate_log("traceDomainWithCurl error: " . $e->getMessage());
+			self::basgate_log("traceDomainFs error: " . $e->getMessage());
 		}
 	}
 

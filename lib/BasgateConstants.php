@@ -25,7 +25,7 @@ class BasgateConstants
     const APPEND_TIMESTAMP = true;
     const ORDER_PREFIX = "";
     const X_REQUEST_ID = "PLUGIN_WOOCOMMERCE_";
-    const PLUGIN_DOC_URL = "https://basgate.github.io/pages.html";
+    const PLUGIN_DOC_URL = "https://github.com/basgate/bassdk-wp-login";
     const PLUGIN_LOGO_URL = "https://ykbsocial.com/basgate/reportlogo.png";
 
     const MAX_RETRY_COUNT = 3;
