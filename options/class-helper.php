@@ -571,119 +571,6 @@ class Helper
 		], 'plugin');
 	}
 
-	// public static function executeStreamUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
-	// {
-	// 	$url = $apiURL;
-
-	// 	$data = $requestParamList;
-	// 	// $headers = array("Content-Type" => "application/json");
-	// 	$headers = array("Content-type" => "application/x-www-form-urlencoded");
-
-	// 	if (!empty($extraHeaders)) {
-	// 		$headers = array_merge($headers, $extraHeaders);
-	// 	}
-
-	// 	$options = array(
-	// 		'http' => array(
-	// 			'header'  => $headers,
-	// 			'method'  => $method,
-	// 			'content' => http_build_query($data)
-	// 		)
-	// 	);
-
-	// 	$context  = stream_context_create($options);
-	// 	$resp = file_get_contents($url, false, $context);
-	// 	$response_code = http_response_code();
-
-	// 	if ($resp === FALSE) {
-	// 		error_log(
-	// 			sprintf(
-	// 				/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
-	// 				'executeStreamUrl error$resp === FALSE for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
-	// 				$apiURL,
-	// 				$response_code,
-	// 				json_encode($data),
-	// 				$resp
-	// 			)
-	// 		);
-	// 		return array('success' => false, 'error' => 'Request failed');
-	// 	}
-
-	// 	if (200 !==  $response_code) {
-
-	// 		error_log(
-	// 			sprintf(
-	// 				/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
-	// 				'executeStreamUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
-	// 				$apiURL,
-	// 				$response_code,
-	// 				json_encode($data),
-	// 				$resp
-	// 			)
-	// 		);
-	// 		return array('success' => false, 'error' => 'Invalid JSON response');
-	// 	} else {
-	// 		$response_data = json_decode($resp, true);
-	// 		if (json_last_error() !== JSON_ERROR_NONE) {
-	// 			error_log(
-	// 				sprintf(
-	// 					/* translators: 1: Url, 2: Response code, 3: Event data, 4:Response Body. */
-	// 					'executeStreamUrl error json_last_error() !== JSON_ERROR_NONE for url: %1$s, Response code: %2$s,Data: %3$s , Response Body:%4$s',
-	// 					$apiURL,
-	// 					$response_code,
-	// 					json_encode($data),
-	// 					$resp
-	// 				)
-	// 			);
-	// 			return array('success' => false, 'error' => 'Invalid JSON response');
-	// 		}
-
-	// 		return array('success' => true, 'data' => $response_data);
-	// 	}
-	// }
-
-	// static function httpPost($url, $data, $header)
-	// {
-	// 	self::basgate_log("===== STARTED httpPost url:" . $url);
-	// 	// $url = 'https://api-tst.basgate.com:4951/.well-known/openid-configuration';
-	// 	$curl = curl_init($url);
-	// 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	// 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-	// 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-	// 	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60);
-	// 	curl_setopt($curl, CURLOPT_VERBOSE, true);
-
-	// 	$response = curl_exec($curl);
-	// 	$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-	// 	$primaryIp = curl_getinfo($curl, CURLINFO_PRIMARY_IP);
-	// 	$localIp = curl_getinfo($curl, CURLINFO_LOCAL_IP);
-	// 	$nameLookupTime = curl_getinfo($curl, CURLINFO_NAMELOOKUP_TIME);
-	// 	$error = curl_error($curl);
-
-	// 	self::basgate_log("httpPost primaryIp:$primaryIp , localIp:$localIp , nameLookupTime:$nameLookupTime");
-
-	// 	if ($httpCode != 200) {
-	// 		$msg = "Return httpCode is {$httpCode} \n" . curl_error($curl) . "URL: " . $url;
-
-	// 		self::basgate_log(
-	// 			sprintf(
-	// 				/* translators: 1: Url, 2: Response code, 3: ErrorMsg. */
-	// 				__('httpPost error status!=200 for url: %1$s, Response code: %2$s, ErrorMsg: %3$s', 'bassdk-woocommerce-payments'),
-	// 				$url,
-	// 				$httpCode,
-	// 				$error
-	// 			)
-	// 		);
-	// 		curl_close($curl);
-	// 		return null;
-	// 		// return new Exception(__('Could not retrieve the access token, please try again.', 'bassdk-woocommerce-payments'));
-	// 	} else {
-	// 		curl_close($curl);
-	// 		self::basgate_log("executecUrl Success response:$response");
-	// 		return json_decode($response, true);
-	// 	}
-	// }
-
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
 		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
@@ -768,7 +655,7 @@ class Helper
 
 	static function basgate_log($message)
 	{
-		// error_log($message);
+		error_log($message);
 
 		if (! defined('WP_DEBUG') || ! WP_DEBUG) {
 			return; // Only log if WP_DEBUG is enabled
