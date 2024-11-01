@@ -292,7 +292,7 @@ class Helper
 		$is_selected = strlen($selected_role) === 0 || ! array_key_exists($selected_role, $roles);
 		$is_disabled = strlen($selected_role) > 0 && 'disabled' === $disable_input && ! (is_multisite() && current_user_can('manage_network'));
 		?>
-		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', 'bassdk-wp-login'); ?></option>
+		<option value="" <?php selected($is_selected); ?><?php disabled($is_disabled); ?>><?php esc_html_e('&mdash; No role for this site &mdash;', 'bassdk-login'); ?></option>
 <?php
 	}
 
@@ -595,7 +595,7 @@ class Helper
 		if (is_wp_error($result)) {
 			$msg = sprintf(
 				/* translators: 1: Url, 2: Error code, 3: Error message, 4: Event data. */
-				__('executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s', 'bassdk-wp-login'),
+				__('executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s', 'bassdk-login'),
 				$apiURL,
 				$result->get_error_code(),
 				$result->get_error_message(),
@@ -612,7 +612,7 @@ class Helper
 		if (200 !==  $response_code) {
 			$msg = sprintf(
 				/* translators: 1: Url, 2: Response code, 3: Event data, 4: ErrorMsg ,5:Response Body. */
-				__('executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , ErrorMsg: %4$s, Response Body:%5$s', 'bassdk-wp-login'),
+				__('executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: %3$s , ErrorMsg: %4$s, Response Body:%5$s', 'bassdk-login'),
 				$apiURL,
 				$response_code,
 				wp_json_encode($args),
@@ -674,7 +674,7 @@ class Helper
 			require_once(ABSPATH . 'wp-admin/includes/file.php');
 		}
 
-		$log_file = plugin_dir_path(plugin_root()) . 'bassdk-wp-login.log'; // Specify the log file path
+		$log_file = plugin_dir_path(plugin_root()) . 'bassdk-login.log'; // Specify the log file path
 		$timestamp = current_time('Y-m-d H:i:s');
 		$log_entry = "[$timestamp] $message\n";
 

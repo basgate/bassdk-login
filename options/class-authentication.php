@@ -128,7 +128,7 @@ class Authentication extends Singleton
 		} else {
 			// No token, so this is not a succesful Basgate login.
 			Helper::basgate_log('custom_authenticate_basgate() ERROR $token not Exists');
-			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', 'bassdk-wp-login'));
+			return new \WP_Error('invalid_basgate_login', __('You are not Basgate.', 'bassdk-login'));
 		}
 
 		// Verify this is a successful Basgate authentication.
@@ -137,13 +137,13 @@ class Authentication extends Singleton
 			Helper::basgate_log('custom_authenticate_basgate() $payload:' . wp_json_encode($payload));
 		} catch (\Throwable $th) {
 			Helper::basgate_log('ERROR custom_authenticate_basgate :Error on getting userinfo from Basgate API.' . $th->getMessage());
-			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', 'bassdk-wp-login'), $th->getMessage());
+			return new \WP_Error('invalid_basgate_login', __('Error on getting userinfo from Basgate API.', 'bassdk-login'), $th->getMessage());
 		}
 
 		// Invalid ticket, so this in not a successful Basgate login.
 		if (array_key_exists("status", $payload) && "0" === $payload['status']) {
 			Helper::basgate_log('custom_authenticate_basgate Invalid Basgate credentials provided.');
-			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', 'bassdk-wp-login'));
+			return new \WP_Error('invalid_basgate_login', __('Invalid Basgate credentials provided.', 'bassdk-login'));
 		}
 
 		$data = $payload['data'];
@@ -325,7 +325,7 @@ class Authentication extends Singleton
 
 		if (is_null($user_data)) {
 			Helper::basgate_log('check_user_access is_null($user_data)==true Invalid login attempted.');
-			return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-wp-login'));
+			return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-login'));
 		}
 
 		// If the approved external user does not have a WordPress account, create it.
@@ -390,7 +390,7 @@ class Authentication extends Singleton
 		}
 
 		// Sanity check: if we made it here without returning, something has gone wrong.
-		return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-wp-login'));
+		return new \WP_Error('invalid_login', __('Invalid login attempted.', 'bassdk-login'));
 	}
 
 	/**

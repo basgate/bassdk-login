@@ -71,15 +71,15 @@ class Admin_Page extends Singleton
 
 		// Add help tab for Access Lists Settings.
 		$help_auth_settings_access_lists_content = '
-			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", 'bassdk-wp-login') . '</p>
-			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', 'bassdk-wp-login') . '</p>
-			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', 'bassdk-wp-login') . '</p>
-			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', 'bassdk-wp-login') . '</p>
+			<p>' . __("<strong>Pending Users</strong>: Pending users are users who have successfully logged in to the site, but who haven't yet been approved (or blocked) by you.", 'bassdk-login') . '</p>
+			<p>' . __('<strong>Approved Users</strong>: Approved users have access to the site once they successfully log in.', 'bassdk-login') . '</p>
+			<p>' . __('<strong>Blocked Users</strong>: Blocked users will receive an error message when they try to visit the site after authenticating.', 'bassdk-login') . '</p>
+			<p>' . __('Users in the <strong>Pending</strong> list appear automatically after a new user tries to log in from the configured external authentication service. You can add users to the <strong>Approved</strong> or <strong>Blocked</strong> lists by typing them in manually, or by clicking the <em>Approve</em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> list.', 'bassdk-login') . '</p>
 		';
 		$screen->add_help_tab(
 			array(
 				'id'      => 'help_auth_settings_access_lists_content',
-				'title'   => __('Authentication', 'bassdk-wp-login'),
+				'title'   => __('Authentication', 'bassdk-login'),
 				'content' => wp_kses_post($help_auth_settings_access_lists_content),
 			)
 		);
@@ -118,7 +118,7 @@ class Admin_Page extends Singleton
 		$options      = Options::get_instance();
 		$admin_menu   = $options->get('advanced_admin_menu');
 		$settings_url = 'settings' === $admin_menu ? admin_url('options-general.php?page=basgate') : admin_url('admin.php?page=basgate');
-		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', 'bassdk-wp-login') . '</a>');
+		array_unshift($links, '<a href="' . $settings_url . '">' . __('Settings', 'bassdk-login') . '</a>');
 		return $links;
 	}
 
@@ -134,7 +134,7 @@ class Admin_Page extends Singleton
 	 */
 	// public function network_admin_plugin_settings_link($links)
 	// {
-	// 	$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings','bassdk-wp-login') . '</a>';
+	// 	$settings_link = '<a href="admin.php?page=basgate">' . __('Network Settings','bassdk-login') . '</a>';
 	// 	array_unshift($links, $settings_link);
 	// 	return $links;
 	// }
@@ -170,56 +170,56 @@ class Admin_Page extends Singleton
 
 		add_settings_field(
 			'bas_description',
-			__('Description', 'bassdk-wp-login'),
+			__('Description', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_text_description'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_environment',
-			__('Environment Mode', 'bassdk-wp-login'),
+			__('Environment Mode', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_select_environment_mode'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_application_id',
-			__('Application Id', 'bassdk-wp-login'),
+			__('Application Id', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_text_application_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_merchant_key',
-			__('Merchant Key', 'bassdk-wp-login'),
+			__('Merchant Key', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_text_merchant_key'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_client_id',
-			__('Client Id', 'bassdk-wp-login'),
+			__('Client Id', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_text_client_id'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'bas_client_secret',
-			__('Client Secret', 'bassdk-wp-login'),
+			__('Client Secret', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_text_client_secret'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'enabled',
-			__('Enable/Disable', 'bassdk-wp-login'),
+			__('Enable/Disable', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_checkbox_enabled'),
 			$this->id,
 			'auth_settings_basgate_config'
 		);
 		add_settings_field(
 			'debug',
-			__('Enable Debug', 'bassdk-wp-login'),
+			__('Enable Debug', 'bassdk-login'),
 			array(Login_Access::get_instance(), 'print_checkbox_debug'),
 			$this->id,
 			'auth_settings_basgate_config'
@@ -227,7 +227,7 @@ class Admin_Page extends Singleton
 
 		// add_settings_field(
 		// 	'advanced_disable_wp_login',
-		// 	__('Disable Default login', 'bassdk-wp-login'),
+		// 	__('Disable Default login', 'bassdk-login'),
 		// 	array(Login_Access::get_instance(), 'print_checkbox_disable_wp_login'),
 		// 	$this->id,
 		// 	'auth_settings_basgate_config'
@@ -242,7 +242,7 @@ class Admin_Page extends Singleton
 	{
 ?>
 		<div class="wrap">
-			<h2><?php esc_html_e('Basgate Settings', 'bassdk-wp-login'); ?></h2>
+			<h2><?php esc_html_e('Basgate Settings', 'bassdk-login'); ?></h2>
 			<form method="post" action="options.php" autocomplete="off">
 				<?php
 				// This prints out all hidden settings fields.
@@ -271,11 +271,11 @@ class Admin_Page extends Singleton
 		$wooVersion = defined("WOOCOMMERCE_VERSION") ? WOOCOMMERCE_VERSION : "N/A";
 
 		$footer_text = '<div style="text-align: center;"><hr/>';
-		$footer_text .= '<strong>' . __('PHP Version', 'bassdk-wp-login') . '</strong> ' . PHP_VERSION . ' | ';
-		$footer_text .= '<strong>' . __('cURL Version', 'bassdk-wp-login') . '</strong> ' . $curl_version . ' | ';
-		$footer_text .= '<strong>' . __('Wordpress Version', 'bassdk-wp-login') . '</strong> ' . get_bloginfo('version') . ' | ';
-		$footer_text .= '<strong>' . __('WooCommerce Version', 'bassdk-wp-login') . '</strong> ' . $wooVersion . ' | ';
-		$footer_text .= '<strong>' . __('SDK Version', 'bassdk-wp-login') . '</strong> ' . $last_updated . ' | ';
+		$footer_text .= '<strong>' . __('PHP Version', 'bassdk-login') . '</strong> ' . PHP_VERSION . ' | ';
+		$footer_text .= '<strong>' . __('cURL Version', 'bassdk-login') . '</strong> ' . $curl_version . ' | ';
+		$footer_text .= '<strong>' . __('Wordpress Version', 'bassdk-login') . '</strong> ' . get_bloginfo('version') . ' | ';
+		$footer_text .= '<strong>' . __('WooCommerce Version', 'bassdk-login') . '</strong> ' . $wooVersion . ' | ';
+		$footer_text .= '<strong>' . __('SDK Version', 'bassdk-login') . '</strong> ' . $last_updated . ' | ';
 		$footer_text .= '<a href="' . esc_url(BasgateConstants::PLUGIN_DOC_URL) . '" target="_blank">Developer Docs</a>';
 
 		$footer_text .= '</div>';

@@ -81,7 +81,7 @@ class Options extends Singleton
 ?>
 			<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
 				<span class="overlay-note">
-					<?php esc_html_e('This setting is overridden by a', 'bassdk-wp-login'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'bassdk-wp-login'); ?></a>.
+					<?php esc_html_e('This setting is overridden by a', 'bassdk-login'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'bassdk-login'); ?></a>.
 				</span>
 			</div>
 		<?php
@@ -320,11 +320,11 @@ class Options extends Singleton
 		if ('multisite_admin' === $this->get_context($args)) :
 		?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-wp-login'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
 			</h2>
 		<?php else : ?>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-wp-login'); ?></a>
+				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
 			</h2>
 <?php
 		endif;

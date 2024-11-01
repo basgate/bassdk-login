@@ -1,6 +1,6 @@
 === Bassdk WP Login ===
-Plugin Name: Bassdk WP Login
-Plugin URI: https://github.com/Basgate/bassdk-wp-login
+Plugin Name: Bassdk Login
+Plugin URI: https://github.com/Basgate/bassdk-login
 Requires at least: 6.0.1
 Tested up to: 6.6.2
 Requires PHP: 7.4

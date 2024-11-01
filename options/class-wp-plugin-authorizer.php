@@ -24,8 +24,8 @@ class WP_Plugin_Basgate extends Singleton
 	public function __construct()
 	{
 		// Installation and uninstallation hooks.
-		register_activation_hook('bassdk-wp-login/bassdk-wp-login.php', array($this, 'activate'));
-		register_deactivation_hook('bassdk-wp-login/bassdk-wp-login.php', array($this, 'deactivate'));
+		register_activation_hook('bassdk-login/bassdk-login.php', array($this, 'activate'));
+		register_deactivation_hook('bassdk-login/bassdk-login.php', array($this, 'deactivate'));
 
 		/**
 		 * Register hooks.

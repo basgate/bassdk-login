@@ -1,10 +1,10 @@
 //Description on url
 // https://www.ahmetkucukoglu.com/en/how-to-publish-asp-net-core-application-by-using-jenkins
 
-String githubUrl = "https://github.com/ansiabdo/bassdk-wp-login.git"
+String githubUrl = "https://github.com/ansiabdo/bassdk-login.git"
 String projectName = "bassdk-wp-login"
 String userName = "basgate-_979mf9lyuyh"
-String iisApplicationPath = "C:\\inetpub\\vhosts\\basgate-sandbox.com\\wp-plugin.basgate-sandbox.com\\wp-content\\plugins\\bassdk-wp-login\\"
+String iisApplicationPath = "C:\\inetpub\\vhosts\\basgate-sandbox.com\\wp-plugin.basgate-sandbox.com\\wp-content\\plugins\\bassdk-login\\"
 
 node () {
     stage('Clean Workspace'){
