@@ -19,7 +19,7 @@ node () {
             doGenerateSubmoduleConfigurations: false,
             extensions: [],
             submoduleCfg: [],
-            userRemoteConfigs: [[credentialsId: 'User-Token',url: """ "${githubUrl}" """]]])
+            userRemoteConfigs: [[credentialsId: 'Bas-Token',url: """ "${githubUrl}" """]]])
     }
     stage('Deploy'){
       dir("""${WORKSPACE}""") {
