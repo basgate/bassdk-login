@@ -42,9 +42,9 @@ class Admin_Page extends Singleton
 		// $getBasgateSetting = get_option('woocommerce_basgate_settings');
 		// $invertLogo = isset($getBasgateSetting['invertLogo']) ? $getBasgateSetting['invertLogo'] : "0";
 		// if ($invertLogo == 1) {
-		$this->icon = esc_url("https://ykbsocial.com/basgate/reportlogo.png");
+		// $this->icon = esc_url("images/reportlogo.png");
 		// } else {
-		//     $this->icon = esc_url("https://ykbsocial.com/basgate/reportlogo.png");
+		//     $this->icon = esc_url("images/reportlogo.png");
 		// }
 		$this->has_fields = false;
 
