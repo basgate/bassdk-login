@@ -1,6 +1,7 @@
 //Description on url
 // https://www.ahmetkucukoglu.com/en/how-to-publish-asp-net-core-application-by-using-jenkins
 
+
 String githubUrl = "https://github.com/basgate/bassdk-login.git"
 String projectName = "bassdk-login"
 String userName = "basgate-_979mf9lyuyh"
