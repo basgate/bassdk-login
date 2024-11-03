@@ -1,8 +1,8 @@
 //Description on url
 // https://www.ahmetkucukoglu.com/en/how-to-publish-asp-net-core-application-by-using-jenkins
 
-String githubUrl = "https://github.com/ansiabdo/bassdk-login.git"
-String projectName = "bassdk-wp-login"
+String githubUrl = "https://github.com/basgate/bassdk-login.git"
+String projectName = "bassdk-login"
 String userName = "basgate-_979mf9lyuyh"
 String iisApplicationPath = "C:\\inetpub\\vhosts\\basgate-sandbox.com\\wp-plugin.basgate-sandbox.com\\wp-content\\plugins\\bassdk-login\\"
 
