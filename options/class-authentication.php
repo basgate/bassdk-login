@@ -257,7 +257,7 @@ class Authentication extends Singleton
 				$response = Helper::executecUrl($bassdk_api . 'api/v1/auth/token', http_build_query($reqBody), "POST", $header);
 				$retry++;
 			} while (!$response['success'] && $retry < BasgateConstants::MAX_RETRY_COUNT);
-			Helper::basgate_log("getBasToken response:$response");
+			Helper::basgate_log("getBasToken response:" . wp_json_encode($response));
 			if (array_key_exists('success', $response) && $response['success'] == true) {
 				if (array_key_exists('body', $response)) {
 					$data = $response['body'];
