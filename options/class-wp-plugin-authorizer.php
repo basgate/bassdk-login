@@ -154,7 +154,7 @@ class WP_Plugin_Basgate extends Singleton
 	public function load_textdomain()
 	{
 		load_plugin_textdomain(
-			'basgate',
+			'bassdk-login',
 			false,
 			basename(dirname(plugin_root())) . '/languages'
 		);

@@ -10,6 +10,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Author: Basgate Super APP  
 Author URI: https://basgate.com/
 Tags: Basgate, BasSDK Super App, Basgate WooCommerce, BasSDK Plugin, BasSDK Payment Gateway
+Domain Path: /languages
+Text Domain: bassdk-login
 
 هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ المالية والبنوك المختلفة  
 

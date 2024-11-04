@@ -1,0 +1,242 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Bassdk Login\n"
+"POT-Creation-Date: 2024-11-04 18:09+0300\n"
+"PO-Revision-Date: 2024-11-04 18:16+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: bassdk-login.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: options/class-admin-page.php:74
+msgid ""
+"<strong>Pending Users</strong>: Pending users are users who have "
+"successfully logged in to the site, but who haven't yet been approved (or "
+"blocked) by you."
+msgstr ""
+
+#: options/class-admin-page.php:75
+msgid ""
+"<strong>Approved Users</strong>: Approved users have access to the site once "
+"they successfully log in."
+msgstr ""
+
+#: options/class-admin-page.php:76
+msgid ""
+"<strong>Blocked Users</strong>: Blocked users will receive an error message "
+"when they try to visit the site after authenticating."
+msgstr ""
+
+#: options/class-admin-page.php:77
+msgid ""
+"Users in the <strong>Pending</strong> list appear automatically after a new "
+"user tries to log in from the configured external authentication service. "
+"You can add users to the <strong>Approved</strong> or <strong>Blocked</"
+"strong> lists by typing them in manually, or by clicking the <em>Approve</"
+"em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> "
+"list."
+msgstr ""
+
+#: options/class-admin-page.php:82 options/class-options.php:323
+#: options/class-options.php:327
+msgid "Authentication"
+msgstr ""
+
+#: options/class-admin-page.php:121
+msgid "Settings"
+msgstr ""
+
+#: options/class-admin-page.php:173
+msgid "Description"
+msgstr ""
+
+#: options/class-admin-page.php:180
+msgid "Environment Mode"
+msgstr ""
+
+#: options/class-admin-page.php:187
+msgid "Application Id"
+msgstr ""
+
+#: options/class-admin-page.php:194
+msgid "Merchant Key"
+msgstr ""
+
+#: options/class-admin-page.php:201
+msgid "Client Id"
+msgstr ""
+
+#: options/class-admin-page.php:208
+msgid "Client Secret"
+msgstr ""
+
+#: options/class-admin-page.php:215
+msgid "Enable/Disable"
+msgstr ""
+
+#: options/class-admin-page.php:222
+msgid "Enable Debug"
+msgstr ""
+
+#: options/class-admin-page.php:245
+msgid "Basgate Settings"
+msgstr ""
+
+#: options/class-admin-page.php:274
+msgid "PHP Version"
+msgstr ""
+
+#: options/class-admin-page.php:275
+msgid "cURL Version"
+msgstr ""
+
+#: options/class-admin-page.php:276
+msgid "Wordpress Version"
+msgstr ""
+
+#: options/class-admin-page.php:277
+msgid "WooCommerce Version"
+msgstr ""
+
+#: options/class-admin-page.php:278
+msgid "SDK Version"
+msgstr "اصدار SDK"
+
+#: options/class-authentication.php:131
+msgid "You are not Basgate."
+msgstr "انت لست في منصة بس."
+
+#: options/class-authentication.php:140
+msgid "Error on getting userinfo from Basgate API."
+msgstr ""
+
+#: options/class-authentication.php:146
+msgid "Invalid Basgate credentials provided."
+msgstr ""
+
+#: options/class-authentication.php:328 options/class-authentication.php:393
+msgid "Invalid login attempted."
+msgstr ""
+
+#: options/class-helper.php:295
+msgid "&mdash; No role for this site &mdash;"
+msgstr ""
+
+#. translators: 1: Url, 2: Error code, 3: Error message, 4: Event data.
+#: options/class-helper.php:598
+#, php-format
+msgid ""
+"executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, "
+"Data: %4$s"
+msgstr ""
+
+#. translators: 1: Url, 2: Response code, 3: Event data, 4: ErrorMsg ,5:Response Body.
+#: options/class-helper.php:615
+#, php-format
+msgid ""
+"executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: "
+"%3$s , ErrorMsg: %4$s, Response Body:%5$s"
+msgstr ""
+
+#: options/class-login-access.php:29
+msgid "Online payment solutions for all your transactions by Basgate."
+msgstr ""
+
+#: options/class-login-access.php:51
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: options/class-login-access.php:69
+msgid "Test/Staging"
+msgstr ""
+
+#: options/class-login-access.php:70
+msgid "Production"
+msgstr ""
+
+#: options/class-login-access.php:74
+msgid ""
+"Select \"Test/Staging\" to setup test transactions & \"Production\" once you "
+"are ready to go live"
+msgstr ""
+
+#: options/class-login-access.php:94
+msgid ""
+"Based on the selected Environment Mode, copy the relevant Application ID for "
+"test or production environment you received on email."
+msgstr ""
+
+#: options/class-login-access.php:114
+msgid ""
+"Based on the selected Environment Mode, copy the Merchant Key for test or "
+"production environment you received on email."
+msgstr ""
+
+#: options/class-login-access.php:134
+msgid ""
+"Based on the selected Environment Mode, copy the Client Id for test or "
+"production environment you received on email."
+msgstr ""
+
+#: options/class-login-access.php:154
+msgid ""
+"Based on the selected Environment Mode, copy the Client Secret for test or "
+"production environment you received on email."
+msgstr ""
+
+#: options/class-login-access.php:173
+msgid "Enable Basgate Login/Payments."
+msgstr ""
+
+#: options/class-login-access.php:192
+msgid "Enable debug mode to log all oprations."
+msgstr ""
+
+#: options/class-login-access.php:211
+msgid ""
+"Disable Default Wordpress login when user open store inside Bas platform."
+msgstr ""
+
+#: options/class-options.php:84
+msgid "This setting is overridden by a"
+msgstr ""
+
+#: options/class-options.php:84
+msgid "multisite option"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Bassdk Login"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/Basgate/bassdk-login"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ "
+"المالية والبنوك المختلفة"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Basgate Super APP"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://basgate.com/"
+msgstr ""
