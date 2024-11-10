@@ -186,6 +186,7 @@ class Helper
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 			$secret = base64_decode($secret);
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.mcrypt_decrypt
 			$result = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, self::$key, $secret, MCRYPT_MODE_ECB, 'abcdefghijklmnopqrstuvwxyz012345'), "\0$result");
 		} else { // Fall back to basic obfuscation.
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
