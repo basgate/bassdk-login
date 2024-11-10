@@ -667,6 +667,7 @@ class Helper
 
 
 		if ($is_debug == 'yes') {
+			//phpcs:ignore
 			error_log($message);
 		}
 
