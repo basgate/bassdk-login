@@ -140,7 +140,7 @@ class Login_Form extends Singleton
 
 		if ('yes' === $auth_settings['enabled']) :
 			?>
-				<div>a
+				<div>
 					<input type="hidden" id="admin_ajxurl" name="admin_ajxurl" value="<?php echo esc_attr($ajaxurl); ?>">
 					<input type="hidden" id="login_redirect_url" name="login_redirect_url" value="<?php echo esc_attr(Helper::get_login_redirect_url()); ?>">
 					<input type="hidden" id="basgate_login_nonce" name="basgate_login_nonce" value="<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>">
