@@ -103,22 +103,22 @@ class Login_Form extends Singleton
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
-			?>
+?>
+			<div>
 				<div>
-					<div>
-						<input type="hidden" id="bas_client_id" name="bas_client_id" value="<?php echo esc_attr($bas_client_id); ?>">
-					</div>
-					<div id="basgate-pg-spinner" class="basgate-woopg-loader" hidden>
-						<div class="bounce1"></div>
-						<div class="bounce2"></div>
-						<div class="bounce3"></div>
-						<div class="bounce4"></div>
-						<div class="bounce5"></div>
-						<p class="loading-basgate">Loading Basgate...</p>
-					</div>
-					<div class="basgate-overlay basgate-woopg-loader" hidden></div>
+					<input type="hidden" id="bas_client_id" name="bas_client_id" value="<?php echo esc_attr($bas_client_id); ?>">
 				</div>
-			<?php
+				<div id="basgate-pg-spinner" class="basgate-woopg-loader" hidden>
+					<div class="bounce1"></div>
+					<div class="bounce2"></div>
+					<div class="bounce3"></div>
+					<div class="bounce4"></div>
+					<div class="bounce5"></div>
+					<p class="loading-basgate">Loading Basgate...</p>
+				</div>
+				<div class="basgate-overlay basgate-woopg-loader" hidden></div>
+			</div>
+		<?php
 
 		endif;
 		return ob_get_clean();
@@ -139,18 +139,20 @@ class Login_Form extends Singleton
 		$ajaxurl       = admin_url('admin-ajax.php');
 
 		if ('yes' === $auth_settings['enabled']) :
-			?>
-				<div>
-					<input type="hidden" id="admin_ajxurl" name="admin_ajxurl" value="<?php echo esc_attr($ajaxurl); ?>">
-					<input type="hidden" id="login_redirect_url" name="login_redirect_url" value="<?php echo esc_attr(Helper::get_login_redirect_url()); ?>">
-					<input type="hidden" id="basgate_login_nonce" name="basgate_login_nonce" value="<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>">
-				</div>
+			Helper::basgate_log('===== load_login_footer_js() enabled=true');
+		?>
+			<div>
+				<input type="hidden" id="admin_ajxurl" name="admin_ajxurl" value="<?php echo esc_attr($ajaxurl); ?>">
+				<input type="hidden" id="login_redirect_url" name="login_redirect_url" value="<?php echo esc_attr(Helper::get_login_redirect_url()); ?>">
+				<input type="hidden" id="basgate_login_nonce" name="basgate_login_nonce" value="<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>">
+			</div>
 
-			<?php
-				wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(),   array(
-					'strategy'  => 'async',
-					'in_footer' => true,
-				));
+<?php
+			Helper::basgate_log('===== load_login_footer_js() before wp_enqueue_script login_footer.js');
+			wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(),   array(
+				'strategy'  => 'async',
+				'in_footer' => true,
+			));
 		endif;
 	}
 
