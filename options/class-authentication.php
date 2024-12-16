@@ -197,13 +197,13 @@ class Authentication extends Singleton
 		$auth_settings['bas_client_secret'] = apply_filters('basgate_client_secret', $auth_settings['bas_client_secret']);
 
 
-		//TODO: Add basgate backend request for token and userinfo
+
 		if (empty($auth_id)) {
 			die('');
 			return null;
 		}
 
-
+		//TODO: Add basgate backend request for token and userinfo
 		$bas_token = $this->getBasToken($auth_id);
 
 		// Store the token (for verifying later in wp-login).
