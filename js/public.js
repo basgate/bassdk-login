@@ -1,3 +1,4 @@
+console.log("Start Basgate-ClientSDK Script");
 
 /////////// Basgate SDK for Login ///////////
 
@@ -9,7 +10,6 @@
 var isJSBridgeReady = false
 var isBasInDebug = false
 var isBasAuthTokenReturned = false
-console.log("Start Basgate-ClientSDK Script");
 // alert("Start Basgate-ClientSDK Script");
 
 function initBas() {

@@ -29,18 +29,18 @@ class Login_Form extends Singleton
 	 */
 	public function bassdk_enqueue_scripts()
 	{
-		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
+		// Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
 		$src = plugins_url('js/public.js', plugin_root());
-		Helper::basgate_log('===== bassdk_enqueue_scripts() $src: ' . $src);
+		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() $src: ' . $src);
 		wp_enqueue_script('bassdk-sdk-script', $src, array('jquery'), time(), true);
-		// array('jquery'), time(),   array(
-		// 	'strategy'  => 'async',
-		// 	'in_footer' => true,
-		// ));
+		if (wp_script_is('bassdk-sdk-script', 'enqueued')) {
+			Helper::basgate_log('===== bassdk_enqueue_scripts() script is enqueued');
+		} else {
+			Helper::basgate_log('===== bassdk_enqueue_scripts() script is not enqueued');
+			wp_enqueue_script('bassdk-sdk-script', $src, array('jquery'), time(), true);
+		}
 
 		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-login.css', plugin_root()), array(), time(), '');
-		// wp_enqueue_style('bassdk-hidelogin-style', plugins_url('css/basgate-hidelogin.css', plugin_root()), array(), time(), '');
-
 	}
 
 	public function check_login()
