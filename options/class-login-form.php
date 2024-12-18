@@ -12,6 +12,7 @@ namespace BasgateSDK;
 
 use BasgateSDK\Helper;
 use BasgateSDK\Options;
+use PHP_CodeSniffer\Util\Help;
 
 /**
  * Contains modifications to the WordPress login form.
@@ -29,7 +30,9 @@ class Login_Form extends Singleton
 	public function bassdk_enqueue_scripts()
 	{
 		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
-		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), time(), true);
+		$src = plugins_url('js/public.js', plugin_root());
+		Helper::basgate_log('===== bassdk_enqueue_scripts() $src: ' . $src);
+		wp_enqueue_script('bassdk-sdk-script', $src, array('jquery'), time(), true);
 		// array('jquery'), time(),   array(
 		// 	'strategy'  => 'async',
 		// 	'in_footer' => true,
