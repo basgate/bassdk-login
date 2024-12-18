@@ -2,10 +2,6 @@ console.log("Start Basgate-ClientSDK Script");
 
 /////////// Basgate SDK for Login ///////////
 
-//#region other functions
-
-//#endregion
-
 //#region BAS SDK Client Side 
 var isJSBridgeReady = false
 var isBasInDebug = false

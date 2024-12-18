@@ -12,7 +12,6 @@ namespace BasgateSDK;
 
 use BasgateSDK\Helper;
 use BasgateSDK\Options;
-use PHP_CodeSniffer\Util\Help;
 
 /**
  * Contains modifications to the WordPress login form.
@@ -29,15 +28,16 @@ class Login_Form extends Singleton
 	 */
 	public function bassdk_enqueue_scripts()
 	{
-		// Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
-		$src = plugins_url('js/public.js', plugin_root());
-		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() $src: ' . $src);
-		wp_enqueue_script('bassdk-sdk-script', $src, array('jquery'), time(), true);
+		Helper::basgate_log('===== STARTED bassdk_enqueue_scripts() ');
+		wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array(), time(),   array(
+			'strategy'  => 'async',
+			'in_footer' => true,
+		));
 		if (wp_script_is('bassdk-sdk-script', 'enqueued')) {
 			Helper::basgate_log('===== bassdk_enqueue_scripts() script is enqueued');
 		} else {
 			Helper::basgate_log('===== bassdk_enqueue_scripts() script is not enqueued');
-			wp_enqueue_script('bassdk-sdk-script', $src, array('jquery'), time(), true);
+			wp_enqueue_script('bassdk-sdk-script', plugins_url('js/public.js', plugin_root()), array('jquery'), time(), true);
 		}
 
 		wp_enqueue_style('bassdk-loading-style', plugins_url('css/basgate-login.css', plugin_root()), array(), time(), '');
@@ -51,7 +51,6 @@ class Login_Form extends Singleton
 			Helper::basgate_log('===== check_login() user already logged-in');
 			return;
 		}
-		Helper::basgate_log('===== check_login() get_page_link: ' . get_page_link());
 
 		if (
 			is_page('my-account') ||
