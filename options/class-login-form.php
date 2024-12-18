@@ -156,6 +156,12 @@ class Login_Form extends Singleton
 <?php
 			Helper::basgate_log('===== load_login_footer_js() before wp_enqueue_script login_footer.js');
 			wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(), true);
+			if (wp_script_is('bassdk-login-footer', 'enqueued')) {
+				Helper::basgate_log('===== load_login_footer_js() script is enqueued');
+			} else {
+				Helper::basgate_log('===== load_login_footer_js() script is not enqueued');
+				wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(), true);
+			}
 		// array('jquery'), time(),   array(
 		// 	'strategy'  => 'async',
 		// 	'in_footer' => true,
