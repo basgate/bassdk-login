@@ -702,6 +702,7 @@ class Helper
 
 	public static function is_user_already_logged_in()
 	{
+		Helper::basgate_log('===== STARTED is_user_already_logged_in() ');
 		$current_user = wp_get_current_user();
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
