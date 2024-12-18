@@ -51,18 +51,17 @@ class Login_Form extends Singleton
 			Helper::basgate_log('===== check_login() user already logged-in');
 			return;
 		}
-
 		Helper::basgate_log('===== check_login() get_page_link: ' . get_page_link());
 
-		// if (
-		// 	is_page('my-account') ||
-		// 	isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		// 	$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		// ) {
-		$this->bassdk_enqueue_scripts();
-		// $this->loading();
-		$this->bassdk_add_modal();
-		// }
+		if (
+			is_page('my-account') ||
+			isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		) {
+			$this->bassdk_enqueue_scripts();
+			// $this->loading();
+			$this->bassdk_add_modal();
+		}
 	}
 
 	public function loading()
@@ -111,9 +110,55 @@ class Login_Form extends Singleton
 		if (!is_user_logged_in() && $authenticated_by !== 'basgate') :
 ?>
 			<div>
-				<div>
-					<input type="hidden" id="bas_client_id" name="bas_client_id" value="<?php echo esc_attr($bas_client_id); ?>">
-				</div>
+				<script type="text/javascript">
+					try {
+						console.log("===== STARTED bassdk_login_form javascript")
+						window.addEventListener("JSBridgeReady", async (event) => {
+							document.getElementById('basgate-pg-spinner').removeAttribute('hidden');
+							document.querySelector('.basgate-overlay').removeAttribute('hidden');
+
+							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
+							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
+							if (!('getBasAuthCode' in window)) {
+								console.log("JSBridgeReady waiting to load getBasAuthCode...");
+							}
+							try {
+								await getBasAuthCode(clientId).then((res) => {
+									console.log("getBasAuthCode 111 res:", JSON.stringify(res))
+									if (res) {
+										if (res.status == "1") {
+											signInCallback(res.data);
+										} else {
+											console.error("ERROR on getBasAuthCode res:", JSON.stringify(res))
+										}
+									}
+								}).catch((error) => {
+									console.error("ERROR on catch getBasAuthCode:", error)
+								})
+							} catch (error) {
+								console.error("ERROR getBasAuthCode 111:", error)
+								try {
+									await getBasAuthCode(clientId).then((res) => {
+										console.log("getBasAuthCode 222 res:", res)
+										if (res) {
+											if (res.status == "1") {
+												signInCallback(res.data);
+											} else {
+												console.error("ERROR on getBasAuthCode res:", res)
+											}
+										}
+									}).catch((error) => {
+										console.error("ERROR on catch getBasAuthCode:", error)
+									})
+								} catch (error) {
+									console.error("ERROR getBasAuthCode 222:", error)
+								}
+							}
+						}, false);
+					} catch (error) {
+						console.error("ERROR on getBasAuthCode:", error)
+					}
+				</script>
 				<div id="basgate-pg-spinner" class="basgate-woopg-loader" hidden>
 					<div class="bounce1"></div>
 					<div class="bounce2"></div>
@@ -125,10 +170,10 @@ class Login_Form extends Singleton
 				<div class="basgate-overlay basgate-woopg-loader" hidden></div>
 			</div>
 		<?php
-
 		endif;
 		return ob_get_clean();
 	}
+
 
 	/**
 	 * Load external resources in the footer of the wp-login.php page.
@@ -145,27 +190,64 @@ class Login_Form extends Singleton
 		$ajaxurl       = admin_url('admin-ajax.php');
 
 		if ('yes' === $auth_settings['enabled']) :
-			Helper::basgate_log('===== load_login_footer_js() enabled=true');
 		?>
-			<div>
-				<input type="hidden" id="admin_ajxurl" name="admin_ajxurl" value="<?php echo esc_attr($ajaxurl); ?>">
-				<input type="hidden" id="login_redirect_url" name="login_redirect_url" value="<?php echo esc_attr(Helper::get_login_redirect_url()); ?>">
-				<input type="hidden" id="basgate_login_nonce" name="basgate_login_nonce" value="<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>">
-			</div>
+			<script>
+				if (location.search.indexOf('reauth=1') >= 0) {
+					location.href = location.href.replace('reauth=1', '');
+				}
 
+				// eslint-disable-next-line no-implicit-globals
+				function authUpdateQuerystringParam(uri, key, value) {
+					var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+					var separator = uri.indexOf('?') !== -1 ? '&' : '?';
+					if (uri.match(re)) {
+						return uri.replace(re, '$1' + key + '=' + value + '$2');
+					} else {
+						return uri + separator + key + '=' + value;
+					}
+				}
+
+				// eslint-disable-next-line
+				function signInCallback(resData) { // jshint ignore:line
+					var $ = jQuery;
+					console.log("signInCallback() resData:", JSON.stringify(resData))
+
+					if (resData.hasOwnProperty('authId')) {
+						// Send the authId to the server
+						var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
+						var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
+						$.post(ajaxurl, {
+							action: 'process_basgate_login',
+							data: resData,
+							nonce: nonce,
+							// authId: resData.authId,
+						}, function(data, textStatus) {
+
+							console.log("signInCallback() textStatus :", textStatus)
+							console.log("signInCallback() data :", data)
+
+							var newHref = '<?php echo esc_attr(Helper::get_login_redirect_url()); ?>';
+							console.log("signInCallback() before newHref: ", newHref)
+							newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
+							console.log("signInCallback() after newHref: ", newHref)
+
+							if (location.href === newHref) {
+								console.log('signInCallback location.reload() location.href:', location.href);
+								location.reload();
+							} else {
+								console.log("signInCallback() else location.href: ", location.href)
+								location.href = newHref;
+							}
+						});
+					} else {
+						// If user denies access, reload the login page.
+						if (resData.error === 'access_denied' || resData.error === 'user_signed_out') {
+							window.location.reload();
+						}
+					}
+				}
+			</script>
 <?php
-			Helper::basgate_log('===== load_login_footer_js() before wp_enqueue_script login_footer.js');
-			wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(), true);
-			if (wp_script_is('bassdk-login-footer', 'enqueued')) {
-				Helper::basgate_log('===== load_login_footer_js() script is enqueued');
-			} else {
-				Helper::basgate_log('===== load_login_footer_js() script is not enqueued');
-				wp_enqueue_script('bassdk-login-footer', plugins_url('js/login_footer.js', plugin_root()), array('jquery'), time(), true);
-			}
-		// array('jquery'), time(),   array(
-		// 	'strategy'  => 'async',
-		// 	'in_footer' => true,
-		// ));
 		endif;
 	}
 
