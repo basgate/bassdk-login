@@ -48,15 +48,17 @@ class Login_Form extends Singleton
 			return;
 		}
 
-		if (
-			is_page('my-account') ||
-			isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		) {
-			$this->bassdk_enqueue_scripts();
-			// $this->loading();
-			$this->bassdk_add_modal();
-		}
+		Helper::basgate_log('===== check_login() get_page_link: ' . get_page_link());
+
+		// if (
+		// 	is_page('my-account') ||
+		// 	isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// 	$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// ) {
+		$this->bassdk_enqueue_scripts();
+		// $this->loading();
+		$this->bassdk_add_modal();
+		// }
 	}
 
 	public function loading()
