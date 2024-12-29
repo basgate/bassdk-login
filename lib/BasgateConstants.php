@@ -72,6 +72,6 @@ class BasgateConstants
     const ERROR_CURL_DISABLED = "cURL is not enabled properly. Please verify.";
     const ERROR_CURL_WARNING = "Your server is unable to connect with us. Please contact to Basgate Support.";
 
-    const WEBHOOK_STAGING_URL = "https://api-tst.basgate.com:4951/";
+    const WEBHOOK_STAGING_URL = "https://api-tst.basgate.com/";
     const WEBHOOK_PRODUCTION_URL = "https://api.basgate.com:4950/";
 }
