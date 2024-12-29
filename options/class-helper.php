@@ -575,8 +575,12 @@ class Helper
 	public static function executecUrl($apiURL, $requestParamList, $method = 'POST', $extraHeaders = array())
 	{
 		self::basgate_log("===== STARTED executecUrl " . $method . " url:" . $apiURL);
+		$timeout = 45;
+		if (! ini_get('safe_mode')) {
+			set_time_limit($timeout + 10);
+		}
 		// 'Accept: text/plain'
-		$headers = array("Accept" => "text/plain");
+		$headers = array("Accept" => "*");
 		if (!empty($extraHeaders)) {
 			$headers = array_merge($headers, $extraHeaders);
 		}
@@ -584,6 +588,8 @@ class Helper
 		$args = array(
 			'headers' => $headers,
 			'method'    => $method,
+			'timeout'     => $timeout,
+
 		);
 		if (!empty($requestParamList) && !is_null($requestParamList)) {
 			$args['body'] = $requestParamList;
@@ -603,7 +609,7 @@ class Helper
 				wp_json_encode($args)
 			);
 			// error_log($msg);
-			Helper::basgate_log($msg);
+			Helper::basgate_log("ERROR on executecUrl is_wp_error msg :" .$msg);
 			return self::errorResponse($msg);
 			// throw new Exception(__('Could not retrieve the access token, please try again!!!.', BasgateConstants::ID));
 		}
@@ -620,7 +626,7 @@ class Helper
 				$error,
 				$response_body
 			);
-			Helper::basgate_log($msg);
+			Helper::basgate_log("ERROR on executecUrl is_wp_error msg :" .$msg);
 
 			return self::errorResponse($msg);
 		} else {
