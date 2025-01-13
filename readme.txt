@@ -11,7 +11,7 @@ Author: Basgate Super APP
 Author URI: https://basgate.com/
 Tags: Basgate, BasSDK Super App, Basgate WooCommerce, BasSDK Plugin, BasSDK Payment Gateway
 
-هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ المالية والبنوك المختلفة  
+This blugin enabels you to opreat payments through Basgateway that provides you with many Local E-Wallets  
 
 == Description ==
 Description here

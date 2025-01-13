@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Bassdk Login\n"
-"POT-Creation-Date: 2024-11-04 18:09+0300\n"
-"PO-Revision-Date: 2024-11-04 18:16+0300\n"
+"POT-Creation-Date: 2025-01-13 22:31+0300\n"
+"PO-Revision-Date: 2025-01-13 22:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar\n"
@@ -28,18 +28,25 @@ msgid ""
 "successfully logged in to the site, but who haven't yet been approved (or "
 "blocked) by you."
 msgstr ""
+"<strong>Pending Users</strong>: Pending users are users who have "
+"successfully logged in to the site, but who haven't yet been approved (or "
+"blocked) by you."
 
 #: options/class-admin-page.php:75
 msgid ""
 "<strong>Approved Users</strong>: Approved users have access to the site once "
 "they successfully log in."
 msgstr ""
+"<strong>Approved Users</strong>: Approved users have access to the site once "
+"they successfully log in."
 
 #: options/class-admin-page.php:76
 msgid ""
 "<strong>Blocked Users</strong>: Blocked users will receive an error message "
 "when they try to visit the site after authenticating."
 msgstr ""
+"<strong>Blocked Users</strong>: Blocked users will receive an error message "
+"when they try to visit the site after authenticating."
 
 #: options/class-admin-page.php:77
 msgid ""
@@ -50,67 +57,73 @@ msgid ""
 "em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> "
 "list."
 msgstr ""
+"Users in the <strong>Pending</strong> list appear automatically after a new "
+"user tries to log in from the configured external authentication service. "
+"You can add users to the <strong>Approved</strong> or <strong>Blocked</"
+"strong> lists by typing them in manually, or by clicking the <em>Approve</"
+"em> or <em>Block</em> buttons next to a user in the <strong>Pending</strong> "
+"list."
 
 #: options/class-admin-page.php:82 options/class-options.php:323
 #: options/class-options.php:327
 msgid "Authentication"
-msgstr ""
+msgstr "مصادقة"
 
 #: options/class-admin-page.php:121
 msgid "Settings"
-msgstr ""
+msgstr "الاعدادات"
 
 #: options/class-admin-page.php:173
 msgid "Description"
-msgstr ""
+msgstr "الوصف"
 
 #: options/class-admin-page.php:180
 msgid "Environment Mode"
-msgstr ""
+msgstr "تحديد البيئة"
 
 #: options/class-admin-page.php:187
 msgid "Application Id"
-msgstr ""
+msgstr "معرف التطبيق"
 
 #: options/class-admin-page.php:194
 msgid "Merchant Key"
-msgstr ""
+msgstr "مفتاح التاجر"
 
 #: options/class-admin-page.php:201
 msgid "Client Id"
-msgstr ""
+msgstr "معرف العميل"
 
 #: options/class-admin-page.php:208
 msgid "Client Secret"
-msgstr ""
+msgstr "شفرة العميل السرية"
 
 #: options/class-admin-page.php:215
 msgid "Enable/Disable"
-msgstr ""
+msgstr "تفعيل/تعطيل"
 
 #: options/class-admin-page.php:222
 msgid "Enable Debug"
-msgstr ""
+msgstr "تفعيل نمط المطور"
 
 #: options/class-admin-page.php:245
 msgid "Basgate Settings"
-msgstr ""
+msgstr "اعدادات منصة بس"
 
 #: options/class-admin-page.php:274
 msgid "PHP Version"
-msgstr ""
+msgstr "نسخة PHP"
 
 #: options/class-admin-page.php:275
 msgid "cURL Version"
-msgstr ""
+msgstr "نسخة cURL"
 
 #: options/class-admin-page.php:276
 msgid "Wordpress Version"
-msgstr ""
+msgstr "نسخة الوورد بريس"
 
 #: options/class-admin-page.php:277
 msgid "WooCommerce Version"
-msgstr ""
+msgstr "نسخة ال \"Woo commerce\""
 
 #: options/class-admin-page.php:278
 msgid "SDK Version"
@@ -122,121 +135,149 @@ msgstr "انت لست في منصة بس."
 
 #: options/class-authentication.php:140
 msgid "Error on getting userinfo from Basgate API."
-msgstr ""
+msgstr "خطاء في الاستعلام عن بيانات المستخدم من منصة بس."
 
 #: options/class-authentication.php:146
 msgid "Invalid Basgate credentials provided."
-msgstr ""
+msgstr "خطاء في بيانات الوصول الى منصة بس."
 
-#: options/class-authentication.php:328 options/class-authentication.php:393
+#: options/class-authentication.php:327 options/class-authentication.php:392
 msgid "Invalid login attempted."
-msgstr ""
+msgstr "خطاء في تسجيل الدخول."
 
-#: options/class-helper.php:295
+#: options/class-helper.php:296
 msgid "&mdash; No role for this site &mdash;"
-msgstr ""
+msgstr "&mdash; No role for this site &mdash;"
 
 #. translators: 1: Url, 2: Error code, 3: Error message, 4: Event data.
-#: options/class-helper.php:598
+#: options/class-helper.php:605
 #, php-format
 msgid ""
 "executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, "
 "Data: %4$s"
 msgstr ""
+"executecUrl error for url: %1$s, Error code: %2$s, Error message: %3$s, "
+"Data: %4$s"
 
 #. translators: 1: Url, 2: Response code, 3: Event data, 4: ErrorMsg ,5:Response Body.
-#: options/class-helper.php:615
+#: options/class-helper.php:622
 #, php-format
 msgid ""
 "executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: "
 "%3$s , ErrorMsg: %4$s, Response Body:%5$s"
 msgstr ""
+"executecUrl error status!=200 for url: %1$s, Response code: %2$s,Data: "
+"%3$s , ErrorMsg: %4$s, Response Body:%5$s"
 
 #: options/class-login-access.php:29
 msgid "Online payment solutions for all your transactions by Basgate."
-msgstr ""
+msgstr "حلول رقمية لجميع عملياتك المالية عن طريق منصة بس."
 
 #: options/class-login-access.php:51
 msgid "This controls the description which the user sees during checkout."
-msgstr ""
+msgstr "تقوم هذه الخاصية بالتحكم ب الوصف الذي يشاهدة المستخدم اُثناء الدفع."
 
 #: options/class-login-access.php:69
 msgid "Test/Staging"
-msgstr ""
+msgstr "البيئة التجريبية"
 
 #: options/class-login-access.php:70
 msgid "Production"
-msgstr ""
+msgstr "البيئة الحقيقيه"
 
 #: options/class-login-access.php:74
 msgid ""
 "Select \"Test/Staging\" to setup test transactions & \"Production\" once you "
 "are ready to go live"
 msgstr ""
+"اختر \"Test/Staging\" للبدء بأعداد العمليات التجريبية و \"الفعلية\" عندما "
+"تكون جاهز للنشر"
 
 #: options/class-login-access.php:94
 msgid ""
 "Based on the selected Environment Mode, copy the relevant Application ID for "
 "test or production environment you received on email."
 msgstr ""
+"إعتمادً على نمط البيئة الذي تم إختيارة, أنسخ معرف التطبيق التجريبي او الفعلي "
+"التابع لها لكي يتم البدء والذي تم إرسالة الى الايميل الخاص بك."
 
 #: options/class-login-access.php:114
 msgid ""
 "Based on the selected Environment Mode, copy the Merchant Key for test or "
 "production environment you received on email."
 msgstr ""
+"إعتمادً على نمط البيئة الذي تم إختيارة, أنسخ مفتاح التاجر التجريبي او الفعلي "
+"التابع لها لكي يتم البدء والذي تم إرسالة الى الايميل الخاص بك."
 
 #: options/class-login-access.php:134
 msgid ""
 "Based on the selected Environment Mode, copy the Client Id for test or "
 "production environment you received on email."
 msgstr ""
+"إعتمادً على نمط البيئة الذي تم إختيارة, أنسخ معرف العميل التجريبي او الفعلي "
+"التابع لها لكي يتم البدء والذي تم إرسالة الى الايميل الخاص بك."
 
 #: options/class-login-access.php:154
 msgid ""
 "Based on the selected Environment Mode, copy the Client Secret for test or "
 "production environment you received on email."
 msgstr ""
+"إعتمادً على نمط البيئة الذي تم إختيارة, أنسخ شفرة العميل السرية التجريبي او "
+"الفعلي التابع لها لكي يتم البدء والذي تم إرسالة الى الايميل الخاص بك."
 
 #: options/class-login-access.php:173
 msgid "Enable Basgate Login/Payments."
-msgstr ""
+msgstr "تفعيل تسجيل الدخول/المدفوعات لمنصة بس."
 
 #: options/class-login-access.php:192
 msgid "Enable debug mode to log all oprations."
-msgstr ""
+msgstr "تفعيل نمط المطور لتسحيل جميع العمليات."
 
 #: options/class-login-access.php:211
 msgid ""
 "Disable Default Wordpress login when user open store inside Bas platform."
 msgstr ""
+"تعطيل الطريقة التقليدية لدخول المستخدمين عندما يكون المستخدم بداخل منصة بس."
 
 #: options/class-options.php:84
 msgid "This setting is overridden by a"
-msgstr ""
+msgstr "هذه الاعدادات تمت بواسطة"
 
 #: options/class-options.php:84
 msgid "multisite option"
-msgstr ""
+msgstr "multisite option"
 
 #. Plugin Name of the plugin/theme
 msgid "Bassdk Login"
-msgstr ""
+msgstr "تسجيل الدخول عبر منصة بس"
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/Basgate/bassdk-login"
-msgstr ""
+msgstr "https://github.com/Basgate/bassdk-login"
 
 #. Description of the plugin/theme
 msgid ""
-"هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ "
-"المالية والبنوك المختلفة"
+"This blugin enabels you to opreat payments through Basgateway that provides "
+"you with many Local E-Wallets"
 msgstr ""
+"هذه الإضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ "
+"المالية والبنوك المختلفة"
 
 #. Author of the plugin/theme
 msgid "Basgate Super APP"
-msgstr ""
+msgstr "منصة بس للمدفوعات"
 
 #. Author URI of the plugin/theme
 msgid "https://basgate.com/"
-msgstr ""
+msgstr "https://basgate.com/"
+
+#, fuzzy
+#~| msgid ""
+#~| "هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من "
+#~| "المحافظ المالية والبنوك المختلفة"
+#~ msgid ""
+#~ "هذه الاضافة تمكنك من تشغيل الدفع بداخل منصة بس والذي تقدم لك العديد من "
+#~ "المحافظ المالية"
+#~ msgstr ""
+#~ "هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من "
+#~ "المحافظ المالية والبنوك المختلفة"

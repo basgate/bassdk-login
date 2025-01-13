@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Bassdk Login
  * Plugin URI: https://github.com/Basgate/bassdk-login
- * Description: هذه الاضافة تمكنك من ربط متجرك بداخل منصة بس والذي تقدم لك العديد من المحافظ المالية والبنوك المختلفة
+ * Description: This blugin enabels you to opreat payments through Basgateway that provides you with many Local E-Wallets
  * Version: 0.2.7
  * Requires at least: 6.0.1
  * Tested up to: 6.6.2
