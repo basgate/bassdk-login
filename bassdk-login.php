@@ -3,7 +3,7 @@
  * Plugin Name: Bassdk Login
  * Plugin URI: https://github.com/Basgate/bassdk-login
  * Description: This blugin enabels you to opreat payments through Basgateway that provides you with many Local E-Wallets
- * Version: 0.2.7
+ * Version: 0.2.8
  * Requires at least: 6.0.1
  * Tested up to: 6.6.2
  * Requires PHP: 7.4
