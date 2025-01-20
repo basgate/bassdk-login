@@ -49,20 +49,20 @@ class Authentication extends Singleton
 		}
 
 		// Grab plugin settings.
-		$options       = Options::get_instance();
+		$options = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		// Start external authentication.
 		$externally_authenticated_emails = array();
-		$authenticated_by                = '';
-		$result                          = null;
+		$authenticated_by = '';
+		$result = null;
 
 		// Try Basgate authentication if it's enabled and we don't have a
 		// successful login yet.
-		if ('yes' === $auth_settings['enabled'] && ! is_wp_error($result)) {
+		if ('yes' === $auth_settings['enabled'] && !is_wp_error($result)) {
 			Helper::basgate_log('===== custom_authenticate() enabled=yes');
 			$result = $this->custom_authenticate_basgate($auth_settings);
-			if (! is_null($result) && ! is_wp_error($result)) {
+			if (!is_null($result) && !is_wp_error($result)) {
 				if (is_array($result['email'])) {
 					$externally_authenticated_emails = $result['email'];
 				} else {
@@ -123,7 +123,7 @@ class Authentication extends Singleton
 		// Get one time use token.
 		session_start();
 		if (array_key_exists('basToken', $_SESSION) || array_key_exists('token', $_SESSION)) {
-			$token =  sanitize_text_field($_SESSION['basToken']);
+			$token = sanitize_text_field($_SESSION['basToken']);
 			Helper::basgate_log('custom_authenticate_basgate() exist $token:' . $token);
 		} else {
 			// No token, so this is not a succesful Basgate login.
@@ -148,22 +148,22 @@ class Authentication extends Singleton
 
 		$data = $payload['data'];
 
-		$username     = $data['user_name'];
-		$name     = $data['name'];
-		$openId     = $data['open_id'];
-		$phone     = $data['phone'];
+		$username = $data['user_name'];
+		$name = $data['name'];
+		$openId = $data['open_id'];
+		$phone = $data['phone'];
 
 		Helper::basgate_log('===== custom_authenticate() $data: ' . wp_json_encode($data));
 
 		return array(
-			'email'             => $phone . BasgateConstants::EMAIL_DOMAIN,
-			'username'          => $username,
-			'first_name'        => $name,
-			'last_name'         => '',
-			'open_id'         	=> $openId,
-			'role'				=> BasgateConstants::DEFAULT_ROLE,
-			'authenticated_by'  => 'basgate',
-			'bas_attributes' 	=> $data,
+			'email' => $phone . BasgateConstants::EMAIL_DOMAIN,
+			'username' => $username,
+			'first_name' => $name,
+			'last_name' => '',
+			'open_id' => $openId,
+			'role' => BasgateConstants::DEFAULT_ROLE,
+			'authenticated_by' => 'basgate',
+			'bas_attributes' => $data,
 		);
 	}
 
@@ -173,8 +173,8 @@ class Authentication extends Singleton
 
 		// Nonce check.
 		if (
-			! isset($_POST['nonce']) ||
-			! wp_verify_nonce(sanitize_key($_POST['nonce']), 'basgate_login_nonce')
+			!isset($_POST['nonce']) ||
+			!wp_verify_nonce(sanitize_key($_POST['nonce']), 'basgate_login_nonce')
 		) {
 			die(esc_html("ERROR wrong nonce"));
 		}
@@ -190,7 +190,7 @@ class Authentication extends Singleton
 			$auth_id = isset($_POST['authId']) ? sanitize_text_field(wp_unslash($_POST['authId'])) : null;
 		}
 		// Grab plugin settings.
-		$options       = Options::get_instance();
+		$options = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		$auth_settings['bas_client_id'] = apply_filters('basgate_client_id', $auth_settings['bas_client_id']);
@@ -223,21 +223,24 @@ class Authentication extends Singleton
 	public function getBasToken($auth_id)
 	{
 		Helper::basgate_log("===== STARTED getBasToken auth_id: $auth_id");
-		$options       = Options::get_instance();
+		$options = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		//access BASSuperApp  settings
 		if (array_key_exists('bas_environment', $auth_settings) && $auth_settings["bas_environment"] === "1") {
-			$bassdk_api =  BasgateConstants::PRODUCTION_HOST;
+			$bassdk_api = BasgateConstants::PRODUCTION_HOST;
+			$bassdl_callback = BasgateConstants::PRODUCTION_HOST_CALLBACK;
 		} else {
 			$bassdk_api = BasgateConstants::STAGING_HOST;
+			$bassdl_callback = BasgateConstants::STAGING_HOST_CALLBACK;
 		}
 
-		$client_id  = $auth_settings["bas_client_id"];
-		$client_secret  =  $auth_settings["bas_client_secret"];
-		$grant_type  = "authorization_code";
+
+		$client_id = $auth_settings["bas_client_id"];
+		$client_secret = $auth_settings["bas_client_secret"];
+		$grant_type = "authorization_code";
 		$code = $auth_id;
-		$redirect_uri = $bassdk_api . "api/v1/auth/callback";
+		$redirect_uri = $bassdl_callback;
 
 		try {
 			//Send Post request to get token details
@@ -260,7 +263,7 @@ class Authentication extends Singleton
 			if (array_key_exists('success', $response) && $response['success'] == true) {
 				if (array_key_exists('body', $response)) {
 					$data = $response['body'];
-					return  array_key_exists('access_token', $data) ? $data['access_token'] : null;
+					return array_key_exists('access_token', $data) ? $data['access_token'] : null;
 				} else {
 					return null;
 				}
@@ -276,10 +279,10 @@ class Authentication extends Singleton
 	public function getBasUserInfo($token)
 	{
 		Helper::basgate_log('===== STARTED getBasUserInfo() $token: ' . $token);
-		$options       = Options::get_instance();
+		$options = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 		if (array_key_exists('bas_environment', $auth_settings) && $auth_settings["bas_environment"] === "1") {
-			$bassdk_api =  BasgateConstants::PRODUCTION_HOST;
+			$bassdk_api = BasgateConstants::PRODUCTION_HOST;
 		} else {
 			$bassdk_api = BasgateConstants::STAGING_HOST;
 		}
@@ -319,8 +322,8 @@ class Authentication extends Singleton
 	{
 		Helper::basgate_log('===== STARTED check_user_access()');
 		// Grab plugin settings.
-		$options                                    = Options::get_instance();
-		$auth_settings                              = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
+		$options = Options::get_instance();
+		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		if (is_null($user_data)) {
 			Helper::basgate_log('check_user_access is_null($user_data)==true Invalid login attempted.');
@@ -342,13 +345,13 @@ class Authentication extends Singleton
 			} else {
 				$result = wp_insert_user(
 					array(
-						'user_login'      => strtolower($username),
-						'user_pass'       => wp_generate_password(), // random password.
-						'first_name'      => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
-						'last_name'       => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
-						'user_email'      => Helper::lowercase($user_data['email']),
+						'user_login' => strtolower($username),
+						'user_pass' => wp_generate_password(), // random password.
+						'first_name' => array_key_exists('first_name', $user_data) ? $user_data['first_name'] : '',
+						'last_name' => array_key_exists('last_name', $user_data) ? $user_data['last_name'] : '',
+						'user_email' => Helper::lowercase($user_data['email']),
 						'user_registered' => wp_date('Y-m-d H:i:s'),
-						'role'            => $user_data['role'],
+						'role' => $user_data['role'],
 					)
 				);
 
@@ -440,7 +443,7 @@ class Authentication extends Singleton
 	public function custom_logout()
 	{
 		// Grab plugin settings.
-		$options       = Options::get_instance();
+		$options = Options::get_instance();
 		$auth_settings = $options->get_all(Helper::SINGLE_CONTEXT, 'allow override');
 
 		// Reset option containing old error messages.

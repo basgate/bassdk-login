@@ -4,11 +4,13 @@ namespace BasgateSDK;
 
 class BasgateConstants
 {
-    const TRANSACTION_STATUS_URL_PRODUCTION = "https://api.basgate.com:4950/api/v1/merchant/secure/transaction/status";
+    const TRANSACTION_STATUS_URL_PRODUCTION = "https://app.basgate.com/api/v1/merchant/secure/transaction/status";
     const TRANSACTION_STATUS_URL_STAGING = "https://api-tst.basgate.com/api/v1/merchant/secure/transaction/status";
 
-    const PRODUCTION_HOST = "https://api.basgate.com:4950/";
+    const PRODUCTION_HOST = "https://app.basgate.com/";
+    const PRODUCTION_HOST_CALLBACK = "https://api.basgate.com:4950/api/v1/auth/callback";
     const STAGING_HOST = "https://api-tst.basgate.com/";
+    const STAGING_HOST_CALLBACK = "https://api-tst.basgate.com/api/v1/auth/callback";
 
     // CONST ORDER_PROCESS_URL= "api/v1/merchant/secure/transaction/initiate";
     const ORDER_STATUS_URL = "api/v1/merchant/secure/transaction/status";
@@ -73,5 +75,5 @@ class BasgateConstants
     const ERROR_CURL_WARNING = "Your server is unable to connect with us. Please contact to Basgate Support.";
 
     const WEBHOOK_STAGING_URL = "https://api-tst.basgate.com/";
-    const WEBHOOK_PRODUCTION_URL = "https://api.basgate.com:4950/";
+    const WEBHOOK_PRODUCTION_URL = "https://app.basgate.com/";
 }
