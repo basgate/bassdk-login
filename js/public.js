@@ -100,28 +100,28 @@ const getBasAuthCode = async (clientId) => {
 "date": "",
 "status":1
 }*/
-/****** End Response Example ******/
-const getBasPayment = async (data) => {
-    if (isBasInDebug) console.log("BasSDK getBasPayment STARTED")
-    let paymentParams = {
-        "amount": {
-            "value": data.amount ?? '0',
-            "currency": data.currency ?? 'YER',
-        },
-        "orderId": data.orderId ?? '111',
-        "trxToken": data.trxToken,
-        "appId": data.appId
-    }
-    if (isBasInDebug) console.log("BasSDK getBasPayment Params :", JSON.stringify(paymentParams))
-    return window.JSBridge.call('basPayment', paymentParams).then(function (result) {
-        if (isBasInDebug) console.log("BasSDK getBasPayment result:", JSON.stringify(result))
-        if (result) {
-            return result;
-        } else {
-            return null
-        }
-    });
+// /****** End Response Example ******/
+// const getBasPayment = async (data) => {
+//     if (isBasInDebug) console.log("BasSDK getBasPayment STARTED")
+//     let paymentParams = {
+//         "amount": {
+//             "value": data.amount ?? '0',
+//             "currency": data.currency ?? 'YER',
+//         },
+//         "orderId": data.orderId ?? '111',
+//         "trxToken": data.trxToken,
+//         "appId": data.appId
+//     }
+//     if (isBasInDebug) console.log("BasSDK getBasPayment Params :", JSON.stringify(paymentParams))
+//     return window.JSBridge.call('basPayment', paymentParams).then(function (result) {
+//         if (isBasInDebug) console.log("BasSDK getBasPayment result:", JSON.stringify(result))
+//         if (result) {
+//             return result;
+//         } else {
+//             return null
+//         }
+//     });
 
-}
+// }
 
 //#endregion
