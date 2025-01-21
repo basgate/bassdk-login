@@ -43,7 +43,7 @@ class Options extends Singleton
 		$auth_multisite_settings = is_multisite() ? get_blog_option(get_main_site_id(get_main_network_id()), 'auth_multisite_settings', array()) : array();
 
 		// Set option to null if it wasn't found.
-		if (! array_key_exists($option, $auth_settings)) {
+		if (!array_key_exists($option, $auth_settings)) {
 			return null;
 		}
 
@@ -56,9 +56,9 @@ class Options extends Singleton
 			array_key_exists('multisite_override', $auth_settings) &&
 			'1' === $auth_settings['multisite_override'] &&
 			(
-				! array_key_exists('advanced_override_multisite', $auth_settings) ||
+				!array_key_exists('advanced_override_multisite', $auth_settings) ||
 				1 !== intval($auth_settings['advanced_override_multisite']) ||
-				! empty($auth_multisite_settings['prevent_override_multisite'])
+				!empty($auth_multisite_settings['prevent_override_multisite'])
 			)
 		) {
 			// Get original plugin options (not overridden value). We'll
@@ -67,7 +67,7 @@ class Options extends Singleton
 			// (This feature is disabled).
 			//
 			$name = "auth_settings[$option]";
-			$id   = "auth_settings_$option";
+			$id = "auth_settings_$option";
 			// Get category of option so we can link directly to the appropriate tab
 			// in multisite options (most options are on the External Service tab;
 			// only access_who_can_login and access_who_can_view are on the Access
@@ -78,13 +78,13 @@ class Options extends Singleton
 			// } elseif (0 === strpos($option, 'advanced_')) {
 			// 	$tab = '&tab=advanced';
 			// }
-?>
-			<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
-				<span class="overlay-note">
-					<?php esc_html_e('This setting is overridden by a', 'bassdk-login'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'bassdk-login'); ?></a>.
-				</span>
-			</div>
-		<?php
+			?>
+				<div id="overlay-hide-auth_settings_<?php echo esc_attr($option); ?>" class="auth_multisite_override_overlay">
+					<span class="overlay-note">
+						<?php esc_html_e('This setting is overridden by a', 'bassdk-login'); ?> <a href="<?php echo esc_attr(network_admin_url('admin.php?page=basgate' . $tab)); ?>"><?php esc_html_e('multisite option', 'bassdk-login'); ?></a>.
+					</span>
+				</div>
+			<?php
 		}
 
 		// If we're getting an option in a site that has overridden the multisite
@@ -99,7 +99,7 @@ class Options extends Singleton
 		}
 
 		// Set option to null if it wasn't found.
-		if (! array_key_exists($option, $auth_settings)) {
+		if (!array_key_exists($option, $auth_settings)) {
 			return null;
 		}
 
@@ -117,7 +117,7 @@ class Options extends Singleton
 	{
 		// Grab plugin settings (skip if in Helper::NETWORK_CONTEXT mode).
 		// $auth_settings = 'multisite_admin' === $admin_mode ? array() : get_option(BasgateConstants::OPTION_DATA_NAME);
-		$auth_settings =  get_option(BasgateConstants::OPTION_DATA_NAME);
+		$auth_settings = get_option(BasgateConstants::OPTION_DATA_NAME);
 
 		// Initialize to default values if the plugin option doesn't exist.
 		if (false === $auth_settings) {
@@ -165,28 +165,28 @@ class Options extends Singleton
 		// 	}
 		// }
 
-		if (! array_key_exists('bas_description', $auth_settings)) {
+		if (!array_key_exists('bas_description', $auth_settings)) {
 			$auth_settings['bas_description'] = '';
 		}
-		if (! array_key_exists('bas_environment', $auth_settings)) {
+		if (!array_key_exists('bas_environment', $auth_settings)) {
 			$auth_settings['bas_environment'] = '0';
 		}
-		if (! array_key_exists('bas_application_id', $auth_settings)) {
+		if (!array_key_exists('bas_application_id', $auth_settings)) {
 			$auth_settings['bas_application_id'] = '';
 		}
-		if (! array_key_exists('bas_merchant_key', $auth_settings)) {
+		if (!array_key_exists('bas_merchant_key', $auth_settings)) {
 			$auth_settings['bas_merchant_key'] = '';
 		}
-		if (! array_key_exists('bas_client_id', $auth_settings)) {
+		if (!array_key_exists('bas_client_id', $auth_settings)) {
 			$auth_settings['bas_client_id'] = '';
 		}
-		if (! array_key_exists('bas_client_secret', $auth_settings)) {
+		if (!array_key_exists('bas_client_secret', $auth_settings)) {
 			$auth_settings['bas_client_secret'] = '';
 		}
-		if (! array_key_exists('enabled', $auth_settings)) {
+		if (!array_key_exists('enabled', $auth_settings)) {
 			$auth_settings['enabled'] = 'yes';
 		}
-		if (! array_key_exists('advanced_disable_wp_login', $auth_settings)) {
+		if (!array_key_exists('advanced_disable_wp_login', $auth_settings)) {
 			$auth_settings['advanced_disable_wp_login'] = '0';
 		}
 
@@ -207,7 +207,7 @@ class Options extends Singleton
 	public function sanitize_user_list($user_list)
 	{
 		// If it's not a list, make it so.
-		if (! is_array($user_list)) {
+		if (!is_array($user_list)) {
 			$user_list = array();
 		}
 		foreach ($user_list as $key => $user_info) {
@@ -230,7 +230,7 @@ class Options extends Singleton
 	{
 
 		// Sanitize Enable enabled Logins (checkbox: value can only be '1' or empty string).
-		$auth_settings['enabled'] = array_key_exists('enabled', $auth_settings) && $auth_settings['enabled'] === 'yes'  ? 'yes' : 'no';
+		$auth_settings['enabled'] = array_key_exists('enabled', $auth_settings) && $auth_settings['enabled'] === 'yes' ? 'yes' : 'no';
 
 
 		// // Sanitize Disable WordPress logins (checkbox: value can only be '1' or empty string).
@@ -262,7 +262,7 @@ class Options extends Singleton
 	 */
 	public function sanitize_update_auth_users($users = array(), $args = array())
 	{
-		if (! is_array($users)) {
+		if (!is_array($users)) {
 			$users = array();
 		}
 		if (isset($args['allow_wildcard_email']) && $args['allow_wildcard_email']) {
@@ -317,16 +317,16 @@ class Options extends Singleton
 	 */
 	public function print_section_info_tabs($args = '')
 	{
-		if ('multisite_admin' === $this->get_context($args)) :
-		?>
-			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
-			</h2>
-		<?php else : ?>
-			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
-			</h2>
-<?php
+		if ('multisite_admin' === $this->get_context($args)):
+			?>
+						<h2 class="nav-tab-wrapper">
+							<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
+						</h2>
+				<?php else: ?>
+						<h2 class="nav-tab-wrapper">
+							<a class="nav-tab nav-tab-access_lists nav-tab-active" href="javascript:chooseTab('access_lists' );"><?php esc_html_e('Authentication', 'bassdk-login'); ?></a>
+						</h2>
+			<?php
 		endif;
 	}
 
