@@ -54,6 +54,7 @@ class Login_Form extends Singleton
 
 		try {
 			if (strpos($_SERVER['REQUEST_URI'], 'my-account') !== false) {
+				Helper::basgate_log('===== check_login() my-account page');
 				$this->bassdk_enqueue_scripts();
 				$this->bassdk_add_modal();
 			}
