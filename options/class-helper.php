@@ -708,11 +708,12 @@ class Helper
 
 	public static function is_user_already_logged_in()
 	{
-		Helper::basgate_log('===== STARTED is_user_already_logged_in() ');
+		Helper::basgate_log('===== STARTED is_user_already_logged_in() - Login ');
 		$current_user = wp_get_current_user();
 		$authenticated_by = get_user_meta($current_user->ID, 'authenticated_by', true);
 
 		if (is_user_logged_in() && $authenticated_by === 'basgate') {
+			Helper::basgate_log('===== is_user_already_logged_in() - Login - User is already logged in and authenticated by basgate');
 			return true;
 		}
 		return false;
