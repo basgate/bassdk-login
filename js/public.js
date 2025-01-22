@@ -1,4 +1,4 @@
-console.log("Start Basgate-ClientSDK Script");
+console.log("Start Basgate-ClientSDK Script - Login");
 
 /////////// Basgate SDK for Login ///////////
 
@@ -80,6 +80,9 @@ const getBasAuthCode = async (clientId) => {
                 } else {
                     return null
                 }
+            }).catch((error) => {
+                console.error("BasSDK getBasAuthCode error:", JSON.stringify(error))
+                return null;
             });
     } else {
         console.error("JSBridge not Existing in window");

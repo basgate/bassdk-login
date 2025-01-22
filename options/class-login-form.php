@@ -137,15 +137,28 @@ class Login_Form extends Singleton
 										if (res.status == "1") {
 											signInCallback(res.data);
 										} else {
-											console.error("ERROR on getBasAuthCode res:", JSON.stringify(res))
+											console.error("ERROR on getBasAuthCode res 111:", JSON.stringify(res))
 										}
+									}else{
+										console.error("ERROR on getBasAuthCode res 222:", JSON.stringify(res))
+										jQuery(document).ready(function ($) {
+											$(".loading-basgate").hide();
+											$(".basgate-woopg-loader").hide();
+											$(".basgate-overlay").hide();
+										});
 									}
 								}).catch((error) => {
-									console.error("ERROR on catch getBasAuthCode:", error)
+									console.error("ERROR on catch getBasAuthCode 111:", error)
+									jQuery(document).ready(function ($) {
+										$(".loading-basgate").hide();
+										$(".basgate-woopg-loader").hide();
+										$(".basgate-overlay").hide();
+									});
 								})
 							} catch (error) {
 								console.error("ERROR getBasAuthCode 111:", error)
 								try {
+
 									await getBasAuthCode(clientId).then((res) => {
 										console.log("getBasAuthCode 222 res:", res)
 										if (res) {
@@ -156,7 +169,7 @@ class Login_Form extends Singleton
 											}
 										}
 									}).catch((error) => {
-										console.error("ERROR on catch getBasAuthCode:", error)
+										console.error("ERROR on catch getBasAuthCode 222:", error)
 									})
 								} catch (error) {
 									console.error("ERROR getBasAuthCode 222:", error)
