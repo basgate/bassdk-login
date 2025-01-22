@@ -73,30 +73,6 @@ class Login_Form extends Singleton
 		}
 	}
 
-	public function loading()
-	{
-		return '<div id="basgate-pg-spinner" class="basgate-woopg-loader">
-				<div class="bounce1"></div>
-				<div class="bounce2"></div>
-				<div class="bounce3"></div>
-				<div class="bounce4"></div>
-				<div class="bounce5">
-				</div>
-					<p class="loading-basgate">Loading Basgate</p>
-				</div>
-				<div class="basgate-overlay basgate-woopg-loader"></div>
-			';
-	}
-
-	public function unloading()
-	{
-		return '
-				jQuery(".loading-basgate").hide();
-                jQuery(".basgate-woopg-loader").hide();
-                jQuery(".basgate-overlay").hide();
-			';
-	}
-
 	public function bassdk_add_modal()
 	{
 		Helper::basgate_log('===== STARTED bassdk_add_modal() ');
@@ -106,7 +82,7 @@ class Login_Form extends Singleton
 
 	function bassdk_login_form()
 	{
-		Helper::basgate_log('===== STARTED bassdk_login_form() ');
+		Helper::basgate_log('===== STARTED bassdk_login_form() PHP');
 
 		$options = Options::get_instance();
 		$option = 'bas_client_id';
@@ -120,14 +96,18 @@ class Login_Form extends Singleton
 		?>
 			<div>
 				<script type="text/javascript">
+					function hideLoading() {
+						document.getElementById('basgate-pg-spinner').setAttribute('hidden','');
+						document.querySelector('.basgate-overlay').setAttribute('hidden','');
+					}
+					
 					try {
-						console.log("===== STARTED bassdk_login_form PHP")
+						console.log("===== STARTED bassdk_login_form() PHP")
 						window.addEventListener("JSBridgeReady", async (event) => {
 							document.getElementById('basgate-pg-spinner').removeAttribute('hidden');
 							document.querySelector('.basgate-overlay').removeAttribute('hidden');
-
 							var clientId = '<?php echo esc_attr($bas_client_id); ?>';
-							console.log("JSBridgeReady Successfully loaded clientId:", clientId);
+							console.log("JSBridgeReady Successfully loaded (PHP) clientId:", clientId);
 							if (!('getBasAuthCode' in window)) {
 								console.log("JSBridgeReady waiting to load getBasAuthCode...");
 							}
@@ -139,42 +119,19 @@ class Login_Form extends Singleton
 											signInCallback(res.data);
 										} else {
 											console.error("ERROR on getBasAuthCode res 111:", JSON.stringify(res))
+											hideLoading();
 										}
 									}else{
 										console.error("ERROR on getBasAuthCode res 222:", JSON.stringify(res))
-										jQuery(document).ready(function ($) {
-											$(".loading-basgate").hide();
-											$(".basgate-woopg-loader").hide();
-											$(".basgate-overlay").hide();
-										});
+										hideLoading();
 									}
 								}).catch((error) => {
 									console.error("ERROR on catch getBasAuthCode 111:", error)
-									jQuery(document).ready(function ($) {
-										$(".loading-basgate").hide();
-										$(".basgate-woopg-loader").hide();
-										$(".basgate-overlay").hide();
-									});
+									hideLoading();
 								})
 							} catch (error) {
 								console.error("ERROR getBasAuthCode 111:", error)
-								try {
-
-									await getBasAuthCode(clientId).then((res) => {
-										console.log("getBasAuthCode 222 res:", res)
-										if (res) {
-											if (res.status == "1") {
-												signInCallback(res.data);
-											} else {
-												console.error("ERROR on getBasAuthCode res:", res)
-											}
-										}
-									}).catch((error) => {
-										console.error("ERROR on catch getBasAuthCode 222:", error)
-									})
-								} catch (error) {
-									console.error("ERROR getBasAuthCode 222:", error)
-								}
+								hideLoading();
 							}
 						}, false);
 					} catch (error) {
