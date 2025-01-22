@@ -63,12 +63,12 @@ class Login_Form extends Singleton
 		}
 
 		if (
-			is_page('my-account') ||
+			// is_page('my-account') ||
 			isset($_GET['action']) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$_GET['action'] === 'login' // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		) {
+			Helper::basgate_log('===== check_login() my-account page or login action:'.$_GET['action']);
 			$this->bassdk_enqueue_scripts();
-			// $this->loading();
 			$this->bassdk_add_modal();
 		}
 	}
@@ -196,7 +196,6 @@ class Login_Form extends Singleton
 		return ob_get_clean();
 	}
 
-
 	/**
 	 * Load external resources in the footer of the wp-login.php page.
 	 *
@@ -213,63 +212,63 @@ class Login_Form extends Singleton
 
 		if ('yes' === $auth_settings['enabled']):
 			?>
-															<script>
-																if (location.search.indexOf('reauth=1') >= 0) {
-																	location.href = location.href.replace('reauth=1', '');
-																}
+				<script>
+					if (location.search.indexOf('reauth=1') >= 0) {
+						location.href = location.href.replace('reauth=1', '');
+					}
 
-																// eslint-disable-next-line no-implicit-globals
-																function authUpdateQuerystringParam(uri, key, value) {
-																	var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
-																	var separator = uri.indexOf('?') !== -1 ? '&' : '?';
-																	if (uri.match(re)) {
-																		return uri.replace(re, '$1' + key + '=' + value + '$2');
-																	} else {
-																		return uri + separator + key + '=' + value;
-																	}
-																}
+					// eslint-disable-next-line no-implicit-globals
+					function authUpdateQuerystringParam(uri, key, value) {
+						var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+						var separator = uri.indexOf('?') !== -1 ? '&' : '?';
+						if (uri.match(re)) {
+							return uri.replace(re, '$1' + key + '=' + value + '$2');
+						} else {
+							return uri + separator + key + '=' + value;
+						}
+					}
 
-																// eslint-disable-next-line
-																function signInCallback(resData) { // jshint ignore:line
-																	var $ = jQuery;
-																	console.log("signInCallback() resData:", JSON.stringify(resData))
+					// eslint-disable-next-line
+					function signInCallback(resData) { // jshint ignore:line
+						var $ = jQuery;
+						console.log("signInCallback() resData:", JSON.stringify(resData))
 
-																	if (resData.hasOwnProperty('authId')) {
-																		// Send the authId to the server
-																		var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
-																		var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
-																		$.post(ajaxurl, {
-																			action: 'process_basgate_login',
-																			data: resData,
-																			nonce: nonce,
-																			// authId: resData.authId,
-																		}, function(data, textStatus) {
+						if (resData.hasOwnProperty('authId')) {
+							// Send the authId to the server
+							var ajaxurl = '<?php echo esc_attr($ajaxurl); ?>';
+							var nonce = '<?php echo esc_attr(wp_create_nonce('basgate_login_nonce')); ?>';
+							$.post(ajaxurl, {
+								action: 'process_basgate_login',
+								data: resData,
+								nonce: nonce,
+								// authId: resData.authId,
+							}, function(data, textStatus) {
 
-																			console.log("signInCallback() textStatus :", textStatus)
-																			console.log("signInCallback() data :", data)
+								console.log("signInCallback() textStatus :", textStatus)
+								console.log("signInCallback() data :", data)
 
-																			var newHref = '<?php echo esc_attr(Helper::get_login_redirect_url()); ?>';
-																			console.log("signInCallback() before newHref: ", newHref)
-																			newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
-																			console.log("signInCallback() after newHref: ", newHref)
+								var newHref = '<?php echo esc_attr(Helper::get_login_redirect_url()); ?>';
+								console.log("signInCallback() before newHref: ", newHref)
+								newHref = authUpdateQuerystringParam(newHref, 'external', 'basgate');
+								console.log("signInCallback() after newHref: ", newHref)
 
-																			if (location.href === newHref) {
-																				console.log('signInCallback location.reload() location.href:', location.href);
-																				location.reload();
-																			} else {
-																				console.log("signInCallback() else location.href: ", location.href)
-																				location.href = newHref;
-																			}
-																		});
-																	} else {
-																		// If user denies access, reload the login page.
-																		if (resData.error === 'access_denied' || resData.error === 'user_signed_out') {
-																			window.location.reload();
-																		}
-																	}
-																}
-															</script>
-												<?php
+								if (location.href === newHref) {
+									console.log('signInCallback location.reload() location.href:', location.href);
+									location.reload();
+								} else {
+									console.log("signInCallback() else location.href: ", location.href)
+									location.href = newHref;
+								}
+							});
+						} else {
+							// If user denies access, reload the login page.
+							if (resData.error === 'access_denied' || resData.error === 'user_signed_out') {
+								window.location.reload();
+							}
+						}
+					}
+				</script>
+	<?php
 		endif;
 	}
 
@@ -286,7 +285,6 @@ class Login_Form extends Singleton
 	public function maybe_add_external_wordpress_to_log_in_links($login_url)
 	{
 		Helper::basgate_log('===== STARTED maybe_add_external_wordpress_to_log_in_links() $login_url: ' . $login_url);
-
 		// Initial check to make sure that we are on a wp-login.php page.
 		if (isset($GLOBALS['pagenow']) && site_url($GLOBALS['pagenow'], 'login') === $login_url) {
 			// Do a check in here within the $_REQUEST params to narrow down the scope of where we'll modify the URL
@@ -307,7 +305,6 @@ class Login_Form extends Singleton
 				// Grab plugins settings.
 				$options = Options::get_instance();
 				$auth_settings = $options->get_all(HELPER::SINGLE_CONTEXT, 'allow override');
-
 				// Only change the Log in URL if the Hide WordPress Logins option is enabled in Authorizer.
 				if (
 					array_key_exists('advanced_hide_wp_login', $auth_settings) &&
