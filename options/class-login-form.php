@@ -120,7 +120,7 @@ class Login_Form extends Singleton
 			<div>
 				<script type="text/javascript">
 					try {
-						console.log("===== STARTED bassdk_login_form javascript")
+						console.log("===== STARTED bassdk_login_form PHP")
 						window.addEventListener("JSBridgeReady", async (event) => {
 							document.getElementById('basgate-pg-spinner').removeAttribute('hidden');
 							document.querySelector('.basgate-overlay').removeAttribute('hidden');

@@ -72,7 +72,8 @@ const getBasAuthCode = async (clientId) => {
                 */
                 /****** End Response Example ******/
                 // alert(JSON.stringify(result))
-                if (isBasInDebug) console.log("BasSDK getBasAuthCode result:", JSON.stringify(result))
+                // if (isBasInDebug) 
+                console.log("BasSDK getBasAuthCode result:", JSON.stringify(result))
                 if (result) {
                     isBasAuthTokenReturned = true;
                     return result;
