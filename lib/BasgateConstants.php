@@ -8,7 +8,7 @@ class BasgateConstants
     const TRANSACTION_STATUS_URL_STAGING = "https://api-tst.basgate.com/api/v1/merchant/secure/transaction/status";
 
     const PRODUCTION_HOST = "https://app.basgate.com/";
-    const PRODUCTION_HOST_CALLBACK = "https://app.basgate.com/api/v1/auth/callback";
+    const PRODUCTION_HOST_CALLBACK = "https://api.basgate.com:4950/api/v1/auth/callback";
     const STAGING_HOST = "https://api-tst.basgate.com/";
     const STAGING_HOST_CALLBACK = "https://api-tst.basgate.com/api/v1/auth/callback";
 
